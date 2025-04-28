@@ -6,17 +6,11 @@ import {
     Generator,
     versionProcessor,
     searchProcessor,
-    themeSelectProcessor,
 } from "@forsakringskassan/docs-generator";
 
 const require = module.createRequire(import.meta.url);
 
 const pkg = require("./package.json");
-
-const fkuiDesign = path.relative(
-    process.cwd(),
-    path.dirname(require.resolve("@fkui/design")),
-);
 
 const docs = new Generator({
     site: {
@@ -27,11 +21,7 @@ const docs = new Generator({
     cacheFolder: "./temp/docs",
     exampleFolders: ["./src"],
     vendor: ["vue", "@fkui/logic", "@fkui/date", "@fkui/vue"],
-    processors: [
-        searchProcessor(),
-        themeSelectProcessor(),
-        versionProcessor(pkg, "toolbar"),
-    ],
+    processors: [searchProcessor(), versionProcessor(pkg, "toolbar")],
     setupPath: path.resolve("docs/src/setup.ts"),
 });
 
@@ -43,27 +33,15 @@ docs.compileStyle("docs", "./docs/src/docs-theme.scss", {
     appendTo: "head",
 });
 
-docs.compileStyle("docs-exp", "./docs/src/exp-theme.scss", {
+docs.compileStyle("docs-fkui", "./docs/src/fkui-theme.scss", {
     appendTo: "head",
     attributes: {
         data: {
-            theme: "exp",
+            theme: "fkui",
         },
         disabled: true,
     },
 });
-
-docs.compileStyle("docs-int", "./docs/src/int-theme.scss", {
-    appendTo: "head",
-    attributes: {
-        data: {
-            theme: "int",
-        },
-        disabled: true,
-    },
-});
-
-docs.copyResource("images", path.join(fkuiDesign, "assets/images"));
 
 try {
     await docs.build([

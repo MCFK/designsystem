@@ -1,51 +1,3 @@
-<template>
-    <div v-if="isOpen" :id="id" class="modal" :class="modalClass">
-        <div class="modal__backdrop">
-            <div
-                class="modal__outer-container scroll-target"
-                tabindex="-1"
-                role="dialog"
-                aria-modal="true"
-                @keyup.esc="onClose"
-            >
-                <div class="modal__inner-container">
-                    <div ref="modalDialogContainer" class="modal__dialog-container" :class="containerClasses">
-                        <div class="modal__dialog">
-                            <div class="modal__dialog-inner">
-                                <div class="modal__header">
-                                    <div tabindex="0" @focus="onFocusFirst"></div>
-                                    <h1 v-if="hasHeaderSlot" ref="modalTitle" class="modal__title" tabindex="-1">
-                                        <!--@slot Slot for the header. -->
-                                        <slot name="header"></slot>
-                                    </h1>
-                                </div>
-
-                                <div ref="modalContent" class="modal__content" tabindex="-1">
-                                    <!--@slot Slot for the main content, e.g. paragraphs, input fields, etc. -->
-                                    <slot name="content"></slot>
-                                </div>
-
-                                <div class="modal__footer">
-                                    <!--@slot Slot the footer content, i.e. buttons. -->
-                                    <slot name="footer"></slot>
-                                </div>
-                            </div>
-
-                            <div class="modal__shelf">
-                                <button type="button" class="close-button" :aria-label="ariaCloseText" @click="onClose">
-                                    <span>{{ $t("fkui.modal.close", "Stäng") }}</span>
-                                    <f-icon name="close"></f-icon>
-                                </button>
-                                <div tabindex="0" @focus="onFocusLast"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script lang="ts">
 import { type PropType, defineComponent } from "vue";
 import { ElementIdService, pushFocus, popFocus, findTabbableElements, focus } from "@fkui/logic";
@@ -185,7 +137,11 @@ export default defineComponent({
             const root = document.documentElement;
             const scroll = root.scrollTop;
             root.style.top = `-${scroll}px`;
-            root.classList.add("modal__open");
+            root.style.left = "0";
+            root.style.right = "0";
+            // both of these properties is used to prevent scrolling in the background
+            root.style.overflow = "hidden";
+            root.style.position = "fixed";
 
             const focusElement = this.resolveFocusElement();
             if (this.focus === "on") {
@@ -216,12 +172,15 @@ export default defineComponent({
         },
         restoreState(): void {
             const root = document.documentElement;
-            root.classList.remove("modal__open");
             root.style.removeProperty("top");
-            root.scrollTop = this.savedScroll ?? 0;
-            this.savedScroll = null;
+            root.style.removeProperty("left");
+            root.style.removeProperty("right");
+            root.style.removeProperty("overflow");
+            root.style.removeProperty("position");
 
             if (this.focus === "on" && this.savedFocus) {
+                root.scrollTop = this.savedScroll ?? 0;
+                this.savedScroll = null;
                 popFocus(this.savedFocus);
                 this.savedFocus = null;
             }
@@ -239,3 +198,51 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div v-if="isOpen" :id="id" class="modal" :class="modalClass">
+        <div class="modal__backdrop">
+            <div
+                class="modal__outer-container scroll-target"
+                tabindex="-1"
+                role="dialog"
+                aria-modal="true"
+                @keyup.esc="onClose"
+            >
+                <div class="modal__inner-container">
+                    <div ref="modalDialogContainer" class="modal__dialog-container" :class="containerClasses">
+                        <div class="modal__dialog">
+                            <div class="modal__dialog-inner">
+                                <div class="modal__header">
+                                    <div tabindex="0" @focus="onFocusFirst"></div>
+                                    <h1 v-if="hasHeaderSlot" ref="modalTitle" class="modal__title" tabindex="-1">
+                                        <!--@slot Slot for the header. -->
+                                        <slot name="header"></slot>
+                                    </h1>
+                                </div>
+
+                                <div ref="modalContent" class="modal__content" tabindex="-1">
+                                    <!--@slot Slot for the main content, e.g. paragraphs, input fields, etc. -->
+                                    <slot name="content"></slot>
+                                </div>
+
+                                <div class="modal__footer">
+                                    <!--@slot Slot the footer content, i.e. buttons. -->
+                                    <slot name="footer"></slot>
+                                </div>
+                            </div>
+
+                            <div class="modal__shelf">
+                                <button type="button" class="close-button" :aria-label="ariaCloseText" @click="onClose">
+                                    <span>{{ $t("fkui.modal.close", "Stäng") }}</span>
+                                    <f-icon name="close"></f-icon>
+                                </button>
+                                <div tabindex="0" @focus="onFocusLast"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

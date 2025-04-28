@@ -1,16 +1,9 @@
-<template>
-    <div class="f-confirm-modal">
-        <button type="button" class="button button--secondary" @click="onClick">Tre knappar</button>
-        <pre> Modalen stängdes med resultatet: {{ action }} </pre>
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { type ModalResult, openModal, FConfirmModal } from "@fkui/vue";
 
 export default defineComponent({
-    name: "FConfirmModalExample",
+    name: "FConfirmModalCustomButtons",
     data() {
         return {
             action: undefined as ModalResult<void> | undefined,
@@ -41,3 +34,10 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div>
+        <button type="button" class="button button--secondary" @click="onClick">Tre knappar</button>
+        <pre> Modalen stängdes med resultatet: {{ action }} </pre>
+    </div>
+</template>

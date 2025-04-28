@@ -1,26 +1,3 @@
-<template>
-    <live-example :components="components" :template="template" :livedata="livedata">
-        <f-fieldset name="type">
-            <template #label> Typ </template>
-            <f-radio-field v-model="type" value="radio"> Enkelval (radioknappar)</f-radio-field>
-            <f-radio-field v-model="type" value="checkbox"> Flerval (kryssrutor)</f-radio-field>
-        </f-fieldset>
-
-        <f-checkbox-field v-model="isHorizontal" :value="true">
-            Horisontell layout
-        </f-checkbox-field>
-        <f-checkbox-field v-model="isDisabled" :value="true"> Inaktiverad </f-checkbox-field>
-        <f-checkbox-field v-model="isRequired" :value="true"> Obligatorisk </f-checkbox-field>
-        <f-fieldset name="checkbox-label">
-            <template #label> Etiketten </template>
-            <f-checkbox-field v-model="tooltipVisible" :value="true"> Tooltip </f-checkbox-field>
-            <f-checkbox-field v-model="descriptionVisible" :value="true">
-                Hjälptext
-            </f-checkbox-field>
-        </f-fieldset>
-    </live-example>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FRadioField, FCheckboxField, FTooltip, FFieldset } from "@fkui/vue";
@@ -56,7 +33,7 @@ export default defineComponent({
         tooltip(): string {
             const template = /* HTML */ `
                 <template #tooltip>
-                    <f-tooltip screen-reader-text="Läs mer om Broschyrer">
+                    <f-tooltip screen-reader-text="Läs mer om Broschyrer" header-tag="h2">
                         <template #header> Header </template>
                         <template #body> Body </template>
                     </f-tooltip>
@@ -99,7 +76,7 @@ export default defineComponent({
                 >
                     Ytterligare alternativ
                 </${this.componentType}>
-                
+
                 <${this.componentType}
                     v-model="choices"
                     value="Sista"
@@ -129,3 +106,26 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <live-example :components="components" :template="template" :livedata="livedata">
+        <f-fieldset name="type">
+            <template #label> Typ </template>
+            <f-radio-field v-model="type" value="radio"> Enkelval (radioknappar)</f-radio-field>
+            <f-radio-field v-model="type" value="checkbox"> Flerval (kryssrutor)</f-radio-field>
+        </f-fieldset>
+
+        <f-checkbox-field v-model="isHorizontal" :value="true">
+            Horisontell layout
+        </f-checkbox-field>
+        <f-checkbox-field v-model="isDisabled" :value="true"> Inaktiverad </f-checkbox-field>
+        <f-checkbox-field v-model="isRequired" :value="true"> Obligatorisk </f-checkbox-field>
+        <f-fieldset name="checkbox-label">
+            <template #label> Etiketten </template>
+            <f-checkbox-field v-model="tooltipVisible" :value="true"> Tooltip </f-checkbox-field>
+            <f-checkbox-field v-model="descriptionVisible" :value="true">
+                Hjälptext
+            </f-checkbox-field>
+        </f-fieldset>
+    </live-example>
+</template>

@@ -1,20 +1,3 @@
-<template>
-    <div class="row">
-        <div class="col col--md-6">
-            <f-text-field id="reference" v-model="reference"> Referens </f-text-field>
-        </div>
-        <div id="input-wrapper" class="col col--md-6">
-            <f-text-field
-                id="input"
-                v-model="model"
-                v-validation.matches="{ matches: { id: 'reference' } }"
-            >
-                Inmatningsfält
-            </f-text-field>
-        </div>
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FTextField } from "@fkui/vue";
@@ -29,3 +12,20 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div class="row">
+        <div class="col col--md-6">
+            <f-text-field id="reference" v-model="reference"> Referens </f-text-field>
+        </div>
+        <div id="input-wrapper" class="col col--md-6">
+            <f-text-field
+                id="other"
+                v-model="model"
+                v-validation.matches="{ matches: { id: 'reference' } }"
+            >
+                Inmatningsfält
+            </f-text-field>
+        </div>
+    </div>
+</template>

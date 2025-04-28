@@ -9,7 +9,9 @@ Formulärsmodal är en standardmodal som kan presentera formulärsfält och hant
 
 Formulärsmodalen baseras på en modal dialogruta av typen standard och visas i fullskärm i mobil (<640px).
 
-Modalen har alltid en primärknapp för submit och en sekundärknapp för att avbryta och ångra. Alla fält valideras när användaren trycker på primärknappen.
+Modalen har alltid en primärknapp för submit och en sekundärknapp för att avbryta och ångra.
+Standardinställning för knappordning i modaler är att primärknappen ligger först följt av sekundärknappen.
+Alla fält valideras när användaren trycker på primärknappen.
 
 - Använd inte formulärsmodaler till stora formulär, begränsa formuläret till några få komponenter och undvik flerradiga inmatningsfält.
 - Öppna inte ytterligare modaler från en modal.
@@ -43,7 +45,7 @@ Din komponent ska innehålla en prop `value` motsvarande ett objekt av interface
 Template använder `FFormModal` och binder `value` dels som `value`-propen men också som `v-model` för respektive inmatningsfält.
 Inmatningsfälten läggs in i `#input-text-fields`-slotten.
 
-```html static
+```vue static
 <template>
     <f-form-modal :value>
         <template #header> Awesome Modal </template>
@@ -99,17 +101,55 @@ Du kan antingen låta din formulärsmodal hantera detta genom att internt kopier
 
 :::
 
-## Öppna modal med API
+## Öppna modal
 
-Det rekommenderade sättet att använda formulärsmodalen är med {@link form-modal `formModal()`} (options API) eller {@link useModal `useModal()`} (composition API).
+Du öppnar modalen med {@link form-modal `formModal()`} (options API) eller {@link useModal `useModal()`} (composition API).
+
+**Options API:**
 
 ```ts
-// options api
-const result = await formModal<Person>(this, PersonFormModal);
+import { defineComponent } from "vue";
+import { formModal } from "@fkui/vue";
 
-// composition api
+/* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+interface Person {}
+
+const PersonFormModal = defineComponent({});
+
+defineComponent({
+    methods: {
+        async dummy() {
+            /* --- cut above --- */
+
+            const result = await formModal<Person>(this, PersonFormModal);
+
+            /* --- cut below --- */
+        },
+    },
+});
+```
+
+**Composition API:**
+
+```
+import { defineComponent } from "vue";
+
+/* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+interface Person {}
+
+const PersonFormModal = defineComponent({});
+
+/* --- cut above --- */
+
+import { useModal } from "@fkui/vue";
+
 const { formModal } = useModal();
-const result = await formModal<Person>(PersonFormModal);
+
+async function onOpen(): Promise<void> {
+	const result = await formModal<Person>(PersonFormModal);
+
+	/* do something with result */
+}
 ```
 
 Returvärdet är `Promise` som löses ut med `resolve(value)` (det objekt som ligger lagrat i `value` när modalen stängs).
@@ -118,6 +158,19 @@ Om användaren avbryter modalen avvisas `Promise` med `reject()` .
 Förifylld data kan skickas in med propen `value`:
 
 ```ts
+import { defineComponent } from "vue";
+
+/* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+interface Person {}
+
+const PersonFormModal = defineComponent({});
+
+/* --- cut above --- */
+
+import { useModal } from "@fkui/vue";
+
+const { formModal } = useModal();
+
 const result = await formModal<Person>(PersonFormModal, {
     props: {
         value: {
@@ -132,12 +185,19 @@ const result = await formModal<Person>(PersonFormModal, {
 FFormModalApiExample.vue
 ```
 
-## Öppna modal med template
+## Användning med template (deprekerad)
 
-Komponenten kan också användas direkt i `<template>` men vi rekommenderar inte denna lösning::
+Att använda `FFormModal` nästlad i template är deprekerat.
+Vi rekommenderar att du flyttar den till en egen Vue komponent och använder API för att öppna den.
+Se {@link FFormModal#anvandning `Användning`} för hur du använder `FFormModal` med API.
 
-```import
-FFormModalExample.vue
+```diff
+ <template>
+     <div>
+         <button type="button" @click="onClick">Open modal</button>
+-        <f-form-modal></f-form-modal>
+     </div>
+ </template>
 ```
 
 ## Formulärsmodal med flera knappar
@@ -145,14 +205,27 @@ FFormModalExample.vue
 Komponenten har en prop `buttons` som styr vilka knappar som finns i modalens sidfot.
 Med den kan du ta bort existerande knappar eller använda en helt egen uppsättning.
 
-**Med API:**
-
 ```ts
-const formdata = await formModal(this, MyAwesomeModal, {
-    props: {
-        buttons: [
-            /* ... */
-        ],
+import { defineComponent } from "vue";
+import { formModal } from "@fkui/vue";
+
+const MyAwesomeModal = defineComponent({});
+
+defineComponent({
+    methods: {
+        async dummy() {
+            /* --- cut above --- */
+
+            const formdata = await formModal(this, MyAwesomeModal, {
+                props: {
+                    buttons: [
+                        /* ... */
+                    ],
+                },
+            });
+
+            /* --- cut below --- */
+        },
     },
 });
 ```
@@ -170,7 +243,7 @@ export interface FModalButtonDescriptor {
 }
 ```
 
-```ts
+```ts nocompile nolint
 buttons: [{ label: "Stäng", event: "dismiss" }];
 ```
 
@@ -190,12 +263,6 @@ Du kan lägga till extra skärmläsartext på knappar med `screenreader` propert
 
 Om du använder `screenreader` för en knapp så kommer skärmläsare att läsa upp den texten efter knapptexten i `label`. Detta används för att tydliggöra vad knappen kommer att göra i de fallen där det kan vara otydligt för skärmläsaranvändare.
 
-## Template
-
-```import
-FFormModalExampleCustomButtons.vue
-```
-
 ### Validering av inmatad data
 
 Inmatningsfälten valideras redan med vanlig validering, men om du behöver utföra extra validering (manuella steg, korsvalidering eller validering på backend och så vidare) så kan du använda beforeSubmit:
@@ -214,19 +281,52 @@ Notera att det är metoden `onBeforeSubmit` som ska skickas in i sin helhelt, an
 I `onBeforeSubmit` har du möjlighet att sätta nya valideringsfel på inmatningsfält:
 
 ```ts
-onBeforeSubmit(): Promise<void> {
-    const myField = getElementFromVueRef(this.refs.myField);
-    ValidationService.setError(myField, "This value is invalid!");
-},
+import { ValidationService } from "@fkui/logic";
+import { getElementFromVueRef, FFormModalAction } from "@fkui/vue";
+import { defineComponent } from "vue";
+
+defineComponent({
+    data() {
+        return {
+            showErrorMessage: false,
+        };
+    },
+    methods: {
+        /* --- cut above --- */
+
+        onBeforeSubmit(): void {
+            const myField = getElementFromVueRef(this.$refs.myField);
+            ValidationService.setError(myField, "This value is invalid!");
+        },
+
+        /* --- cut below --- */
+    },
+});
 ```
 
 Vi rekommenderar att alla fel är kopplade till ett specifikt inmatningsfält men om du istället vill avbryta inskicket och presentera ett fel med exempelvis en meddeladeruta kan du returnera `FFormModalAction.CANCEL` från `onBeforeSubmit`:
 
 ```ts
-onBeforeSubmit(): Promise<FFormModalAction> {
-    this.showErrorMessage = true;
-    return FFormModalAction.CANCEL;
-},
+import { FFormModalAction } from "@fkui/vue";
+import { defineComponent } from "vue";
+
+defineComponent({
+    data() {
+        return {
+            showErrorMessage: false,
+        };
+    },
+    methods: {
+        /* --- cut above --- */
+
+        onBeforeSubmit(): FFormModalAction {
+            this.showErrorMessage = true;
+            return FFormModalAction.CANCEL;
+        },
+
+        /* --- cut below --- */
+    },
+});
 ```
 
 ## API

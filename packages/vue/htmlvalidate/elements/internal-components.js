@@ -83,10 +83,6 @@ module.exports = defineMetadata({
         slots: ["default"],
     },
 
-    "i-calendar-month-grid#default": {
-        permittedContent: ["button"],
-    },
-
     "i-calendar-navbar": {
         flow: true,
         phrasing: true,
@@ -167,12 +163,6 @@ module.exports = defineMetadata({
             anchor: {
                 required: true,
             },
-            "always-inline": {
-                boolean: true,
-                required: false,
-                deprecated:
-                    '`always-inline` is deprecated: use `inline="always"` instead.',
-            },
             inline: {
                 required: false,
                 enum: ["always", "never", "auto"],
@@ -250,6 +240,7 @@ module.exports = defineMetadata({
             },
         },
     },
+
     "i-combobox-dropdown": {
         flow: true,
         interactive: true,

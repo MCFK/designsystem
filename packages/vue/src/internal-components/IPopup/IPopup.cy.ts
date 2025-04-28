@@ -1,5 +1,5 @@
 import { type DefineComponent, defineComponent } from "vue";
-import { IPopupPageObject } from "../../pageobject";
+import { IPopupPageObject } from "../../cypress";
 import IPopup from "./IPopup.vue";
 
 const popup = new IPopupPageObject();
@@ -134,25 +134,6 @@ describe("open popup", () => {
             it("should add `popup--inline` class when set to `auto` and at short height", () => {
                 setViewport(VIEWPORT.SHORT);
                 const template = setInlineTemplate("auto");
-                const component = createComponent(template);
-                cy.mount(component);
-                cy.get(popupButtonId).click();
-                popup.el().should("have.class", "popup--inline");
-            });
-        });
-
-        describe("always-inline prop", () => {
-            it("should add `popup--inline` class when prop `always-inline` is set", () => {
-                setViewport(VIEWPORT.DESKTOP);
-                const template = /* HTML */ `
-                    <i-popup
-                        :isOpen="isOpen"
-                        :anchor="$refs.anchor"
-                        always-inline
-                    >
-                        <span> POPUP CONTENT </span>
-                    </i-popup>
-                `;
                 const component = createComponent(template);
                 cy.mount(component);
                 cy.get(popupButtonId).click();

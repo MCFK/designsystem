@@ -1,16 +1,10 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "@fkui/tsconfig/recommended",
     "compilerOptions": {
         "types": ["node", "jest"],
-        "outDir": "./lib",
-        "rootDir": "./src",
-        "emitDeclarationOnly": true,
-        "declaration": true,
-        "declarationMap": true,
-        "declarationDir": "temp/types/"
+        "emitDeclarationOnly": true
     },
     "include": ["src/**/*.ts"],
-    "exclude": ["node_modules", "**/*.spec.ts"],
     "typedocOptions": {
         "entryPoints": ["src/index.ts"],
         "out": "typedoc",

@@ -9,18 +9,29 @@ Internt används `ValidationService` ifrån `@fkui/logic`.
 `ValidationPlugin` initialiseras på nedan sätt (bör göras så tidigt i applikationen som möjligt, t.ex. main.ts )
 
 ```ts
+import { defineComponent } from "vue";
+
+const App = defineComponent({});
+
+/* --- cut above ---*/
+
+import { createApp } from "vue";
 import { ValidationPlugin } from "@fkui/vue";
-Vue.use(ValidationPlugin);
+
+const app = createApp(App);
+app.use(ValidationPlugin);
+app.mount("#app");
 ```
 
 Via `ValidationService.addValidationErrorMessages` kan man specificera översättningar av validator fel.
 I nedan exempel anges ett objekt med validatornamnet som nyckel och översättning som värde (om översättning saknas så kommer validatornamnet istället användas).
 
 ```ts
-import { ValidationService } from '@fkui/logic';
+import { ValidationService } from "@fkui/logic";
+
 ValidationService.addValidationErrorMessages({
-    'required', 'Fältet krävs',
-    'personnummerFormat', 'Felaktigt format på personnummer',
+    required: "Fältet krävs",
+    personnummerFormat: "Felaktigt format på personnummer",
 });
 ```
 
@@ -29,17 +40,17 @@ För att få _autocompletion_ av validatornamn så rekommenderas att använda `V
 ```ts
 import { ValidationService, ValidationErrorMessageBuilder } from "@fkui/logic";
 
-ValidationService.addValidationErrorMessages(
-    ValidationErrorMessageBuilder.create()
-        .map("required", "The field is required")
-        .map("personnummerFormat", "Bad formatted social security number")
-        .mapCombined(
-            "required",
-            "personnummerFormat",
-            "You must enter a social security number",
-        )
-        .build(),
-);
+const messages = ValidationErrorMessageBuilder.create()
+    .map("required", "The field is required")
+    .map("personnummerFormat", "Bad formatted social security number")
+    .mapCombined(
+        "required",
+        "personnummerFormat",
+        "You must enter a social security number",
+    )
+    .build();
+
+ValidationService.addValidationErrorMessages(messages);
 ```
 
 ## Användning
@@ -71,13 +82,17 @@ ValidationPluginValidityEvent.vue
 Om man behöver utveckla en egen komponent med inbyggd validering som standard-beteende så måste man lägga till validatorn i komponentens mounted()-metod via metoden `ValidationService.addValidatorsToElement()` och med tredje parametern `isBaseConfigs` satt till `true`:
 
 ```ts
-import { ValidationService, type ValidatorConfigs } from '@fkui/logic';
+import { useTemplateRef } from "vue";
+import { ValidationService, type ValidatorConfigs } from "@fkui/logic";
 
 const validatorConfigs: ValidatorConfigs = {
-    email: { errorMessage: 'E-posten är inte korrekt ifylld' },
+    email: { errorMessage: "E-posten är inte korrekt ifylld" },
 };
 
-ValidationService.addValidatorsToElement(this.$el.querySelector(<Your_Selector>) as HTMLInputElement, validatorConfigs, true);
+const element = document.querySelector<HTMLInputElement>("#my-element");
+if (element) {
+    ValidationService.addValidatorsToElement(element, validatorConfigs, true);
+}
 ```
 
 Se implementationen av komponenten FEmailTextField på sidan {@link textfield-specialized Inmatningsfält specialiserade} för konkret exempel.

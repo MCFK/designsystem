@@ -1,20 +1,3 @@
-<template>
-    <teleport v-if="isOpen" :to="teleportTarget" :disabled="teleportDisabled">
-        <div ref="popup" v-bind="$attrs" :class="popupClasses">
-            <div
-                ref="wrapper"
-                role="presentation"
-                class="popup__wrapper"
-                @click="onPopupClickHandler"
-                @keyup.esc.stop="onKeyEsc"
-                @keydown.tab="onKeyTab"
-            >
-                <slot v-bind="{ toggleIsOpen, placement }"></slot>
-            </div>
-        </div>
-    </teleport>
-</template>
-
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import { debounce, handleTab, pushFocus, popFocus } from "@fkui/logic";
@@ -60,15 +43,6 @@ export default defineComponent({
                 return ["always", "never", "auto"].includes(value);
             },
             default: "auto",
-        },
-        /**
-         * Force popup to always display inline.
-         * @deprecated Use `inline="always"` instead.
-         */
-        alwaysInline: {
-            type: Boolean,
-            required: false,
-            default: false,
         },
         /**
          * Which element to use as container.
@@ -150,13 +124,13 @@ export default defineComponent({
             return isInline;
         },
         forceInline(): boolean {
-            return this.alwaysInline || this.inline === "always";
+            return this.inline === "always";
         },
         forceOverlay(): boolean {
             return this.inline === "never";
         },
         teleportTarget() {
-            return config.popupTarget ?? config.teleportTarget;
+            return config.teleportTarget;
         },
     },
     watch: {
@@ -332,3 +306,20 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <teleport v-if="isOpen" :to="teleportTarget" :disabled="teleportDisabled">
+        <div ref="popup" v-bind="$attrs" :class="popupClasses">
+            <div
+                ref="wrapper"
+                role="presentation"
+                class="popup__wrapper"
+                @click="onPopupClickHandler"
+                @keyup.esc.stop="onKeyEsc"
+                @keydown.tab="onKeyTab"
+            >
+                <slot v-bind="{ toggleIsOpen, placement }"></slot>
+            </div>
+        </div>
+    </teleport>
+</template>

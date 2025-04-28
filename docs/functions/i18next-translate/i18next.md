@@ -15,7 +15,7 @@ import { TranslationService } from "@fkui/logic";
 import { i18nextProvider } from "@fkui/i18next-translate";
 
 /* create a new 18next translation provider */
-const provider = i18nextProvider({
+const provider = await i18nextProvider({
     defaultLanguage: "sv",
     async loadLanguage(lang) {
         const response = await fetch(`/texts/${lang}.json`);
@@ -30,9 +30,14 @@ TranslationService.changeProvider(provider);
 Om du använder Vue kom ihåg att aktivera {@link TranslationPlugin}:
 
 ```ts
+import { defineComponent } from "vue";
+
+const App = defineComponent({});
+
+/* --- cut above --- */
+
 import { createApp } from "vue";
 import { TranslationPlugin } from "@fkui/vue";
-import App from "./App.vue";
 
 const app = createApp(App);
 

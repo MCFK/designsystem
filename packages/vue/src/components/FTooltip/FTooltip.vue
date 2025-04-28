@@ -1,39 +1,5 @@
-<template>
-    <!-- [html-validate-disable-next element-case -- false positive, is proper case for Vue] -->
-    <Teleport :disabled="iconTarget === null" :to="iconTarget">
-        <button ref="button" class="tooltip__button" type="button" :aria-expanded="isOpen" @click="onClickToggle">
-            <span class="icon-stack icon-stack--tooltip">
-                <f-icon name="circle"></f-icon>
-                <f-icon name="i"></f-icon>
-                <span class="sr-only">{{ screenReaderText }}</span>
-            </span>
-        </button>
-    </Teleport>
-
-    <div ref="wrapper" class="tooltip" v-bind="$attrs">
-        <div v-if="ready" class="tooltip__bubble" tabindex="-1">
-            <component :is="headerTag" v-if="hasHeader" class="tooltip__header">
-                <!-- @slot Tooltip header content -->
-                <slot name="header"></slot>
-            </component>
-
-            <div class="tooltip__body">
-                <!-- @slot Tooltip body content-->
-                <slot name="body"></slot>
-            </div>
-
-            <div class="tooltip__footer">
-                <button class="close-button" type="button" @click="onClickToggle">
-                    <span>{{ closeButtonText }}</span>
-                    <f-icon class="button__icon" name="close"></f-icon>
-                </button>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script lang="ts">
-import { computed, defineComponent, inject, ref, toRef, useTemplateRef, watchEffect } from "vue";
+import { computed, defineComponent, inject, ref, toRef, useTemplateRef, watchEffect, useSlots } from "vue";
 import { TranslationService } from "@fkui/logic";
 import { FExpand } from "../FExpand";
 import { IFlex, IFlexItem } from "../../internal-components";
@@ -87,9 +53,6 @@ export default defineComponent({
          * Element to render for the header element inside the tooltip.
          *
          * Must be set to one of:
-         *
-         * - `div` (default)
-         * - `span`
          * - `h1`
          * - `h2`
          * - `h3`
@@ -98,10 +61,11 @@ export default defineComponent({
          * - `h6`
          */
         headerTag: {
-            default: "div",
+            type: String,
+            default: undefined,
             required: false,
-            validator(value: string): boolean {
-                return ["div", "span", "h1", "h2", "h3", "h4", "h5", "h6"].includes(value);
+            validator(value: string | undefined): boolean {
+                return [undefined, "h1", "h2", "h3", "h4", "h5", "h6"].includes(value);
             },
         },
     },
@@ -161,6 +125,12 @@ export default defineComponent({
             },
         },
     },
+    created() {
+        const slots = useSlots();
+        if (slots.header && !this.headerTag) {
+            throw new Error("Tooltip with header must define headerTag");
+        }
+    },
     methods: {
         /**
          * Gets called when the user interacts with the toggle button
@@ -196,3 +166,37 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <!-- [html-validate-disable-next element-case -- false positive, is proper case for Vue] -->
+    <Teleport :disabled="iconTarget === null" :to="iconTarget">
+        <button ref="button" class="tooltip__button" type="button" :aria-expanded="isOpen" @click="onClickToggle">
+            <span class="icon-stack icon-stack--tooltip">
+                <f-icon name="circle"></f-icon>
+                <f-icon name="i"></f-icon>
+                <span class="sr-only">{{ screenReaderText }}</span>
+            </span>
+        </button>
+    </Teleport>
+
+    <div ref="wrapper" class="tooltip" v-bind="$attrs">
+        <div v-if="ready" class="tooltip__bubble" tabindex="-1">
+            <component :is="headerTag" v-if="hasHeader" class="tooltip__header">
+                <!-- @slot Tooltip header content -->
+                <slot name="header"></slot>
+            </component>
+
+            <div class="tooltip__body">
+                <!-- @slot Tooltip body content-->
+                <slot name="body"></slot>
+            </div>
+
+            <div class="tooltip__footer">
+                <button class="close-button" type="button" @click="onClickToggle">
+                    <span>{{ closeButtonText }}</span>
+                    <f-icon class="button__icon" name="close"></f-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</template>

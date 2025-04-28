@@ -1,6 +1,6 @@
 ---
 title: Förloppsindikator
-status: Preliminär
+status: Produktionsklar
 layout: component
 component: FProgressbar
 ---
@@ -16,3 +16,7 @@ FProgressbarExample.vue
 :::api
 vue:FProgressbar
 :::
+
+## Relaterat
+
+- {@link FProgressbarPageObject FProgressbarPageObject}

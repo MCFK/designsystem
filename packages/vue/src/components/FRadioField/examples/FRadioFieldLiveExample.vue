@@ -1,38 +1,3 @@
-<template>
-    <live-example :components="components" :template="template" :livedata="livedata">
-        <f-fieldset name="radio-orientation">
-            <template #label> Placering </template>
-            <f-radio-field v-model="isHorizontal" :value="false">
-                Vertikalt (standard)</f-radio-field
-            >
-            <f-radio-field v-model="isHorizontal" :value="true"> Horisontellt </f-radio-field>
-        </f-fieldset>
-
-        <f-checkbox-field v-model="isBorder" :value="true"> Ram </f-checkbox-field>
-        <f-checkbox-field v-model="isPreselected" :value="true">
-            Förvald radioknapp
-        </f-checkbox-field>
-        <f-checkbox-field v-model="isDisabled" :value="true">
-            Inaktiverad radioknapp
-        </f-checkbox-field>
-        <f-checkbox-field v-model="isRequired" :value="true"> Obligatoriskt val </f-checkbox-field>
-
-        <f-fieldset name="radio-label">
-            <template #label> Etiketten </template>
-            <f-checkbox-field v-model="tooltipVisible" :value="true"> Tooltip </f-checkbox-field>
-            <f-checkbox-field v-model="descriptionVisible" :value="true">
-                Hjälptext
-            </f-checkbox-field>
-            <f-select-field v-model="showDetails">
-                <template #label> Utökad etikett </template>
-                <option value="never">Nej</option>
-                <option value="always">Utvidgad text</option>
-                <option value="when-selected">Expanderbar text</option>
-            </f-select-field>
-        </f-fieldset>
-    </live-example>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FCheckboxField, FTooltip, FFieldset, FRadioField, FSelectField } from "@fkui/vue";
@@ -74,6 +39,7 @@ export default defineComponent({
                 <template #tooltip>
                     <f-tooltip
                         screen-reader-text="Läs mer om Bor det barn som har fyllt 18 år i bostaden?"
+                        header-tag="h2"
                     >
                         <template #header> Bor det barn som har fyllt 18 år i bostaden? </template>
                         <template #body>
@@ -151,3 +117,38 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <live-example :components="components" :template="template" :livedata="livedata">
+        <f-fieldset name="radio-orientation">
+            <template #label> Placering </template>
+            <f-radio-field v-model="isHorizontal" :value="false">
+                Vertikalt (standard)</f-radio-field
+            >
+            <f-radio-field v-model="isHorizontal" :value="true"> Horisontellt </f-radio-field>
+        </f-fieldset>
+
+        <f-checkbox-field v-model="isBorder" :value="true"> Ram </f-checkbox-field>
+        <f-checkbox-field v-model="isPreselected" :value="true">
+            Förvald radioknapp
+        </f-checkbox-field>
+        <f-checkbox-field v-model="isDisabled" :value="true">
+            Inaktiverad radioknapp
+        </f-checkbox-field>
+        <f-checkbox-field v-model="isRequired" :value="true"> Obligatoriskt val </f-checkbox-field>
+
+        <f-fieldset name="radio-label">
+            <template #label> Etiketten </template>
+            <f-checkbox-field v-model="tooltipVisible" :value="true"> Tooltip </f-checkbox-field>
+            <f-checkbox-field v-model="descriptionVisible" :value="true">
+                Hjälptext
+            </f-checkbox-field>
+            <f-select-field v-model="showDetails">
+                <template #label> Utökad etikett </template>
+                <option value="never">Nej</option>
+                <option value="always">Utvidgad text</option>
+                <option value="when-selected">Expanderbar text</option>
+            </f-select-field>
+        </f-fieldset>
+    </live-example>
+</template>

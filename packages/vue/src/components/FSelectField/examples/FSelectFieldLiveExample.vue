@@ -1,18 +1,3 @@
-<template>
-    <live-example :components="components" :template="template" :livedata="livedata">
-        <f-checkbox-field v-model="isRequired" :value="true"> Obligatoriskt fält </f-checkbox-field>
-        <f-checkbox-field v-model="isDisabled" :value="true"> Inaktivt fält </f-checkbox-field>
-        <f-fieldset name="SelectField-label">
-            <template #label> Etiketten </template>
-            <f-checkbox-field v-model="descriptionVisible" :value="true">
-                Hjälptext
-            </f-checkbox-field>
-            <f-checkbox-field v-model="tooltipVisible" :value="true"> Tooltip </f-checkbox-field>
-            <f-checkbox-field v-model="showInline" :value="true"> Inline </f-checkbox-field>
-        </f-fieldset>
-    </live-example>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FFieldset, FCheckboxField, FTooltip, FSelectField } from "@fkui/vue";
@@ -47,7 +32,7 @@ export default defineComponent({
         tooltip(): string {
             const template = /* HTML */ `
                 <template #tooltip>
-                    <f-tooltip screen-reader-text="Läs mer här">
+                    <f-tooltip screen-reader-text="Läs mer här" header-tag="h1">
                         <template #header> Header </template>
                         <template #body> Body </template>
                     </f-tooltip>
@@ -104,3 +89,18 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <live-example :components="components" :template="template" :livedata="livedata">
+        <f-checkbox-field v-model="isRequired" :value="true"> Obligatoriskt fält </f-checkbox-field>
+        <f-checkbox-field v-model="isDisabled" :value="true"> Inaktivt fält </f-checkbox-field>
+        <f-fieldset name="SelectField-label">
+            <template #label> Etiketten </template>
+            <f-checkbox-field v-model="descriptionVisible" :value="true">
+                Hjälptext
+            </f-checkbox-field>
+            <f-checkbox-field v-model="tooltipVisible" :value="true"> Tooltip </f-checkbox-field>
+            <f-checkbox-field v-model="showInline" :value="true"> Inline </f-checkbox-field>
+        </f-fieldset>
+    </live-example>
+</template>

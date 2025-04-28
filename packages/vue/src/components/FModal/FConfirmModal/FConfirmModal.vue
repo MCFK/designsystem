@@ -1,46 +1,10 @@
-<template>
-    <f-modal
-        :fullscreen="fullscreen"
-        :is-open="isOpen"
-        :aria-close-text="ariaCloseText"
-        type="warning"
-        :size="size"
-        :focus="focus"
-        @close="onClose"
-    >
-        <template #header>
-            <!--@slot Slot for advanced header. -->
-            <slot name="heading">{{ heading }}</slot>
-        </template>
-        <template #content>
-            <!--@slot Slot for advanced content. -->
-            <slot name="content">{{ content }}</slot>
-        </template>
-
-        <template #footer>
-            <div class="button-group">
-                <button
-                    v-for="button in preparedButtons"
-                    :key="button.label"
-                    type="button"
-                    :class="button.classlist"
-                    class="button-group__item"
-                    @click="onClick(button)"
-                >
-                    <span>{{ button.label }}</span>
-                    <span v-if="button.screenreader" class="sr-only">&nbsp;{{ button.screenreader }}</span>
-                </button>
-            </div>
-        </template>
-    </f-modal>
-</template>
-
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import FModal from "../FModal.vue";
 import { sizes } from "../sizes";
 
 import { FModalButton, FModalButtonDescriptor, prepareButtonList } from "../modal-button";
+import { config, FKUIConfigButtonOrder } from "../../../config";
 
 const defaultButtons: FModalButtonDescriptor[] = [
     { label: "Primärknapp", event: "confirm", type: "primary" },
@@ -132,7 +96,10 @@ export default defineComponent({
     emits: ["close", ...defaultButtons.map((it) => it.event ?? "")],
     computed: {
         preparedButtons(): FModalButton[] {
-            return prepareButtonList(this.buttons);
+            const preparedButtonList = prepareButtonList(this.buttons);
+            return config.buttonOrder === FKUIConfigButtonOrder.RIGHT_TO_LEFT
+                ? preparedButtonList.reverse()
+                : preparedButtonList;
         },
     },
     methods: {
@@ -160,3 +127,40 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <f-modal
+        :fullscreen="fullscreen"
+        :is-open="isOpen"
+        :aria-close-text="ariaCloseText"
+        type="warning"
+        :size="size"
+        :focus="focus"
+        @close="onClose"
+    >
+        <template #header>
+            <!--@slot Slot for advanced header. -->
+            <slot name="heading">{{ heading }}</slot>
+        </template>
+        <template #content>
+            <!--@slot Slot for advanced content. -->
+            <slot name="content">{{ content }}</slot>
+        </template>
+
+        <template #footer>
+            <div class="button-group">
+                <button
+                    v-for="button in preparedButtons"
+                    :key="button.label"
+                    type="button"
+                    :class="button.classlist"
+                    class="button-group__item"
+                    @click="onClick(button)"
+                >
+                    <span>{{ button.label }}</span>
+                    <span v-if="button.screenreader" class="sr-only">&nbsp;{{ button.screenreader }}</span>
+                </button>
+            </div>
+        </template>
+    </f-modal>
+</template>

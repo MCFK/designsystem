@@ -1,9 +1,9 @@
 import { defineComponent } from "vue";
 import {
-    FFormModalPageObject,
     type DefaultCypressChainable,
+    FFormModalPageObject,
     FTextFieldPageObject,
-} from "../../../pageobjects";
+} from "../../../cypress";
 import { FTextField } from "../../FTextField";
 import { formModal } from "../../../utils/form-modal/form-modal";
 import ExampleModal from "../examples/ExampleModal.vue";
@@ -110,34 +110,6 @@ describe("Custom buttons", () => {
         modal.cancelButton().should("be.visible");
         modal.cancelButton().should("contain.text", "Custom");
         modal.submitButton().should("be.visible");
-    });
-});
-
-describe("Deprecated slots", () => {
-    const modal = new FFormModalPageObject('[data-test="form-modal-example"]');
-
-    const TestComponentDeprecatedSlots = defineComponent({
-        template: /* HTML */ `
-            <f-form-modal :is-open="true" data-test="form-modal-example">
-                <template #header> Rubrik </template>
-                <template #input-text-fields> </template>
-                <template #cancel-button-text> Cancel-button </template>
-                <template #submit-button-text> Submit-button </template>
-            </f-form-modal>
-        `,
-        components: {
-            FFormModal,
-        },
-        props: {},
-    });
-
-    beforeEach(() => {
-        cy.mount(TestComponentDeprecatedSlots, {});
-    });
-
-    it("should be possible to define buttons with the deprecated slots", () => {
-        modal.submitButton().should("contain.text", "Submit-button");
-        modal.cancelButton().should("contain.text", "Cancel-button");
     });
 });
 

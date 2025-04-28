@@ -16,7 +16,7 @@ Use {@link open-modal openModal()}, {@link confirm-modal confirmModal()} and {@l
 
 ## Syntax
 
-```ts
+```ts nocompile
 function useModal();
 ```
 
@@ -40,33 +40,64 @@ None
 Open a simple modal:
 
 ```ts
+import { defineComponent } from "vue";
+import { useModal } from "@fkui/vue";
+
+const MyAwesomeModal = defineComponent({});
+
+/* --- cut above ---*/
+
 const { openModal } = useModal();
 
-const result = await openModal(MyAwesomeModal);
+async function onOpen(): Promise<void> {
+    const result = await openModal(MyAwesomeModal);
+}
 ```
 
 Open a confirmation modal:
 
 ```ts
+import { useModal } from "@fkui/vue";
+
+const arbetsgivare = {
+    namn: "",
+};
+
+/* --- cut above --- */
+
 const { confirmModal } = useModal();
 
-const confirmed = await confirmModal({
-    heading: "Ta bort arbetsgivare",
-    content: `Är du säker att du vill ta bort "${arbetsgivare.namn}"?`,
-    confirm: "Ja, ta bort",
-    dismiss: "Nej, behåll",
-});
-if (confirmed) {
-    /* ... */
+async function onOpen(): Promise<void> {
+    const confirmed = await confirmModal({
+        heading: "Ta bort arbetsgivare",
+        content: `Är du säker att du vill ta bort "${arbetsgivare.namn}"?`,
+        confirm: "Ja, ta bort",
+        dismiss: "Nej, behåll",
+    });
+    if (confirmed) {
+        /* ... */
+    }
 }
 ```
 
 Open a form modal:
 
 ```ts
+import { defineComponent } from "vue";
+import { useModal } from "@fkui/vue";
+
+/* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+interface MyAwesomeData {}
+
+const MyAwesomeModal = defineComponent({});
+
+/* --- cut above ---*/
+
 const { formModal } = useModal();
 
-const result = await formModal<MyAwesomeData>(MyAwesomeModal);
+async function onOpen(): Promise<void> {
+    const result = await formModal<MyAwesomeData>(MyAwesomeModal);
+}
 ```
 
 ## Related

@@ -1,39 +1,13 @@
-<template>
-    <live-example :components="components" :template="template" :livedata="livedata">
-        <f-checkbox-field v-model="isSelectable" :value="true"> Valbara rader </f-checkbox-field>
-        <f-checkbox-field v-model="isExpandable" :value="true">
-            Expanderbara rader
-        </f-checkbox-field>
-        <f-fieldset v-if="isExpandable" name="radio-expandable-type">
-            <template #label> Typ av expanderat innehåll </template>
-            <f-radio-field v-model="hasCustomExpandContent" :value="false">
-                Tabellrad
-            </f-radio-field>
-            <f-radio-field v-model="hasCustomExpandContent" :value="true">
-                Valfritt innehåll
-            </f-radio-field>
-        </f-fieldset>
-        <f-checkbox-field v-model="hasHover" :value="true"> Hover </f-checkbox-field>
-        <f-checkbox-field v-model="isStriped" :value="true"> Zebrarandig </f-checkbox-field>
-        <f-checkbox-field v-model="hasActions" :value="true"> Åtgärdsknappar </f-checkbox-field>
-        <f-checkbox-field v-model="hasRowHeader" :value="true"> Radrubriker </f-checkbox-field>
-        <f-checkbox-field v-model="hasHiddenCaption" :value="true"> Dold caption </f-checkbox-field>
-        <f-checkbox-field v-model="isEmpty" :value="true"> Tom tabell </f-checkbox-field>
-        <f-fieldset v-if="isEmpty" name="radio-empty-text">
-            <template #label> Meddelande för tom tabell </template>
-            <f-radio-field v-model="hasCustomEmptyText" :value="false">
-                Standardmeddelande
-            </f-radio-field>
-            <f-radio-field v-model="hasCustomEmptyText" :value="true">
-                Eget meddelande
-            </f-radio-field>
-        </f-fieldset>
-    </live-example>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
-import { FInteractiveTable, FTableColumn, FCheckboxField, FRadioField, FFieldset } from "@fkui/vue";
+import {
+    FIcon,
+    FInteractiveTable,
+    FTableColumn,
+    FCheckboxField,
+    FRadioField,
+    FFieldset,
+} from "@fkui/vue";
 import { LiveExample } from "@forsakringskassan/docs-live-example";
 
 export default defineComponent({
@@ -158,7 +132,7 @@ export default defineComponent({
             };
         },
         components(): object {
-            return { FInteractiveTable, FTableColumn };
+            return { FIcon, FInteractiveTable, FTableColumn };
         },
         items(): string {
             return this.isEmpty ? `:rows="[]"` : `:rows="items"`;
@@ -203,32 +177,20 @@ export default defineComponent({
         },
         actions(): string {
             const actions = /* HTML */ `
-                <f-table-column name="actions" title="Åtgärd" type="action" shrink>
+                <f-table-column title="Åtgärd" type="action" shrink>
                     <button
                         aria-label="Redigera"
                         class="button button--tertiary button--small"
                         type="button"
                     >
-                        <svg
-                            aria-hidden="true"
-                            class="icon button__icon button__pen"
-                            focusable="false"
-                        >
-                            <use xlink:href="#f-icon-pen" />
-                        </svg>
+                        <f-icon name="pen"></f-icon>
                     </button>
                     <button
                         aria-label="Ta bort"
                         class="button button--tertiary button--small"
                         type="button"
                     >
-                        <svg
-                            aria-hidden="true"
-                            class="icon button__icon button__trashcan"
-                            focusable="false"
-                        >
-                            <use xlink:href="#f-icon-trashcan" />
-                        </svg>
+                        <f-icon name="trashcan"></f-icon>
                     </button>
                 </f-table-column>
             `;
@@ -246,27 +208,21 @@ export default defineComponent({
                 >
                     <template #caption> ${this.caption} </template>
                     <template #default="{ row }">
-                        <f-table-column name="level" title="Nivå" ${this.rowHeader} type="text">
+                        <f-table-column title="Nivå" ${this.rowHeader} type="text">
                             {{ row.level }}
                         </f-table-column>
                         <f-table-column
-                            name="start"
                             title="Från och med"
                             ${this.rowDescription}
                             type="text"
                             expand
                         >
-                            {{ row.start }}
+                            <span v-format:date="row.start"></span>
                         </f-table-column>
-                        <f-table-column
-                            name="end"
-                            title="Till och med"
-                            ${this.rowDescription}
-                            type="text"
-                        >
-                            {{ row.end }}
+                        <f-table-column title="Till och med" ${this.rowDescription} type="text">
+                            <span v-format:date="row.end"></span>
                         </f-table-column>
-                        <f-table-column name="antal" title="Antal dagar" type="numeric">
+                        <f-table-column title="Antal dagar" type="numeric">
                             {{ row.antal }}
                         </f-table-column>
                         ${this.actions}
@@ -280,3 +236,36 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <live-example :components="components" :template="template" :livedata="livedata">
+        <f-checkbox-field v-model="isSelectable" :value="true"> Valbara rader </f-checkbox-field>
+        <f-checkbox-field v-model="isExpandable" :value="true">
+            Expanderbara rader
+        </f-checkbox-field>
+        <f-fieldset v-if="isExpandable" name="radio-expandable-type">
+            <template #label> Typ av expanderat innehåll </template>
+            <f-radio-field v-model="hasCustomExpandContent" :value="false">
+                Tabellrad
+            </f-radio-field>
+            <f-radio-field v-model="hasCustomExpandContent" :value="true">
+                Valfritt innehåll
+            </f-radio-field>
+        </f-fieldset>
+        <f-checkbox-field v-model="hasHover" :value="true"> Hover </f-checkbox-field>
+        <f-checkbox-field v-model="isStriped" :value="true"> Zebrarandig </f-checkbox-field>
+        <f-checkbox-field v-model="hasActions" :value="true"> Åtgärdsknappar </f-checkbox-field>
+        <f-checkbox-field v-model="hasRowHeader" :value="true"> Radrubriker </f-checkbox-field>
+        <f-checkbox-field v-model="hasHiddenCaption" :value="true"> Dold caption </f-checkbox-field>
+        <f-checkbox-field v-model="isEmpty" :value="true"> Tom tabell </f-checkbox-field>
+        <f-fieldset v-if="isEmpty" name="radio-empty-text">
+            <template #label> Meddelande för tom tabell </template>
+            <f-radio-field v-model="hasCustomEmptyText" :value="false">
+                Standardmeddelande
+            </f-radio-field>
+            <f-radio-field v-model="hasCustomEmptyText" :value="true">
+                Eget meddelande
+            </f-radio-field>
+        </f-fieldset>
+    </live-example>
+</template>

@@ -1,14 +1,8 @@
-<template>
-    <div @component-validity="onComponentValidity" @component-unmount="onComponentUnmount">
-        <slot></slot>
-    </div>
-</template>
-
 <script lang="ts">
 import { type PropType, defineComponent } from "vue";
 import { documentOrderComparator } from "@fkui/logic";
 import { type ComponentUnmountEvent, type ComponentValidityEvent, type GroupValidityEvent } from "../../types";
-import { cleanUpElements } from "../FForm/FormUtils";
+import { cleanUpElements } from "./FormUtils";
 
 export default defineComponent({
     name: "FValidationGroup",
@@ -75,8 +69,8 @@ export default defineComponent({
             this.$emit("update:modelValue", { isValid, componentsWithError, componentCount: components.length });
 
             /**
-             * Vue2 v-model event.
-             * @deprecated
+             * Emitted when validation group has been updated.
+             *
              * @event group-validity
              * @type {GroupValidityEvent}
              */
@@ -85,3 +79,9 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div @component-validity="onComponentValidity" @component-unmount="onComponentUnmount">
+        <slot></slot>
+    </div>
+</template>

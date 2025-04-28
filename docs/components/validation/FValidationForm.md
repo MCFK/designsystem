@@ -76,11 +76,17 @@ Fält valideras redan med vanlig validering, men om extra validering behövs (ma
 Båda hooks kan avbryta flödet genom att returnera `FValidationFormAction.ABORT`:
 
 ```ts
-@onBeforeSubmit() {
-  const result = await this.awesomeServerValidation();
-  if (result === 'fail') {
-    return FValidationFormAction.CANCEL;
-  }
+import { FValidationFormAction } from "@fkui/vue";
+
+declare function awesomeServerValidation(): Promise<string>;
+
+/* --- cut above --- */
+
+async function onBeforeSubmit(): Promise<FValidationFormAction | undefined> {
+    const result = await awesomeServerValidation();
+    if (result === "fail") {
+        return FValidationFormAction.CANCEL;
+    }
 }
 ```
 

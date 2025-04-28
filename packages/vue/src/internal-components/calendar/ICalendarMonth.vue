@@ -1,23 +1,3 @@
-<template>
-    <i-calendar-month-grid :value="modelValue">
-        <template #default="{ date }">
-            <button
-                :ref="date.toString()"
-                class="calendar-month__button"
-                data-test="select-day-button"
-                :data-date="date.toString()"
-                :tabindex="getTabindex(date)"
-                type="button"
-                @click.stop.prevent="onClickDay(date)"
-                @keydown="onKeydownDay(date, $event)"
-            >
-                <!-- @slot Slot for rendering of day content. -->
-                <slot :date="date" :is-focused="isDayFocused(date)"></slot>
-            </button>
-        </template>
-    </i-calendar-month-grid>
-</template>
-
 <script lang="ts">
 import { FDate } from "@fkui/date";
 import { alertScreenReader, focus } from "@fkui/logic";
@@ -81,6 +61,12 @@ export default defineComponent({
             this.$emit("click", date);
         },
         async onKeydownDay(date: FDate, event: KeyboardEvent): Promise<void> {
+            if (event.code === "Enter" || event.code === "Space") {
+                event.preventDefault();
+                this.$emit("click", date);
+                return;
+            }
+
             if (!isDayStepKey(event)) {
                 return;
             }
@@ -102,14 +88,6 @@ export default defineComponent({
              * @type {string}
              */
             this.$emit("update:modelValue", navigatedMonth);
-
-            /**
-             * Vue2 `v-model` event.
-             * @deprecated
-             * @event change
-             * @type {string}
-             */
-            this.$emit("change", navigatedMonth);
 
             if (navigatedDay.month !== date.month) {
                 await this.$nextTick(); // required for refs to be updated when navigating to another month
@@ -139,3 +117,27 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <i-calendar-month-grid :value="modelValue">
+        <template #default="{ date }">
+            <div
+                :ref="date.toString()"
+                role="gridcell"
+                class="calendar-month__button"
+                data-test="select-day-button"
+                :data-date="date.toString()"
+                :tabindex="getTabindex(date)"
+                @click.stop.prevent="onClickDay(date)"
+                @keydown="onKeydownDay(date, $event)"
+            >
+                <!--
+                    @slot Slot for rendering of day content.
+                    @binding {FDate} date The date object for the current day.
+                    @binding {boolean} is-focused Indicates whether the current day is focused.
+                -->
+                <slot :date="date" :is-focused="isDayFocused(date)"></slot>
+            </div>
+        </template>
+    </i-calendar-month-grid>
+</template>

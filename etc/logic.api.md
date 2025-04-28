@@ -23,8 +23,8 @@ export interface AllowListValidatorConfig extends ValidatorOptions {
     list: string[];
 }
 
-// @public @deprecated
-export function applyValidationMessages(): void;
+// @public
+export const availableValidators: Validator[];
 
 // @public
 export type BankAccountNumberString = string;
@@ -45,26 +45,15 @@ export type ClearingnumberString = string;
 export const configLogic: FKUIConfigLogic;
 
 // @public (undocumented)
-export type CookieLifetimeOption = {
-    timeLimitMillis?: number;
-    timeLimitSeconds?: never;
-} | {
-    timeLimitMillis?: never;
-    timeLimitSeconds?: number;
-};
-
-// @public (undocumented)
-export type CookieOptions = {
-    name: string;
-    value: string;
+export interface CookieOptions {
+    // (undocumented)
     keepAnyExistingCookie?: boolean;
-} & CookieLifetimeOption;
-
-// @public @deprecated (undocumented)
-export const DATE_REGEXP_WITH_DASH: RegExp;
-
-// @internal (undocumented)
-export type DateFormat = "YYYY-MM-DD" | "YYYYMMDD" | "YYYY/MM/DD";
+    // (undocumented)
+    name: string;
+    timeLimitSeconds?: number;
+    // (undocumented)
+    value: string;
+}
 
 // @public
 export type DateString = string;
@@ -191,9 +180,6 @@ interface FocusOptions_2 {
 }
 export { FocusOptions_2 as FocusOptions }
 
-// @public @deprecated (undocumented)
-export const FORMAT_3_DIGITS_GROUPS: RegExp;
-
 // @public (undocumented)
 export function formatClearingNumberForBackend(value: ClearingnumberString): string | undefined;
 
@@ -233,9 +219,6 @@ export interface InvalidWeekdaysValidatorConfig extends ValidatorOptions {
 // @public
 export function isEmpty(value: string | undefined | null): value is "" | undefined | null;
 
-// @internal (undocumented)
-export function isFieldset(element: Element): element is HTMLFieldSetElement;
-
 // @public
 export function isFocusable(element: Element): boolean;
 
@@ -245,7 +228,7 @@ export function isInvalidDatesConfig(value: Partial<InvalidDatesValidatorConfig>
 // @public (undocumented)
 export function isInvalidWeekdaysConfig(value: Partial<InvalidWeekdaysValidatorConfig>): value is InvalidWeekdaysValidatorConfig;
 
-// @public
+// @internal
 export function isRadiobuttonOrCheckbox(element: Element): element is HTMLInputElement;
 
 // @public
@@ -262,9 +245,6 @@ export function isValidatableFormElement(element: Element): element is HTMLInput
 
 // @public
 export function isValidatableHTMLElement(element: Element): element is ValidatableHTMLElement;
-
-// @internal
-export function isValidDate(date: FDate, now: FDate): boolean;
 
 // @public
 export function isVisible(element: HTMLElement): boolean;
@@ -391,21 +371,11 @@ export type PlusgiroString = string;
 // @public
 export function popFocus(handle: StackHandle): void;
 
-// @internal (undocumented)
-export const POSTAL_CODE_REGEXP: RegExp;
-
 // @public
 export type PostalCodeString = string;
 
 // @public
 export function pushFocus(element?: Element | null): StackHandle;
-
-// @public (undocumented)
-export class Reference<T extends Record<string, any>> {
-    constructor(ref: T);
-    // (undocumented)
-    readonly ref: T;
-}
 
 // @public
 export function removeFocusListener(elements: HTMLElement[], listener: ((event: Event) => unknown) | (() => unknown)): void;
@@ -512,7 +482,7 @@ export interface TranslationServiceInterface {
 }
 
 // @public (undocumented)
-export type ValidatableHTMLElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLFieldSetElement;
+export type ValidatableHTMLElement = HTMLDivElement | HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLFieldSetElement;
 
 // @public
 export interface ValidateEvent {
@@ -632,9 +602,6 @@ export function validLimit(limit: unknown): string;
 
 // @public
 export function waitForScreenReader<TReturn = void>(callback: () => TReturn, delay?: number): Promise<TReturn>;
-
-// @public @deprecated
-export const WHITESPACE_PATTERN: RegExp;
 
 // (No @packageDocumentation comment for this package)
 

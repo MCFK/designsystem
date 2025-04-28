@@ -1,82 +1,3 @@
-<template>
-    <f-modal
-        :data-test="dataTest"
-        :fullscreen="fullscreen"
-        :is-open="isOpen"
-        :size="size"
-        :aria-close-text="ariaCloseText"
-        @close="onClose"
-    >
-        <template #header>
-            <!-- @slot Slot for the header. -->
-            <slot name="header"></slot>
-        </template>
-        <template #content>
-            <div>
-                <!-- @slot Slot for main content above text fields and buttons. -->
-                <slot name="default"></slot>
-            </div>
-            <f-validation-form
-                :id="formId"
-                :before-submit="beforeSubmit"
-                :before-validation="beforeValidation"
-                :use-error-list="useErrorList"
-                @submit="onSubmit"
-                @cancel="onCancel"
-            >
-                <template #error-message>
-                    <!-- @slot Slot for error message -->
-                    <slot name="error-message"></slot>
-                </template>
-                <!-- @slot Slot for input text fields for entering text. -->
-                <slot name="input-text-fields"></slot>
-            </f-validation-form>
-        </template>
-        <template #footer>
-            <div class="button-group">
-                <template v-if="!hasDeprecatedSlots">
-                    <button
-                        v-for="button in preparedButtons"
-                        :key="button.label"
-                        :type="button.buttonType"
-                        :class="button.classlist"
-                        class="button-group__item"
-                        :form="button.buttonType === 'submit' ? formId : undefined"
-                        @click="button.buttonType === 'button' ? onCancel() : false"
-                    >
-                        <span>{{ button.label }}</span>
-                        <span v-if="button.screenreader" class="sr-only">&nbsp;{{ button.screenreader }}</span>
-                    </button>
-                </template>
-                <template v-else>
-                    <button
-                        :form="formId"
-                        data-test="submit-button"
-                        type="submit"
-                        class="button button--primary button-group__item button--large"
-                    >
-                        <!-- @slot - @deprecated Slot for submit button text. If you want to modify the footer section, see prop "buttons" -->
-                        <slot name="submit-button-text">
-                            {{ $t("fkui.form-modal.button.submit.text", "Spara") }}
-                        </slot>
-                    </button>
-                    <button
-                        data-test="cancel-button"
-                        type="button"
-                        class="button button--secondary button-group__item button--large"
-                        @click="onCancel"
-                    >
-                        <!-- @slot - @deprecated Slot for cancel button text. If you want to modify the footer section, see prop "buttons" -->
-                        <slot name="cancel-button-text">
-                            {{ $t("fkui.form-modal.button.cancel.text", "Avbryt") }}
-                        </slot>
-                    </button>
-                </template>
-            </div>
-        </template>
-    </f-modal>
-</template>
-
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import { ElementIdService, ValidationService, TranslationService } from "@fkui/logic";
@@ -85,8 +6,6 @@ import { FValidationForm, type FValidationFormCallback } from "../../FValidation
 import { TranslationMixin } from "../../../plugins/translation";
 import { sizes } from "../sizes";
 import { FModalButton, FModalButtonDescriptor, prepareButtonList } from "../modal-button";
-import { hasSlot } from "../../../utils";
-import { FKUIConfigButtonOrder } from "../../../config";
 
 export default defineComponent({
     name: "FFormModal",
@@ -186,6 +105,14 @@ export default defineComponent({
                 /* do nothing */
             },
         },
+        /**
+         * List of buttons to display in the modal.
+         * Each button is defined as an FModalButtonDescriptor with the following properties:
+         * - `label` (String): The text displayed on the button.
+         * - `event` (String): The event emitted when the button is clicked.
+         * - `type` (String): The button type. Valid values are: "primary" or "secondary".
+         * - `submitButton` (Boolean): Whether the button is a submit button.
+         */
         buttons: {
             type: Array as PropType<FModalButtonDescriptor[]>,
             required: false,
@@ -210,10 +137,7 @@ export default defineComponent({
     },
     computed: {
         preparedButtons(): FModalButton[] {
-            return prepareButtonList(this.buttons, FKUIConfigButtonOrder.LEFT_TO_RIGHT);
-        },
-        hasDeprecatedSlots(): boolean {
-            return hasSlot(this, "cancel-button-text") || hasSlot(this, "submit-button-text");
+            return prepareButtonList(this.buttons);
         },
     },
     methods: {
@@ -247,3 +171,56 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <f-modal
+        :data-test="dataTest"
+        :fullscreen="fullscreen"
+        :is-open="isOpen"
+        :size="size"
+        :aria-close-text="ariaCloseText"
+        @close="onClose"
+    >
+        <template #header>
+            <!-- @slot Slot for the header. -->
+            <slot name="header"></slot>
+        </template>
+        <template #content>
+            <div>
+                <!-- @slot Slot for main content above text fields and buttons. -->
+                <slot name="default"></slot>
+            </div>
+            <f-validation-form
+                :id="formId"
+                :before-submit="beforeSubmit"
+                :before-validation="beforeValidation"
+                :use-error-list="useErrorList"
+                @submit="onSubmit"
+                @cancel="onCancel"
+            >
+                <template #error-message>
+                    <!-- @slot Slot for error message -->
+                    <slot name="error-message"></slot>
+                </template>
+                <!-- @slot Slot for input text fields for entering text. -->
+                <slot name="input-text-fields"></slot>
+            </f-validation-form>
+        </template>
+        <template #footer>
+            <div class="button-group">
+                <button
+                    v-for="button in preparedButtons"
+                    :key="button.label"
+                    :type="button.buttonType"
+                    :class="button.classlist"
+                    class="button-group__item"
+                    :form="button.buttonType === 'submit' ? formId : undefined"
+                    @click="button.buttonType === 'button' ? onCancel() : false"
+                >
+                    <span>{{ button.label }}</span>
+                    <span v-if="button.screenreader" class="sr-only">&nbsp;{{ button.screenreader }}</span>
+                </button>
+            </div>
+        </template>
+    </f-modal>
+</template>

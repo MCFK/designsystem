@@ -4,6 +4,89 @@ name: news
 layout: content-with-menu
 ---
 
+## Version 6.6.0
+
+2025-04-25
+
+Version 6.6.0 innehåller bland annat följande uppdateringar:
+
+### Formatering av data vid presentation
+
+Stöd för att formatera data som presenteras samt förhindra radbrytning av dessa.
+Läs {@link FormatPlugin här} om hur du får formatering på till exempel datum och personnummer som presenteras.
+
+### Applikationslayout i beta
+
+Alla nya komponenter för applikationslayout är nu släppta i status beta.
+Observera att de nya komponenterna inte ska användas i produktion förrän de har status produktionsklar.
+Vi räknar med att kunna sätta status produktionsklar i någon av de närmast kommande releaserna.
+Läs mer om de nya komponenterna {@link FPageLayout applikationsmall}, {@link FResizePane justerbar yta},
+{@link FMinimizablePanel minimerbar panel} och {@link FDetailsPanel detaljpanel}.
+
+## Version 6.5.0
+
+2025-04-23
+
+Inställningen för knappordning påverkar nu enbart bekräftelsemodaler.
+Dokumentationen för {@link config konfiguration} är uppdaterad med vilken inbyggd knappordning FKUI-komponenter använder.
+
+## Version 6.4.0
+
+2025-04-12
+
+### Ändringar i nya applikationslayout
+
+Mer kontroll över justerbara ytor i nya applikationslayouten (fortfarande beta):
+
+- Overlay
+- Stäng av/på om storlek ska kunna justeras
+- Dölj/visa yta
+
+Flera buggar rättade.
+
+### Stöd för egna knappar i `FCrudDataset`
+
+Använd slotten #buttons för att lägga till egna anpassade lägg-till knappar.
+
+## Ny release med brytande ändringar &#127881;
+
+Version: 6.0.0 <br>
+2025-02-10
+
+Releasen innehåller bland annat följande uppdateringar:
+
+- Vi har tagit bort stöd för containermanéret då det inte uppfyller krav på tillgänglighet.
+  De relaterade komponenterna formulär (FForm), formulärsteg (FFormStep) har tagits bort.
+
+- Modal (FModal): Knappordningen är ändrad i modaler så att den sekundära knappen ligger före den primära knappen.
+  Anledningen är att användare inte ska ändra något av misstag, till exempel ta bort något.
+
+- Kryssruta och radioknapp: De gamla grupperingskomponenterna för kryssruta och radioknapp har tagits bort, använd istället {@link migrating-to-fieldset FFieldset}.
+
+- Sidhuvud (FPageHeader): Komponenten innehåller inte längre länk eller logotyp som standard.
+
+- Ett antal andra funktioner, typer och komponenter är också borttagna.
+
+- Pageobject: Ett antal deprekerade metoder är borttagna (bland annat trimmedText()).
+
+- Valideringsservice: Den deprekerade validatorn personnummer är borttagen, använd istället validatorerna personnummerFormat och personnummerLuhn.
+
+- Tema och variabler: Designsystemet tillhandahåller nu endast ett tema.
+  Som konsument finns det fortfarande möjlighet att själv tillhandahålla specifika tillämpningar.
+
+- Formatbeskrivning etikett: Klassnamnet för formatbeskrivning på etikett är ändrat.
+
+{@link migrating-to-v6 Läs mer i migreringsguiden för version 6}
+
+## Kombobox
+
+Version: 5.44.0 <br>
+2024-12-17
+
+Komboboxen kombinerar ett textfält med en lista som har förbestämda alternativ. Listan filtreras för att matcha det som skrivs in i textfältet och presenterar förslag. För användaren innebär detta ett smidigare sätt att göra ett val bland ett stort antal alternativ i stället för att behöva skrolla i en lång dropplista. Komboboxen kan också användas i de fall då användaren både ska kunna skriva en godtycklig fritext eller välja i en lista med förbestämda förslag.
+
+{@link combobox Läs mer om kombobox}
+
 ## Densitet
 
 Version: 5.26.0 <br>
@@ -51,7 +134,10 @@ Version: 5.16.0 <br>
 
 {@link table#interaktiv_tabell Interaktiva tabeller } kan ha expanderbara rader för att visa ytterligare rader eller valfritt innehåll.
 
-## Validering och visning av status (5.15.0)
+## Validering och visning av status
+
+Version: 5.15.0 <br>
+2024-02-09
 
 Ett obligatoriskt inmatningsfält som lämnas tomt när användaren tabbar förbi fältet visas inte längre som felaktigt. Istället visas de som felaktiga först när användaren
 försöker skicka in formuläret.
@@ -64,11 +150,17 @@ Istället förblir ett ifyllt fält neutralt när det är ifyllt. Notera att det
 Innan den här ändringen visades inmatningsfält som OK när uppgifterna som användaren matade in uppfyllde formatregler eller när ett fält utan formatregler helt enkelt bara
 blev ifyllt (t.ex. ett fält för att ange ett namn).
 
-## Förlåtande personnummer (5.10.0)
+## Förlåtande personnummer
+
+Version: 5-10.0 <br>
+2023-12-14
 
 Det {@link textfield-specialized#personnummer specialiserade inmatningsfältet för personnummer} har uppdaterats med förlåtande inmatning. Användaren kan skriva in personnummer med både 10 siffror eller 12 siffror. Det inmatade värdet kommer efter godkänd validering att formateras enligt [Skatteverkets regler](https://www.skatteverket.se/privat/folkbokforing/personnummer.4.3810a01c150939e893f18c29.html) för personnummer. Från och med det år en person fyller 100 år har personnumret plustecken istället för bindestreck.
 
-## Vue3 (5.0.0.)
+## Vue3
+
+Version: 5.0.0 <br>
+2023-09-22
 
 FKUI har uppdaterats till Vue3.
 

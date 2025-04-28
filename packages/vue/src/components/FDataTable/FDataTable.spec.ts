@@ -16,10 +16,10 @@ describe("should match snapshot", () => {
         template: /* HTML */ `
             <f-data-table :rows="rows" key-attribute="a">
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A" type="text">
+                    <f-table-column title="A" type="text">
                         {{ row.a }}
                     </f-table-column>
-                    <f-table-column name="b" title="A" type="numeric">
+                    <f-table-column title="A" type="numeric">
                         {{ row.b }}
                     </f-table-column>
                 </template>
@@ -72,10 +72,10 @@ describe("should match snapshot", () => {
             template: /* HTML */ `
                 <f-data-table :rows="rows" key-attribute="a">
                     <template #default="{ row }">
-                        <f-table-column name="a" title="A" type="text">
+                        <f-table-column title="A" type="text">
                             {{ row.a }}
                         </f-table-column>
-                        <f-table-column name="b" title="A" type="numeric">
+                        <f-table-column title="A" type="numeric">
                             {{ row.b }}
                         </f-table-column>
                     </template>
@@ -100,8 +100,8 @@ it("should add table colum headers to <thead> with correct classes", async () =>
         template: /* HTML */ `
             <f-data-table :rows="rows" key-attribute="id">
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A"></f-table-column>
-                    <f-table-column name="b" title="B" shrink></f-table-column>
+                    <f-table-column title="A"></f-table-column>
+                    <f-table-column title="B" shrink></f-table-column>
                 </template>
             </f-data-table>
         `,
@@ -129,8 +129,8 @@ it("should add table colum headers to <thead> with correct classes", async () =>
     );
 });
 
-it("should not add duplicate table colums", async () => {
-    expect.assertions(2);
+it("should throw error if `FTableColumn.name` is duplicated", async () => {
+    expect.assertions(1);
     const TestComponent = {
         components: { FDataTable, FTableColumn },
         template: /* HTML */ `
@@ -147,11 +147,11 @@ it("should not add duplicate table colums", async () => {
             };
         },
     };
-    const wrapper = mount(TestComponent);
-    await wrapper.vm.$nextTick();
-    const th = wrapper.findAll("thead th");
-    expect(th).toHaveLength(1); /* should only be added once */
-    expect(th[0].text()).toBe("A");
+    expect(() => {
+        mount(TestComponent);
+    }).toThrowErrorMatchingInlineSnapshot(
+        `"Expected FTableColumn to have a unique name but encountered duplicate of "a""`,
+    );
 });
 
 it("should set scope on table columns", async () => {
@@ -161,7 +161,7 @@ it("should set scope on table columns", async () => {
         template: /* HTML */ `
             <f-data-table :rows="rows" key-attribute="id">
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A"></f-table-column>
+                    <f-table-column title="A"></f-table-column>
                 </template>
             </f-data-table>
         `,
@@ -184,11 +184,7 @@ it("should throw exception when action is set on column", async () => {
         template: /* HTML */ `
             <f-data-table :rows="rows" key-attribute="id">
                 <template #default="{ row }">
-                    <f-table-column
-                        name="a"
-                        title="A"
-                        type="action"
-                    ></f-table-column>
+                    <f-table-column title="A" type="action"></f-table-column>
                 </template>
             </f-data-table>
         `,
@@ -346,7 +342,7 @@ it("should handle nested row objects no rows are present", async () => {
             <f-data-table :rows="[]" key-attribute="id">
                 <template #caption> My fancy caption </template>
                 <template #default="{ row }">
-                    <f-table-column name="test" title="My Awesome Column">
+                    <f-table-column title="My Awesome Column">
                         {{ row.some.deeply.nested.prop }}
                     </f-table-column>
                 </template>
@@ -411,13 +407,51 @@ it("should call provided sort method when clicking columnheader that is registra
     `);
 });
 
+describe("`keyAttribute`", () => {
+    it("should not throw if valid and unique", async () => {
+        expect.assertions(1);
+
+        expect(() => {
+            mount(FDataTable, {
+                props: {
+                    keyAttribute: "id",
+                    rows: [{ id: "a" }, { id: "b" }, { id: "c" }],
+                },
+            });
+        }).not.toThrow();
+    });
+
+    it("should throw error if not unique in items", async () => {
+        expect.assertions(1);
+
+        expect(() => {
+            mount(FDataTable, {
+                props: {
+                    keyAttribute: "id",
+                    rows: [{ id: "a" }, { id: "b" }, { id: "b" }],
+                },
+            });
+        }).toThrowErrorMatchingInlineSnapshot(
+            `"Expected each item to have key [id] with unique value but encountered duplicate of "b" in item index 2."`,
+        );
+    });
+
+    it("should be optional", async () => {
+        expect.assertions(1);
+
+        expect(() => {
+            mount(FDataTable, {
+                props: {
+                    rows: [{ id: "a" }, { id: "b" }, { id: "c" }],
+                },
+            });
+        }).not.toThrow();
+    });
+});
+
 describe("html-validate", () => {
-    it("should require non-empty key-attribute attribute", () => {
-        expect.assertions(2);
-        expect("<f-data-table></f-data-table>").not.toHTMLValidate({
-            message:
-                '<f-data-table> is missing required "key-attribute" attribute',
-        });
+    it("should require `key-attribute` to be non-empty if used", () => {
+        expect.assertions(1);
         expect(
             '<f-data-table key-attribute=""></f-data-table>',
         ).not.toHTMLValidate({

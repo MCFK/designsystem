@@ -1,3 +1,21 @@
+<script lang="ts">
+import { defineComponent } from "vue";
+import { formatNumber, parseNumber } from "@fkui/logic";
+import { FTextField, FOutputField } from "@fkui/vue";
+
+export default defineComponent({
+    name: "FormatterExample",
+    components: { FTextField, FOutputField },
+    data() {
+        return {
+            modelValue: "",
+            formatNumber,
+            parseNumber,
+        };
+    },
+});
+</script>
+
 <template>
     <div class="row">
         <div class="col col--md-9">
@@ -18,27 +36,9 @@
             <f-output-field for="combined-formatter-example">
                 <template #label> modelValue </template>
                 <template #default>
-                    <pre>{{ JSON.stringify(modelValue) }}</pre>
+                    <span class="docs-pre">{{ JSON.stringify(modelValue) }}</span>
                 </template>
             </f-output-field>
         </div>
     </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-import { formatNumber, parseNumber } from "@fkui/logic";
-import { FTextField, FOutputField } from "@fkui/vue";
-
-export default defineComponent({
-    name: "FormatterExample",
-    components: { FTextField, FOutputField },
-    data() {
-        return {
-            modelValue: "",
-            formatNumber,
-            parseNumber,
-        };
-    },
-});
-</script>

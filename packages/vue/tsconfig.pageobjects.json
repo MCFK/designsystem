@@ -1,18 +1,11 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "@fkui/tsconfig/recommended",
     "compilerOptions": {
         "composite": true,
-        "outDir": "temp",
-        "rootDir": "src",
         "types": ["cypress"],
         "emitDeclarationOnly": true,
-        "declarationDir": "temp/types",
         "skipLibCheck": true
     },
-    "include": [
-        "src/pageobject/**/*.ts",
-        "src/**/pageobjects.ts",
-        "src/**/*.pageobject.ts"
-    ],
-    "exclude": ["src/pageobject/**/*cy.ts"]
+    "include": ["src/cypress/**/*.ts", "src/**/*.pageobject.ts"],
+    "exclude": ["src/cypress/**/*.cy.ts"]
 }

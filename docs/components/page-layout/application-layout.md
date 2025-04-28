@@ -1,6 +1,6 @@
 ---
 title: Applikationslayout
-status: Preliminär
+status: Produktionsklar
 layout: component
 component:
     - FLayoutApplicationTemplate
@@ -19,6 +19,8 @@ Komponenterna består dels av en applikationsmall `FLayoutApplicationTemplate` s
 </style>
 
 ```import fullscreen
+<!-- [html-validate-disable-block unique-landmark, no-multiple-main, heading-level -- clashes with site layout] -->
+<!-- [html-validate-disable-block valid-id, attribute-allowed-values -- component generates invalid id's] -->
 FLayoutApplicationTemplateExample.vue
 ```
 
@@ -27,6 +29,7 @@ FLayoutApplicationTemplateExample.vue
 Applikationsmallen `FLayoutApplicationTemplate` består av fyra ytor: sidhuvud, toppnavigering, primäryta och sidfot.
 
 ```import borderless nomarkup
+<!-- [html-validate-disable-block unique-landmark, no-multiple-main -- clashes with site layout] -->
 FLayoutApplicationTemplateParts.vue
 ```
 

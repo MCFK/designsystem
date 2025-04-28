@@ -125,7 +125,7 @@ module.exports = defineMetadata({
             "key-attribute": ["/.+/"],
             scroll: ["horizontal", "vertical", "both", "none"],
         },
-        requiredAttributes: ["key-attribute", "rows"],
+        requiredAttributes: ["rows"],
         slots: ["default", "caption", "empty"],
         requiredSlots: ["default", "caption"],
     },
@@ -184,6 +184,24 @@ module.exports = defineMetadata({
 
     "f-datepicker-field#tooltip": {
         inherit: "f-text-field#tooltip",
+    },
+
+    "f-details-panel": {
+        flow: true,
+        attributes: {
+            name: {
+                required: true,
+                enum: ["/.+/"],
+            },
+            exclude: {
+                enum: ["/.+/"],
+            },
+        },
+        slots: ["default", "icon"],
+    },
+
+    "f-details-panel#icon": {
+        permittedContent: ["f-icon"],
     },
 
     "f-calendar": {
@@ -321,7 +339,7 @@ module.exports = defineMetadata({
         inherit: "ul",
         flow: true,
         phrasing: true,
-        requiredAttributes: ["items", "key-attribute"],
+        requiredAttributes: ["items"],
         attributes: {
             selectable: ["/^[a-zA-Z][\\w\\d-_.:]+$/", "", "false", "true"],
             value: ["/.*/"],
@@ -365,77 +383,6 @@ module.exports = defineMetadata({
         permittedContent: ["@flow"],
     },
 
-    "f-form": {
-        flow: true,
-        phrasing: true,
-        form: true,
-        slots: ["default", "error-message"],
-        attributes: {
-            "display-error": ["", "false", "true"],
-            "error-scroll": ["center", "top"],
-        },
-        deprecated: {
-            message:
-                "See migration guide: https://forsakringskassan.github.io/latest/components/fform.html",
-            source: "@fkui/vue",
-        },
-    },
-
-    "f-form#default": {
-        permittedContent: ["@flow"],
-    },
-
-    "f-form#error-message": {
-        permittedContent: ["@flow"],
-    },
-
-    "f-form-step": {
-        flow: true,
-        phrasing: true,
-        slots: ["default", "header", "error-message"],
-        permittedDescendants: [
-            {
-                exclude: "f-progressbar",
-            },
-        ],
-        deprecated: {
-            message:
-                "See migration guide: https://forsakringskassan.github.io/latest/components/fform.html",
-            source: "@fkui/vue",
-        },
-    },
-
-    "f-form-step#default": {
-        permittedContent: ["@flow"],
-    },
-
-    "f-form-step#header": {
-        permittedContent: ["@flow"],
-    },
-
-    "f-form-step#error-message": {
-        permittedContent: ["@flow"],
-    },
-
-    "f-form-step-button": {
-        inherit: "button",
-        textContent: "none",
-        attributes: {
-            id: {},
-            "is-open": {},
-            "is-any-field-touched": {},
-            "additional-screenreader-text": {},
-            type: {
-                required: false,
-            },
-        },
-        deprecated: {
-            message:
-                "See migration guide: https://forsakringskassan.github.io/latest/components/fform.html",
-            source: "@fkui/vue",
-        },
-    },
-
     "f-interactive-table": {
         flow: true,
         attributes: {
@@ -447,7 +394,7 @@ module.exports = defineMetadata({
             "expandable-describedby": ["/.+/"],
             scroll: ["horizontal", "vertical", "both", "none"],
         },
-        requiredAttributes: ["key-attribute", "rows"],
+        requiredAttributes: ["rows"],
         slots: [
             "default",
             "caption",
@@ -501,10 +448,64 @@ module.exports = defineMetadata({
         inherit: "f-label#description",
     },
 
+    "f-minimizable-panel": {
+        flow: true,
+        attributes: {
+            context: {
+                enum: ["/.+/"],
+            },
+        },
+        slots: ["default", "icon"],
+    },
+
+    "ce-minimizable-panel": {
+        flow: true,
+        attributes: {
+            context: {
+                enum: ["/.+/"],
+            },
+            openPrefix: {
+                enum: ["/.+/"],
+            },
+            closePrefix: {
+                enum: ["/.+/"],
+            },
+        },
+    },
+
+    "f-page-layout": {
+        flow: true,
+        attributes: {
+            layout: {
+                required: true,
+            },
+        },
+    },
+
     "f-progressbar": {
         flow: true,
         requiredAttributes: ["aria-label"],
         permittedContent: [],
+    },
+
+    "f-resize-pane": {
+        flow: true,
+        attributes: {
+            min: {
+                enum: ["/\\d+px/", "/\\d+%/"],
+                list: true,
+            },
+            max: {
+                enum: ["/\\d+px/", "/\\d+%/"],
+                list: true,
+            },
+            initial: {
+                enum: ["/\\d+px/", "/\\d+%/"],
+            },
+            disabled: {
+                boolean: true,
+            },
+        },
     },
 
     "f-sort-filter-dataset": {
@@ -549,7 +550,7 @@ module.exports = defineMetadata({
             description: ["/.+/"],
             type: ["text", "date", "numeric", "action"],
         },
-        requiredAttributes: ["name", "title"],
+        requiredAttributes: ["title"],
         permittedContent: ["@phrasing", "button", "f-badge"],
     },
 
@@ -563,7 +564,7 @@ module.exports = defineMetadata({
                 enum: ["/.+/"],
             },
             "header-tag": {
-                enum: ["div", "span", "h1", "h2", "h3", "h4", "h5", "h6"],
+                enum: ["h1", "h2", "h3", "h4", "h5", "h6"],
             },
             "screen-reader-text": {
                 enum: ["/.+/"],
@@ -954,35 +955,6 @@ module.exports = defineMetadata({
         inherit: "f-label#error-message",
     },
 
-    "f-checkbox-group": {
-        inherit: "f-fieldset",
-        deprecated: {
-            message:
-                "<f-checkbox-group> is deprecated: use <f-fieldset> instead. See migration guide: https://forsakringskassan.github.io/latest/guide/migration/migrating-to-fieldset.html",
-            source: "@fkui/vue",
-        },
-    },
-
-    "f-checkbox-group#default": {
-        inherit: "f-fieldset#default",
-    },
-
-    "f-checkbox-group#label": {
-        inherit: "f-fieldset#label",
-    },
-
-    "f-checkbox-group#tooltip": {
-        inherit: "f-fieldset#tooltip",
-    },
-
-    "f-checkbox-group#description": {
-        inherit: "f-fieldset#description",
-    },
-
-    "f-checkbox-group#error-message": {
-        inherit: "f-fieldset#error-message",
-    },
-
     "f-checkbox-field": {
         flow: true,
         phrasing: true,
@@ -998,23 +970,10 @@ module.exports = defineMetadata({
         inherit: "label",
     },
 
-    "f-checkbox-group-field": {
-        inherit: "f-checkbox-field",
-        deprecated: {
-            message:
-                "<f-checkbox-group-field> is deprecated: rename to <f-checkbox-field>. See migration guide: https://forsakringskassan.github.io/latest/guide/migration/migrating-to-fieldset.html",
-            source: "@fkui/vue",
-        },
-    },
-
-    "f-checkbox-group-field#default": {
-        inherit: "label",
-    },
-
     "f-crud-dataset": {
         flow: true,
         interactive: true,
-        slots: ["default", "add", "delete", "modify", "add-button"],
+        slots: ["default", "add", "delete", "modify", "add-button", "buttons"],
         requiredSlots: ["default"],
         attributes: {
             value: ["/.*/"],
@@ -1040,40 +999,6 @@ module.exports = defineMetadata({
         requiredAncestors: ["f-crud-dataset"],
     },
 
-    "f-radio-group": {
-        inherit: "f-fieldset",
-        attributes: {
-            "is-horizontal": {
-                boolean: true,
-            },
-        },
-        deprecated: {
-            message:
-                "<f-radio-group> is deprecated: use <f-fieldset> instead. See migration guide: https://forsakringskassan.github.io/latest/guide/migration/migrating-to-fieldset.html",
-            source: "@fkui/vue",
-        },
-    },
-
-    "f-radio-group#default": {
-        inherit: "f-fieldset#default",
-    },
-
-    "f-radio-group#label": {
-        inherit: "f-fieldset#label",
-    },
-
-    "f-radio-group#tooltip": {
-        inherit: "f-fieldset#tooltip",
-    },
-
-    "f-radio-group#description": {
-        inherit: "f-fieldset#description",
-    },
-
-    "f-radio-group#error-message": {
-        inherit: "f-fieldset#error-message",
-    },
-
     "f-radio-field": {
         flow: true,
         phrasing: true,
@@ -1086,19 +1011,6 @@ module.exports = defineMetadata({
     },
 
     "f-radio-field#default": {
-        inherit: "label",
-    },
-
-    "f-radio-group-field": {
-        inherit: "f-radio-field",
-        deprecated: {
-            message:
-                "<f-radio-group-field> is deprecated: rename to <f-radio-field>. See migration guide: https://forsakringskassan.github.io/latest/guide/migration/migrating-to-fieldset.html",
-            source: "@fkui/vue",
-        },
-    },
-
-    "f-radio-group-field#default": {
         inherit: "label",
     },
 
@@ -1217,14 +1129,7 @@ module.exports = defineMetadata({
         flow: true,
         interactive: true,
         phrasing: false,
-        slots: [
-            "default",
-            "header",
-            "error-message",
-            "input-text-fields",
-            "submit-button-text",
-            "cancel-button-text",
-        ],
+        slots: ["default", "header", "error-message", "input-text-fields"],
         permittedContent: ["@flow", "template"],
         attributes: {
             "aria-close-text": {},
@@ -1373,35 +1278,12 @@ module.exports = defineMetadata({
         slots: ["default", "skip-link-text", "logo", "right"],
         permittedContent: ["@flow", "template"],
         attributes: {
-            "logo-size": {
-                enum: ["small", "large", "responsive"],
-            },
             "skip-link": {
                 enum: ["/.+/"],
-                /* for backwards compatiblity allow the skiplink value to be
-                 * omitted (e.g. same as setting it to true) */
-                omit: true,
-            },
-            "skip-link-href": {
-                enum: ["/^[#].*/"],
                 required: false,
-                deprecated: "use skip-link prop with string instead",
-                allowed(node) {
-                    return node.hasAttribute("skip-link")
-                        ? null
-                        : "requires skip-link prop to be set";
-                },
             },
             "header-tag": {
                 enum: ["span", "h1"],
-                required: false,
-            },
-            "router-link-path": {
-                enum: ["/.*/"],
-                required: false,
-            },
-            "router-link-name": {
-                enum: ["/.*/"],
                 required: false,
             },
         },
@@ -1499,6 +1381,18 @@ module.exports = defineMetadata({
             },
             inverted: {
                 boolean: true,
+            },
+        },
+        slots: ["default"],
+    },
+
+    "f-logo": {
+        flow: true,
+        permittedContent: ["@phrasing"],
+        textContent: "required",
+        attributes: {
+            size: {
+                enum: ["small", "large", "responsive"],
             },
         },
         slots: ["default"],

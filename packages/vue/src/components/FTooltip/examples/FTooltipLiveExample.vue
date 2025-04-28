@@ -1,10 +1,3 @@
-<template>
-    <live-example :components="components" :template="template">
-        <f-checkbox-field v-model="hasHeader" :value="true"> Rubrik i tooltip </f-checkbox-field>
-        <f-checkbox-field v-model="longText" :value="true"> Lång text </f-checkbox-field>
-    </live-example>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FLabel, FTooltip, FCheckboxField } from "@fkui/vue";
@@ -29,6 +22,9 @@ export default defineComponent({
         header(): string {
             return this.hasHeader ? "<template #header> Lär dig mer om [..] </template>" : "";
         },
+        headerTag(): string {
+            return this.hasHeader ? 'header-tag="h2"' : "";
+        },
         template(): string {
             const { longText } = this;
             const text = longText
@@ -38,7 +34,10 @@ export default defineComponent({
                 <f-label>
                     <template #default> ${text} </template>
                     <template #tooltip>
-                        <f-tooltip screen-reader-text="Denna text syns bara för skärmläsare">
+                        <f-tooltip
+                            screen-reader-text="Denna text syns bara för skärmläsare"
+                            ${this.headerTag}
+                        >
                             ${this.header}
                             <template #body> Lorem ipsum dolor sit amet. </template>
                         </f-tooltip>
@@ -49,3 +48,10 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <live-example :components="components" :template="template">
+        <f-checkbox-field v-model="hasHeader" :value="true"> Rubrik i tooltip </f-checkbox-field>
+        <f-checkbox-field v-model="longText" :value="true"> Lång text </f-checkbox-field>
+    </live-example>
+</template>

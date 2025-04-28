@@ -9,9 +9,10 @@ module.exports = {
     rules: {
         "fkui/button-group": "error",
         "fkui/class-deprecated": "error",
-        "fkui/deprecated-validator": "error",
         "fkui/prefer-ficon": "error",
         "fkui/required-max-length": "error",
         "fkui/ftextfield-formatter-validation": "error",
+        "fkui/no-template-modal": "error",
+        "fkui/ftablecolumn-name": "error",
     },
 };

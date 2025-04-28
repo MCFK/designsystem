@@ -27,6 +27,7 @@ function createWrapper({
         ...options,
         global: {
             stubs: ["f-icon"],
+            plugins: [ValidationPlugin],
         },
     });
 }
@@ -72,7 +73,7 @@ describe("snapshots", () => {
             });
 
             const input = wrapper.get("input");
-            const htmlInput = input.element as HTMLInputElement;
+            const htmlInput = input.element;
 
             htmlInput.dispatchEvent(
                 new CustomEvent<ValidityEvent>("validity", {
@@ -151,9 +152,9 @@ describe("events", () => {
         expect(htmlInput.value).toBe("bar@example.net");
 
         await input.trigger("change");
-        expect(wrapper.emitted("update")![0][0]).toMatchInlineSnapshot(
-            `"bar@example.net"`,
-        );
+        expect(
+            wrapper.emitted("update:modelValue")![0][0],
+        ).toMatchInlineSnapshot(`"bar@example.net"`);
     });
 
     it("should pass listeners", async () => {
@@ -182,7 +183,7 @@ describe("events", () => {
         });
 
         const input = wrapper.get("input");
-        const htmlInput = input.element as HTMLInputElement;
+        const htmlInput = input.element;
 
         htmlInput.dispatchEvent(
             new CustomEvent<ValidityEvent>("validity", {
@@ -220,7 +221,7 @@ describe("validation", () => {
         const input = wrapper.get("input");
         const validatorConfigs: ValidatorConfigs = { required: {} };
         ValidationService.addValidatorsToElement(
-            input.element as HTMLInputElement,
+            input.element,
             validatorConfigs,
         );
 
@@ -306,7 +307,7 @@ describe("disable paste", () => {
         const wrapper = createWrapper({ options: { sync: false } });
         expect(wrapper.find(".label__message--error").exists()).toBeFalsy();
 
-        const inputElement = wrapper.get("input").element as HTMLInputElement;
+        const inputElement = wrapper.get("input").element;
         allowPaste(inputElement);
         await flushPromises();
 
@@ -320,8 +321,7 @@ describe("disable paste", () => {
         });
         expect(wrapper.find(".label__message--error").exists()).toBeFalsy();
 
-        const secondInputElement = wrapper.findAll("input")[1]
-            .element as HTMLInputElement;
+        const secondInputElement = wrapper.findAll("input")[1].element;
         testPaste(secondInputElement);
         await flushPromises();
 
@@ -335,10 +335,8 @@ describe("disable paste", () => {
             options: { sync: false },
             props: { extendedValidation: true },
         });
-        const firstInputElement = wrapper.findAll("input")[0]
-            .element as HTMLInputElement;
-        const secondInputElement = wrapper.findAll("input")[1]
-            .element as HTMLInputElement;
+        const firstInputElement = wrapper.findAll("input")[0].element;
+        const secondInputElement = wrapper.findAll("input")[1].element;
 
         allowPaste(firstInputElement);
         testPaste(secondInputElement);

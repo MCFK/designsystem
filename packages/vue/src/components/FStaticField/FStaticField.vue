@@ -1,3 +1,15 @@
+<script lang="ts">
+import { defineComponent } from "vue";
+import { FLabel } from "../FLabel";
+
+export default defineComponent({
+    name: "FStaticField",
+    components: {
+        FLabel,
+    },
+});
+</script>
+
 <template>
     <div class="output-field">
         <f-label>
@@ -10,13 +22,13 @@
                 <slot name="tooltip"></slot>
             </template>
 
-            <template #description="{ descriptionClass, discreteDescriptionClass }">
+            <template #description="{ descriptionClass, formatDescriptionClass }">
                 <!--
-                    @slot Optional slot for description. See [FLabel](#/Components/FLabel) for details.
-                    @binding {string[]} descriptionClass CSS classes for primary description content.
-                    @binding {string[]} discreteDescriptionClass CSS classes for format description.
+                    @slot Optional slot for description. See {@link FLabel} for details.
+                    @binding {string[]} description-class CSS classes for primary description content.
+                    @binding {string[]} format-description-class CSS classes for format description.
                 -->
-                <slot name="description" v-bind="{ descriptionClass, discreteDescriptionClass }"></slot>
+                <slot name="description" :description-class :format-description-class></slot>
             </template>
         </f-label>
         <p class="output-field__output">
@@ -25,15 +37,3 @@
         </p>
     </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-import { FLabel } from "../FLabel";
-
-export default defineComponent({
-    name: "FStaticField",
-    components: {
-        FLabel,
-    },
-});
-</script>

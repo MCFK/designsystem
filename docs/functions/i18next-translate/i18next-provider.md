@@ -9,7 +9,7 @@ Skapar en ny {@link I18nextProvider} för användning med `TranslationService`.
 
 ## Syntax
 
-```ts
+```ts nocompile
 i18nextProvider(options);
 ```
 
@@ -35,7 +35,9 @@ Returnerar en {@link I18nextProvider}.
 ## Exempel
 
 ```ts
-const provider = i18nextProvider({
+import { i18nextProvider } from "@fkui/i18next-translate";
+
+const provider = await i18nextProvider({
     defaultLanguage: "sv",
     async loadLanguage(lang) {
         const response = await fetch(`/texts/${lang}.json`);

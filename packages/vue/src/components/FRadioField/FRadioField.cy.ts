@@ -5,7 +5,7 @@ import {
     densityWrapperHeight,
     densityWrapperWidth,
 } from "@fkui/test-utils/vue";
-import { FFieldsetPageObject } from "../../pageobject";
+import { FFieldsetPageObject } from "../../cypress";
 import { FTooltip } from "../FTooltip";
 import FFieldset from "../FFieldset/FFieldset.vue";
 import FRadioField from "./FRadioField.vue";
@@ -156,7 +156,10 @@ describe("FRadioField", () => {
             <f-fieldset name="radio-name">
                 <template #label> Label text </template>
                 <template #tooltip>
-                    <f-tooltip screen-reader-text="Screen reader text.">
+                    <f-tooltip
+                        screen-reader-text="Screen reader text."
+                        header-tag="h1"
+                    >
                         <template #header> Tooltip header </template>
                         <template #body> Tooltip body </template>
                     </f-tooltip>

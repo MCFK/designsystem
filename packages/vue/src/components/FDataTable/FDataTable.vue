@@ -1,3 +1,191 @@
+<script setup lang="ts" generic="T extends object">
+import { type PropType, computed, onMounted, provide, ref } from "vue";
+import { TableScroll, tableScrollClasses } from "../../utils";
+import { getInternalKey, setInternalKeys } from "../../utils/internal-key";
+import {
+    FTableColumnData,
+    FTableColumnSort,
+    addColumn,
+    setVisibilityColumn,
+    updateSortOrder,
+    setSortableColumns,
+    getSortableIconName,
+    getSortableIconClasses,
+    FTableColumnType,
+} from "../FTableColumn";
+import { FSortFilterDatasetInjected } from "../FSortFilterDataset";
+import { FIcon } from "../FIcon";
+import { useTranslate } from "../../plugins";
+import { useSlotUtils } from "../../composables";
+
+const $t = useTranslate();
+const { hasSlot } = useSlotUtils();
+const { sort, registerCallbackOnSort, registerCallbackOnMount } = FSortFilterDatasetInjected();
+const internalKey = getInternalKey<T>();
+
+const columns = ref<FTableColumnData[]>([]);
+
+defineOptions({
+    inheritAttrs: false,
+});
+
+const props = defineProps({
+    /**
+     * The rows to be listed.
+     * The rows will be listed in the given array order.
+     */
+    rows: {
+        type: Array as PropType<T[]>,
+        required: true,
+    },
+    /**
+     * Unique attribute in rows.
+     */
+    keyAttribute: {
+        type: String,
+        required: false,
+        default: undefined,
+    },
+    /**
+     * If `true` alternating rows will use a different background color.
+     */
+    striped: {
+        type: Boolean,
+        default: false,
+    },
+    /**
+     * Enable scrolling inside table.
+     *
+     * Can be one of the following values:
+     *
+     * - `"horizontal"`: Enables horizontal scrolling
+     * - `"vertical"`: Enables vertical scrolling
+     * - `"both"`: Enables scrolling in both directions
+     * - `"none"`: Disables scrolling (default)
+     */
+    scroll: {
+        type: String as PropType<TableScroll>,
+        default: TableScroll.NONE,
+        validator(value: string): boolean {
+            const types: string[] = Object.values(TableScroll);
+            return types.includes(value);
+        },
+    },
+});
+
+const hasCaption = computed(() => {
+    return hasSlot("caption", {}, { stripClasses: [] });
+});
+
+const tableClasses = computed(() => {
+    const classes = [];
+    if (props.striped) {
+        classes.push("table--striped");
+    }
+    return classes;
+});
+
+const isEmpty = computed(() => {
+    return internalRows.value.length === 0;
+});
+
+const visibleColumns = computed((): FTableColumnData[] => {
+    return columns.value.filter((col) => col.visible);
+});
+
+const wrapperClasses = computed(() => {
+    return tableScrollClasses(props.scroll);
+});
+
+const tabindex = computed(() => {
+    return props.scroll !== TableScroll.NONE ? 0 : undefined;
+});
+
+const internalRows = computed((): T[] => {
+    const { keyAttribute } = props;
+    if (keyAttribute) {
+        return setInternalKeys(props.rows, keyAttribute as keyof T);
+    }
+
+    return setInternalKeys(props.rows);
+});
+
+provide("addColumn", (column: FTableColumnData) => {
+    if (column.type === FTableColumnType.ACTION) {
+        throw new Error("Cannot use action column in FDataTable component");
+    }
+    columns.value = addColumn(columns.value, column);
+});
+
+provide("setVisibilityColumn", (id: string, visible: boolean) => {
+    setVisibilityColumn(columns.value, id, visible);
+});
+
+provide("textFieldTableMode", true);
+
+provide(
+    "renderColumns",
+    computed(() => {
+        return internalRows.value.length > 0;
+    }),
+);
+
+onMounted(() => {
+    registerCallbackOnSort(callbackOnSort);
+    registerCallbackOnMount(callbackSortableColumns);
+});
+
+function rowKey(item: T): string {
+    return String(item[internalKey]);
+}
+
+function columnClasses(column: FTableColumnData): string[] {
+    const classes = ["table__column", `table__column--${column.type}`, column.size];
+    if (column.sortable) {
+        classes.push("table__column--sortable");
+    }
+
+    return classes;
+}
+
+function iconClasses(column: FTableColumnData): string[] {
+    return getSortableIconClasses(column);
+}
+
+function iconName(column: FTableColumnData): string {
+    return getSortableIconName(column);
+}
+
+function onClickColumnHeader(column: FTableColumnData): void {
+    if (!column.sortable) {
+        return;
+    }
+
+    let columnName = column.name;
+    if (!columnName) {
+        throw new Error("`FTableColumn` must have a unique `name` when used with `FSortFilterDataset`");
+    }
+
+    if (column.sort === FTableColumnSort.DESCENDING) {
+        columnName = "";
+        column.sort = FTableColumnSort.UNSORTED;
+    }
+    sort(columnName, column.sort !== FTableColumnSort.ASCENDING);
+}
+
+function callbackOnSort(columnName: string, ascending: boolean): void {
+    updateSortOrder(columns.value, columnName, ascending);
+}
+
+function callbackSortableColumns(columnNames: string[]): void {
+    setSortableColumns(columns.value, columnNames);
+}
+
+function escapeNewlines(value: string): string {
+    return value.replace(/\n/g, "<br/>");
+}
+</script>
+
 <template>
     <div :class="wrapperClasses">
         <table class="table" :class="tableClasses" :tabindex="tabindex" v-bind="$attrs">
@@ -10,6 +198,8 @@
             </colgroup>
             <thead>
                 <tr class="table__row">
+                    <slot v-bind="{ row: {} }" />
+
                     <th
                         v-for="column in visibleColumns"
                         :key="column.id"
@@ -28,200 +218,24 @@
             </thead>
             <tbody>
                 <tr v-if="isEmpty && columns.length === 0">
-                    <slot v-bind="{ row: {} }"></slot>
+                    <slot v-bind="{ row: {} as T }"></slot>
                 </tr>
                 <tr v-if="isEmpty">
                     <td class="table__column table__column--action" :colspan="columns.length">
                         <!--
-@slot Slot for displaying a message when table is empty.
-Default text is 'Tabellen är tom' (key fkui.data-table.empty).
-            -->
+                             @slot Slot for displaying a message when table is empty. Default text is 'Tabellen är tom' (key fkui.data-table.empty).
+                        -->
                         <slot name="empty">{{ $t("fkui.data-table.empty", "Tabellen är tom") }}</slot>
                     </td>
                 </tr>
-                <tr v-for="row in rows" :key="rowKey(row)" class="table__row">
+                <tr v-for="row in internalRows" :key="rowKey(row)" class="table__row">
                     <!--
-                     @slot Slot for table row.
-
-                     The item object is available through `v-slot="{ <propertyName> }"`, e.g.
-                     `v-slot="{ row }"`.
-
-                     The following properties are available:
-
-                     * `row: ListItem;` The object to be visualized..
-          -->
+                         @slot Slot for table row. The item object is available through `v-slot="{ <propertyName> }"`, e.g. `v-slot="{ row }"`.
+                         @binding {T} row - The object to be visualized.
+                    -->
                     <slot v-bind="{ row }" />
                 </tr>
             </tbody>
         </table>
     </div>
 </template>
-
-<script lang="ts">
-import { type PropType, computed, defineComponent, provide } from "vue";
-import { type ListArray, type ListItem } from "../../types";
-import { TableScroll, tableScrollClasses, hasSlot } from "../../utils";
-import {
-    FTableColumnData,
-    FTableColumnSort,
-    FTableInterface,
-    addColumn,
-    setVisibilityColumn,
-    updateSortOrder,
-    setSortableColumns,
-    getSortableIconName,
-    getSortableIconClasses,
-    FTableColumnType,
-} from "../FTableColumn";
-import { FSortFilterDatasetInjected, FSortFilterDatasetInterface } from "../FSortFilterDataset";
-import { FIcon } from "../FIcon";
-import { TranslationMixin } from "../../plugins";
-
-export default defineComponent({
-    name: "FDataTable",
-    components: {
-        FIcon,
-    },
-    mixins: [TranslationMixin],
-    provide(): Omit<FTableInterface, "renderColumns"> {
-        return {
-            addColumn: (column: FTableColumnData) => {
-                if (column.type === FTableColumnType.ACTION) {
-                    throw new Error("Cannot use action column in FDataTable component");
-                }
-                this.columns = addColumn(this.columns, column);
-            },
-            setVisibilityColumn: (id: string, visible: boolean) => {
-                setVisibilityColumn(this.columns, id, visible);
-            },
-            textFieldTableMode: true,
-        };
-    },
-    inheritAttrs: false,
-    props: {
-        /**
-         * The rows to be listed.
-         * The rows will be listed in the given array order.
-         */
-        rows: {
-            type: Array as PropType<ListArray>,
-            required: true,
-        },
-        /**
-         * Unique attribute in rows.
-         */
-        keyAttribute: {
-            type: String,
-            required: true,
-        },
-        /**
-         * If `true` alternating rows will use a different background color.
-         */
-        striped: {
-            type: Boolean,
-            default: false,
-        },
-        /**
-         * Enable scrolling inside table.
-         *
-         * Can be one of the following values:
-         *
-         * - `"horizontal"`: Enables horizontal scrolling
-         * - `"vertical"`: Enables vertical scrolling
-         * - `"both"`: Enables scrolling in both directions
-         * - `"none"`: Disables scrolling (default)
-         */
-        scroll: {
-            type: String as PropType<TableScroll>,
-            default: TableScroll.NONE,
-            validator(value: string): boolean {
-                const types: string[] = Object.values(TableScroll);
-                return types.includes(value);
-            },
-        },
-    },
-    setup(props): FSortFilterDatasetInterface {
-        provide(
-            "renderColumns",
-            computed(() => props.rows.length > 0),
-        );
-        return FSortFilterDatasetInjected();
-    },
-    data() {
-        return {
-            columns: [] as FTableColumnData[],
-        };
-    },
-    computed: {
-        hasCaption(): boolean {
-            return hasSlot(this, "caption", {}, { stripClasses: [] });
-        },
-        tableClasses(): string[] {
-            const classes = [];
-            if (this.striped) {
-                classes.push("table--striped");
-            }
-            return classes;
-        },
-        isEmpty(): boolean {
-            return this.rows.length === 0;
-        },
-        visibleColumns(): FTableColumnData[] {
-            return this.columns.filter((col) => col.visible);
-        },
-        wrapperClasses(): string[] {
-            return tableScrollClasses(this.scroll);
-        },
-        tabindex(): number | undefined {
-            return this.scroll !== TableScroll.NONE ? 0 : undefined;
-        },
-    },
-    mounted() {
-        this.registerCallbackOnSort(this.callbackOnSort);
-        this.registerCallbackOnMount(this.callbackSortableColumns);
-    },
-    methods: {
-        rowKey(item: ListItem): string {
-            const key = item[this.keyAttribute];
-            if (typeof key === "undefined") {
-                throw new Error(`Key attribute [${this.keyAttribute}]' is missing in row`);
-            }
-            return String(key);
-        },
-        columnClasses(column: FTableColumnData): string[] {
-            const classes = ["table__column", `table__column--${column.type}`, column.size];
-            if (column.sortable) {
-                classes.push("table__column--sortable");
-            }
-
-            return classes;
-        },
-        iconClasses(column: FTableColumnData): string[] {
-            return getSortableIconClasses(column);
-        },
-        iconName(column: FTableColumnData) {
-            return getSortableIconName(column);
-        },
-        onClickColumnHeader(column: FTableColumnData): void {
-            if (!column.sortable) {
-                return;
-            }
-            let columnName = column.name;
-            if (column.sort === FTableColumnSort.DESCENDING) {
-                columnName = "";
-                column.sort = FTableColumnSort.UNSORTED;
-            }
-            this.sort(columnName, column.sort !== FTableColumnSort.ASCENDING);
-        },
-        callbackOnSort(columnName: string, ascending: boolean): void {
-            updateSortOrder(this.columns, columnName, ascending);
-        },
-        callbackSortableColumns(columnNames: string[]): void {
-            setSortableColumns(this.columns, columnNames);
-        },
-        escapeNewlines(value: string): string {
-            return value.replace(/\n/g, "<br/>");
-        },
-    },
-});
-</script>

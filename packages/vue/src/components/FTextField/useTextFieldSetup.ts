@@ -1,4 +1,4 @@
-import { inject, nextTick, type Ref, ref, useTemplateRef } from "vue";
+import { inject, nextTick, type Ref, ref, useTemplateRef, toRef } from "vue";
 import { useCombobox } from "../../internal-components";
 import { type FormatFunction } from "./FormatFunction";
 import { type ParseFunction } from "./ParseFunction";
@@ -9,7 +9,7 @@ import { type ParseFunction } from "./ParseFunction";
 export interface TextFieldSetupProps {
     id: string;
     inline: boolean;
-    modelValue: string | number;
+    modelValue: string | number | null;
     type: string;
     formatter?: FormatFunction<unknown>;
     parser?: ParseFunction<unknown>;
@@ -66,7 +66,7 @@ export function useTextFieldSetup(props: TextFieldSetupProps): {
         toggleDropdown,
         selectOption,
         closeDropdown,
-    } = useCombobox(inputNode, props.options, onOptionSelected);
+    } = useCombobox(inputNode, toRef(props, "options"), onOptionSelected);
 
     return {
         textFieldTableMode,

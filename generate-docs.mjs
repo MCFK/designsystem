@@ -1,16 +1,19 @@
 import fs from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import module from "node:module";
-import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
+import fse from "fs-extra";
 import isCI from "is-ci";
 import {
     Generator,
+    extractExamplesProcessor,
+    htmlRedirectProcessor,
+    manifestProcessor,
     matomoProcessor,
     searchProcessor,
     selectableVersionProcessor,
     sourceUrlProcessor,
-    themeSelectProcessor,
     topnavProcessor,
     versionProcessor,
     cookieProcessor,
@@ -22,7 +25,6 @@ const require = module.createRequire(import.meta.url);
 
 const pkg = require("./package.json");
 
-let createVersionMock = false;
 const DEFAULT_MATOMO_CONFIG = {
     trackerUrl: "https://webstats.forsakringskassan.se/matomo/",
     hostname: [
@@ -41,7 +43,6 @@ const {
 const matomoConfig = MATOMO_CONFIG
     ? JSON.parse(MATOMO_CONFIG)
     : DEFAULT_MATOMO_CONFIG;
-const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
 const isRelease = (() => {
     try {
@@ -54,19 +55,22 @@ const isRelease = (() => {
     }
 })();
 
-const fkuiDesign = path.relative(
-    rootDir,
-    path.dirname(require.resolve("@fkui/design")),
-);
-
 if (isCI) {
     console.group("Configuration");
     console.log("Matomo:", MATOMO_SITE_ID ? "enabled" : "disabled");
     console.log("Source url format: ", DOCS_SOURCE_URL_FORMAT);
     console.groupEnd();
     console.log();
-} else {
-    createVersionMock = true;
+}
+
+async function copyDocs(pkg, from, to) {
+    const exists = existsSync(from);
+    if (exists) {
+        console.log(`Copying ${pkg} to ${to}`);
+        await fse.copy(from, to);
+    } else {
+        console.log(`${pkg} not built, skipping`);
+    }
 }
 
 const docs = new Generator({
@@ -78,6 +82,15 @@ const docs = new Generator({
     cacheFolder: "./temp/docs",
     exampleFolders: ["./packages/vue/src", "./docs"],
     templateFolders: ["./docs-alt/templates", "./docs/templates"],
+    markdown: {
+        messagebox: {
+            title: {
+                info: "Information",
+                warning: "Tänk på att",
+                danger: "Tänk på att",
+            },
+        },
+    },
     vendor: [
         {
             package: "vue",
@@ -90,8 +103,10 @@ const docs = new Generator({
         "@forsakringskassan/docs-live-example",
     ],
     processors: [
+        extractExamplesProcessor({
+            outputFolder: "docs/examples/files",
+        }),
         searchProcessor(),
-        themeSelectProcessor(),
         versionProcessor(pkg, "footer:right", {
             scm: isRelease
                 ? undefined
@@ -99,6 +114,10 @@ const docs = new Generator({
                       commitUrlFormat: "{{ repository }}/commits/{{ hash }}",
                       prUrlFormat: "{{ repository }}/pull/{{ pr }}",
                   },
+        }),
+        manifestProcessor({
+            markdown: "etc/docs-manifest.md",
+            verify: isCI,
         }),
         motdProcessor(),
         selectableVersionProcessor(pkg, "footer:right"),
@@ -113,6 +132,7 @@ const docs = new Generator({
             urlFormat: DOCS_SOURCE_URL_FORMAT,
         }),
         cookieProcessor(),
+        htmlRedirectProcessor(),
     ],
     setupPath: path.resolve("docs/src/setup.ts"),
 });
@@ -125,44 +145,52 @@ docs.compileStyle("docs", "./docs/src/docs-theme.scss", {
     appendTo: "head",
 });
 
-docs.compileStyle("docs-exp", "./docs/src/exp-theme.scss", {
+docs.compileStyle("docs-fkui", "./docs/src/fkui-theme.scss", {
     appendTo: "head",
     attributes: {
         data: {
-            theme: "exp",
+            theme: "fkui",
         },
         disabled: true,
     },
 });
 
-docs.compileStyle("docs-int", "./docs/src/int-theme.scss", {
-    appendTo: "head",
-    attributes: {
-        data: {
-            theme: "int",
-        },
-        disabled: true,
-    },
-});
-
-docs.copyResource("images", path.join(fkuiDesign, "assets/images"));
+docs.copyResource("images", "docs/src/assets/images");
 
 try {
     await docs.build(config.sourceFiles);
 
-    if (createVersionMock) {
-        await fs.mkdir("public/latest", { recursive: true });
-        const latest = `v${pkg.version}`;
-        const versions = JSON.stringify(
-            {
-                latest,
-                versions: [latest],
-            },
-            null,
-            2,
-        );
-        await fs.writeFile("public/versions.json", versions, "utf-8");
-    }
+    const latest = `v${pkg.version}`;
+    const versions = JSON.stringify(
+        {
+            latest,
+            versions: [latest],
+        },
+        null,
+        2,
+    );
+    await fs.mkdir("temp/docs", { recursive: true });
+    await fs.writeFile("temp/docs/versions.json", versions, "utf-8");
+
+    /* copy docs from each package */
+    console.log(); // intentional blank line
+    await copyDocs("@fkui/date", "packages/date/typedoc", "public/date");
+    await copyDocs("@fkui/logic", "packages/logic/typedoc", "public/logic");
+    await copyDocs(
+        "@fkui/vue-labs",
+        "packages/vue-labs/public",
+        "public/vue-labs",
+    );
+    await copyDocs(
+        "@fkui/vue-sandbox",
+        "internal/vue-sandbox/dist",
+        "public/vue-sandbox",
+    );
+    await copyDocs(
+        "@fkui/testbed-page-layout",
+        "internal/testbed-page-layout/dist",
+        "public/testbed-page-layout",
+    );
 } catch (err) {
     console.error(err.prettyError ? err.prettyError() : err);
     process.exitCode = 1;

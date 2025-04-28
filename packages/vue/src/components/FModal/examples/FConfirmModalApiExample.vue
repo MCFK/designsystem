@@ -1,15 +1,9 @@
-<template>
-    <div class="f-confirm-modal">
-        <button type="button" class="button button--secondary" @click="onClick">Ta bort</button>
-    </div>
-</template>
-
 <script>
 import { defineComponent } from "vue";
 import { confirmModal } from "@fkui/vue";
 
 export default defineComponent({
-    name: "FConfirmModalExample",
+    name: "FConfirmModalApiExample",
     data() {
         return {
             frukt: {
@@ -34,3 +28,9 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div>
+        <button type="button" class="button button--secondary" @click="onClick">Ta bort</button>
+    </div>
+</template>

@@ -4,24 +4,28 @@
 
 ```ts
 
+import { AllowedComponentProps } from 'vue';
 import { App } from 'vue';
 import { AppContext } from 'vue';
 import { BankAccountNumberString } from '@fkui/logic';
 import { BankgiroString } from '@fkui/logic';
 import { ClearingnumberString } from '@fkui/logic';
 import { Component } from 'vue';
+import { ComponentCustomProps } from 'vue';
 import { ComponentOptions } from 'vue';
 import { ComponentOptionsMixin } from 'vue';
 import { ComponentProvideOptions } from 'vue';
 import { ComponentPublicInstance } from 'vue';
 import { ComputedRef } from 'vue';
 import { DefineComponent } from 'vue';
+import { DistributeRef } from '@vue/reactivity';
 import { ExtractPropTypes } from 'vue';
 import { FDate } from '@fkui/date';
 import { FocusOptions as FocusOptions_2 } from '@fkui/logic';
 import { formatNumber } from '@fkui/logic';
 import { formatPersonnummer } from '@fkui/logic';
 import { formatPostalCode } from '@fkui/logic';
+import { IfAny } from '@vue/shared';
 import { InjectionKey } from 'vue';
 import { OrganisationsnummerString } from '@fkui/logic';
 import { parseBankAccountNumber } from '@fkui/logic';
@@ -37,37 +41,39 @@ import { PersonnummerString } from '@fkui/logic';
 import { Plugin as Plugin_2 } from 'vue';
 import { PlusgiroString } from '@fkui/logic';
 import { PostalCodeString } from '@fkui/logic';
+import { Prop } from 'vue';
 import { PropType } from 'vue';
 import { PublicProps } from 'vue';
 import { Ref } from 'vue';
-import { Reference } from '@fkui/logic';
-import { RouteLocationNamedRaw } from 'vue-router';
-import { RouteLocationPathRaw } from 'vue-router';
 import { ShallowRef } from 'vue';
+import { ShallowUnwrapRef } from 'vue';
 import { Slot } from 'vue';
 import { Slots } from 'vue';
 import { StackHandle } from '@fkui/logic';
+import { UnwrapRef } from 'vue';
 import { ValidatableHTMLElement } from '@fkui/logic';
 import { ValidationConfigUpdateDetail } from '@fkui/logic';
 import { ValidatorConfigs } from '@fkui/logic';
 import { ValidityEvent } from '@fkui/logic';
+import { VNode } from 'vue';
+import { VNodeProps } from 'vue';
 import { WeekdayNaming } from '@fkui/date';
 
 // @internal (undocumented)
 export function actionFromKeyboardEvent(event: KeyboardEvent): MenuAction | null;
 
 // @public (undocumented)
-export type ActivateItemCallback = (item: ListItem) => void;
+export type ActivateItemCallback<T> = (item: T) => void;
 
 // @public (undocumented)
-export function ActivateItemInjected(): ActivateItemInterface;
+export function ActivateItemInjected<T>(): ActivateItemInterface<T>;
 
 // @public (undocumented)
-export interface ActivateItemInterface {
+export interface ActivateItemInterface<T> {
     // (undocumented)
-    registerCallbackAfterItemAdd(callback: ActivateItemCallback): void;
+    registerCallbackAfterItemAdd(callback: ActivateItemCallback<T>): void;
     // (undocumented)
-    registerCallbackBeforeItemDelete(callback: ActivateItemCallback): void;
+    registerCallbackBeforeItemDelete(callback: ActivateItemCallback<T>): void;
 }
 
 // @public
@@ -78,15 +84,6 @@ export type AsyncModalResult<T> = Promise<ModalResult<T>>;
 
 // @public (undocumented)
 export type BeforeNavigate = (item: ErrorItem) => void | Promise<void>;
-
-// @public
-export function cleanUpElements(vm: {
-    $el: Element;
-    components: ComponentReferences;
-}): Promise<void>;
-
-// @public (undocumented)
-export type ComponentReferences = Record<string, ComponentValidityEvent> | Record<string, Reference<FormErrorList>>;
 
 // @public (undocumented)
 export interface ComponentUnmountEvent {
@@ -101,9 +98,6 @@ export interface ComponentValidityEvent extends ValidityEvent {
     // (undocumented)
     focusElementId: string;
 }
-
-// @public (undocumented)
-export type ComponentValueTypes = ComponentValidityEvent | Reference<FormErrorList>;
 
 // @public (undocumented)
 export const config: FKUIConfig;
@@ -143,11 +137,6 @@ export interface ContextMenuTextItem {
     // (undocumented)
     label: string;
 }
-
-// @public (undocumented)
-export function createFFormProvideOptions(vm: {
-    components: Record<string, Reference<FormErrorList | FormStep>>;
-}): FFormProvider;
 
 // @public (undocumented)
 const _default: DefineComponent<ExtractPropTypes<    {
@@ -225,8 +214,8 @@ default(): BeforeNavigate;
 }>> & Readonly<{
 onSubmit?: ((...args: any[]) => any) | undefined;
 }>, {
-beforeSubmit: FValidationFormCallback;
 id: string;
+beforeSubmit: FValidationFormCallback;
 beforeValidation: FValidationFormCallback;
 useErrorList: boolean;
 errorListBullets: boolean;
@@ -447,170 +436,10 @@ export { _default as FValidationForm }
 export { _default as IValidationForm }
 
 // @public (undocumented)
-const _default_2: DefineComponent<ExtractPropTypes<    {
-disabled: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-};
-value: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: true;
-};
-}>, {
-showDetails: "always" | "never" | "when-selected";
-getFieldsetLabelText: () => string | undefined;
-}, {
-expanded: boolean;
-height: number;
-initialStyle: {
-overflow: string;
-transition: string;
-};
-hiddenStyle: {
-height: string;
-position: string;
-visibility: string;
-};
-visibleStyle: {
-width: string;
-position: string;
-visibility: string;
-height: string;
-};
-openedStyle: {
-height: string;
-};
-}, {
-attrs(): Record<string, unknown>;
-disabledClass(): string;
-injected(): any;
-}, {
-updateExpandedFlag(): void;
-emitVModelEvent(event: Event): void;
-onKeydown(event: Event): void;
-onValidity({ detail }: CustomEvent<ValidityEvent>): void;
-enter(element: Element): void;
-afterEnter(element: Element): void;
-leave(element: Element): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
-disabled: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-};
-value: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: true;
-};
-}>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-}>, {
-id: string;
-disabled: boolean;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-export { _default_2 as FCheckboxField }
-export { _default_2 as FCheckboxGroupField }
-
-// @public (undocumented)
-const _default_3: DefineComponent<ExtractPropTypes<    {
-disabled: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-};
-value: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: true;
-};
-}>, {
-sharedName: string | undefined;
-showDetails: "always" | "never" | "when-selected";
-getFieldsetLabelText: () => string | undefined;
-}, {
-height: number;
-initialStyle: {
-overflow: string;
-transition: string;
-};
-hiddenStyle: {
-height: string;
-position: string;
-visibility: string;
-};
-visibleStyle: {
-width: string;
-position: string;
-visibility: string;
-height: string;
-};
-openedStyle: {
-height: string;
-};
-}, {
-attrs(): Record<string, unknown>;
-disabledClass(): string;
-}, {
-onValidity({ detail }: CustomEvent<ValidityEvent>): Promise<void>;
-enter(element: Element): void;
-afterEnter(element: Element): void;
-leave(element: Element): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
-disabled: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-};
-value: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: true;
-};
-}>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-}>, {
-id: string;
-disabled: boolean;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-export { _default_3 as FRadioField }
-export { _default_3 as FRadioGroupField }
+export type DetailsPanelCloseCallback<T> = (data: {
+    item: T;
+    reason: string;
+}) => void;
 
 // @internal
 export function dispatchComponentUnmountEvent(element: ValidatableHTMLElement): void;
@@ -674,32 +503,6 @@ export const EventBus: EventBus;
 export interface EventBusMap {
 }
 
-// @public (undocumented)
-export interface ExpandableTable {
-    // (undocumented)
-    expandableColumnClasses(column: FTableColumnData, index: number): string[];
-    // (undocumented)
-    expandableRowClasses(row: ListItem, index: number): string[];
-    // (undocumented)
-    expandableRows(row: ListItem): ListArray | undefined;
-    // (undocumented)
-    expandedRows: Ref<ListArray>;
-    // (undocumented)
-    getExpandableDescribedby(row: ListItem): string | undefined;
-    // (undocumented)
-    hasExpandableContent(row: ListItem): boolean;
-    // (undocumented)
-    hasExpandableSlot: ComputedRef<boolean>;
-    // (undocumented)
-    isExpandableTable: ComputedRef<boolean>;
-    // (undocumented)
-    isExpanded(row: ListItem): boolean;
-    // (undocumented)
-    rowAriaExpanded(row: ListItem): boolean | undefined;
-    // (undocumented)
-    toggleExpanded(row: ListItem): void;
-}
-
 // Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "__VLS_component" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "__VLS_TemplateResult" needs to be exported by the entry point index.d.ts
@@ -740,7 +543,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -773,6 +576,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -821,7 +629,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -833,7 +641,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -867,16 +675,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -891,7 +704,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -1034,6 +847,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -1124,8 +938,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -1134,8 +948,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -1187,7 +1001,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -1220,6 +1034,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -1268,7 +1087,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -1280,7 +1099,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -1314,16 +1133,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -1338,7 +1162,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -1481,6 +1305,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -1571,8 +1396,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -1581,8 +1406,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -1623,7 +1448,7 @@ required: true;
 }>, {}, {}, {}, {
 onClickDay(date: FDate): void;
 onChangeMonth(date: FDate): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "click" | "update:modelValue")[], "change" | "click" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "click")[], "update:modelValue" | "click", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDate>;
 required: true;
@@ -1642,7 +1467,6 @@ type: PropType<FDate>;
 required: true;
 };
 }>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
 onClick?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 }>, {
@@ -1676,7 +1500,7 @@ onClickPreviousButton(): void;
 onClickNextButton(): void;
 getDateText(value: FDate): string;
 isFocused(ref: string): boolean;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change")[], "update:modelValue" | "change", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDate>;
 required: true;
@@ -1771,7 +1595,7 @@ onClickDay(date: FDate): void;
 onKeydownDay(date: FDate, event: KeyboardEvent): Promise<void>;
 isDayFocused(date: FDate): boolean;
 getTabindex(date: FDate): 0 | -1;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "click" | "update:modelValue")[], "change" | "click" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change" | "click")[], "update:modelValue" | "change" | "click", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDate>;
 required: true;
@@ -1813,6 +1637,7 @@ resizeObserver: ResizeObserver | undefined;
 internalHideWeekNumbers: boolean;
 showShortWeekdays: boolean;
 }, {
+ariaLabel(): string;
 totalCols(): number;
 weeks(): Array<{
 week: number;
@@ -1908,205 +1733,88 @@ highlight: boolean;
 // @public (undocumented)
 export const FCard: __VLS_WithTemplateSlots_2<typeof __VLS_component_2, __VLS_TemplateResult_2["slots"]>;
 
-// @public @deprecated (undocumented)
-export const FCheckboxGroup: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-name: {
-type: StringConstructor;
-required: true;
-};
-}>, {}, {}, {}, {}, ComponentOptions, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-name: {
-type: StringConstructor;
-required: true;
-};
-}>> & Readonly<{}>, {
-id: string;
-}, {}, {
-FFieldset: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-name: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-labelClass: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-contentClass: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-horizontal: {
-type: BooleanConstructor;
-required: false;
-};
-chip: {
+// @public (undocumented)
+export const FCheckboxField: DefineComponent<ExtractPropTypes<    {
+disabled: {
 type: BooleanConstructor;
 required: false;
 default: boolean;
 };
-border: {
-type: BooleanConstructor;
-required: false;
-};
-showDetails: {
-type: PropType<"never" | "when-selected" | "always">;
-default: string;
-validator(value: string): boolean;
-};
-}>, void, {
-validity: ValidityEvent;
-descriptionClass: string[];
-discreteDescriptionClass: string[];
-validityElement: HTMLElement | null;
-dispatchObject: ComponentValidityEvent;
-detail: ValidityEvent;
-hasDocumentListener: boolean;
-legendKey: number;
-oldMessage: string;
-children: HTMLInputElement[];
-hasCheckbox: boolean;
-hasRadiobutton: boolean;
-}, {
-hasError(): boolean;
-hasErrorMessageSlot(): boolean;
-hasTooltipSlot(): boolean;
-hasDescriptionSlot(): boolean;
-legendClass(): string[];
-groupLabelClass(): string[];
-groupContentClass(): string[];
-classes(): Record<string, boolean>;
-checkedChildren(): HTMLInputElement[];
-debouncedUpdateChildren(): () => void;
-checkboxCheckedScreenReaderText(): string;
-numberOfCheckboxesScreenReaderText(): string;
-numberOfCheckedCheckboxesScreenText(): string;
-}, {
-onValidity({ detail }: CustomEvent<ValidityEvent>): Promise<void>;
-forceLegendUpdate(): void;
-updateCheckboxChildren(): Promise<void>;
-}, ComponentOptions, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
 default: () => string;
 };
-name: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-labelClass: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-contentClass: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-horizontal: {
-type: BooleanConstructor;
+modelValue: {
+type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
 required: false;
 };
-chip: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
+value: {
+type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
+required: true;
 };
-border: {
-type: BooleanConstructor;
-required: false;
-};
-showDetails: {
-type: PropType<"never" | "when-selected" | "always">;
-default: string;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-horizontal: boolean;
-name: string;
-id: string;
-labelClass: string;
-contentClass: string;
+}>, {
 showDetails: "always" | "never" | "when-selected";
-chip: boolean;
-border: boolean;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
+getFieldsetLabelText: () => string | undefined;
+}, {
+expanded: boolean;
+height: number;
+initialStyle: {
+overflow: string;
+transition: string;
+};
+hiddenStyle: {
+height: string;
+position: string;
+visibility: string;
+};
+visibleStyle: {
+width: string;
+position: string;
+visibility: string;
+height: string;
+};
+openedStyle: {
+height: string;
+};
+}, {
+attrs(): Record<string, unknown>;
+disabledClass(): string;
+injected(): any;
+}, {
+updateExpandedFlag(): void;
+emitVModelEvent(event: Event): void;
+onKeydown(event: Event): void;
+onValidity({ detail }: CustomEvent<ValidityEvent>): void;
+enter(element: Element): void;
+afterEnter(element: Element): void;
+leave(element: Element): void;
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change")[], "update:modelValue" | "change", PublicProps, Readonly<ExtractPropTypes<    {
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
+id: {
 type: StringConstructor;
+required: false;
+default: () => string;
+};
+modelValue: {
+type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
+required: false;
+};
+value: {
+type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
 required: true;
 };
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
+}>> & Readonly<{
+onChange?: ((...args: any[]) => any) | undefined;
+"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
+}>, {
+id: string;
+disabled: boolean;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
 
 // @public (undocumented)
 export const FClearingnumberTextField: DefineComponent<ExtractPropTypes<    {
@@ -2141,7 +1849,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -2174,6 +1882,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -2222,7 +1935,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -2234,7 +1947,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -2268,16 +1981,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -2292,7 +2010,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -2435,6 +2153,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -2525,8 +2244,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -2535,8 +2254,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -2646,12 +2365,12 @@ validator(value: string): boolean;
 }>> & Readonly<{
 [x: `on${Capitalize<string>}`]: ((...args: any[]) => any) | undefined;
 }>, {
-focus: "on" | "off" | "open";
 size: string;
 content: string;
 isOpen: boolean;
 fullscreen: boolean;
 ariaCloseText: string;
+focus: "on" | "off" | "open";
 heading: string;
 buttons: FModalButtonDescriptor[];
 }, {}, {
@@ -2741,13 +2460,13 @@ validator(value: string): boolean;
 }>> & Readonly<{
 onClose?: ((...args: any[]) => any) | undefined;
 }>, {
-focus: "on" | "off" | "open";
 type: "" | "warning" | "error" | "information";
 size: string;
 isOpen: boolean;
 fullscreen: boolean;
 id: string;
 ariaCloseText: string;
+focus: "on" | "off" | "open";
 }, {}, {
 FIcon: DefineComponent<ExtractPropTypes<    {
 name: {
@@ -2845,7 +2564,7 @@ doHandlePopupMenuTabKey(action: MenuAction): boolean;
 onKeyDown(event: KeyboardEvent): Promise<void>;
 setFocusOnItem(index: number): Promise<void>;
 activateItem(index: number): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("close" | "select")[], "close" | "select", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("select" | "close")[], "select" | "close", PublicProps, Readonly<ExtractPropTypes<    {
 isOpen: {
 type: BooleanConstructor;
 required: true;
@@ -2886,11 +2605,6 @@ type: PropType<"always" | "never" | "auto">;
 required: false;
 validator(value: string): boolean;
 default: string;
-};
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
 };
 container: {
 type: PropType<HTMLElement | null | undefined>;
@@ -2950,11 +2664,6 @@ required: false;
 validator(value: string): boolean;
 default: string;
 };
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
 container: {
 type: PropType<HTMLElement | null | undefined>;
 required: false;
@@ -2986,8 +2695,7 @@ onOpen?: ((...args: any[]) => any) | undefined;
 }>, {
 anchor: HTMLElement | null | undefined;
 viewport: HTMLElement;
-inline: "always" | "never" | "auto";
-alwaysInline: boolean;
+inline: "auto" | "always" | "never";
 container: HTMLElement | null | undefined;
 keyboardTrap: boolean;
 focusElement: () => HTMLElement | null;
@@ -3151,1035 +2859,57 @@ rotate: string;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_PrettifyLocal" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export const FCrudDataset: DefineComponent<ExtractPropTypes<    {
-modelValue: {
-type: PropType<ListArray<ListItem>>;
-required: false;
-default: () => never[];
+export const FCrudDataset: <T>(__VLS_props: NonNullable<Awaited<typeof __VLS_setup>>["props"], __VLS_ctx?: __VLS_PrettifyLocal<Pick<NonNullable<Awaited<typeof __VLS_setup>>, "attrs" | "emit" | "slots">>, __VLS_expose?: NonNullable<Awaited<typeof __VLS_setup>>["expose"], __VLS_setup?: Promise<{
+    props: __VLS_PrettifyLocal<Pick<Partial<{
+        beforeCreate: (() => T) | undefined;
+        modelValue: T[];
+        beforeSubmit: FValidationFormCallback;
+        beforeValidation: FValidationFormCallback;
+        onCancel: () => void;
+        primaryButtonRight: boolean;
+        addNewModalHeader: string;
+        modifyModalHeader: string;
+        deleteModalHeader: string;
+    }> & Omit<{
+        readonly modelValue: T[];
+        readonly beforeSubmit: FValidationFormCallback;
+        readonly beforeValidation: FValidationFormCallback;
+        readonly primaryButtonRight: boolean;
+        readonly addNewModalHeader: string;
+        readonly modifyModalHeader: string;
+        readonly deleteModalHeader: string;
+        readonly beforeCreate?: (() => T) | undefined;
+        readonly onCancel?: (() => void) | undefined;
+        readonly onCreated?: ((item: T) => any) | undefined;
+        readonly onUpdated?: ((item: T) => any) | undefined;
+        readonly "onUpdate:modelValue"?: ((items: T[]) => any) | undefined;
+        readonly onDeleted?: ((item: T) => any) | undefined;
+    } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "beforeCreate" | "modelValue" | "beforeSubmit" | "beforeValidation" | "onCancel" | "primaryButtonRight" | "addNewModalHeader" | "modifyModalHeader" | "deleteModalHeader">, "onUpdate:modelValue" | "onCreated" | "onUpdated" | "onDeleted" | ("beforeCreate" | "modelValue" | "beforeSubmit" | "beforeValidation" | "onCancel" | "primaryButtonRight" | "addNewModalHeader" | "modifyModalHeader" | "deleteModalHeader")> & {} & Partial<{}>> & PublicProps;
+    expose(exposed: ShallowUnwrapRef<    {}>): void;
+    attrs: any;
+    slots: {
+        default?(_: {}): any;
+        'add-button'?(_: {}): any;
+        buttons?(_: {
+            buttonClasses: string[];
+        }): any;
+        add?(_: {
+            item: NonNullable<DistributeRef<[T | null] extends [Ref<any, any>] ? IfAny<Ref<any, any> & T, Ref<Ref<any, any> & T, Ref<any, any> & T>, Ref<any, any> & T> : Ref<UnwrapRef<T> | null, T | UnwrapRef<T> | null>>>;
+        }): any;
+        modify?(_: {
+            item: NonNullable<DistributeRef<[T | null] extends [Ref<any, any>] ? IfAny<Ref<any, any> & T, Ref<Ref<any, any> & T, Ref<any, any> & T>, Ref<any, any> & T> : Ref<UnwrapRef<T> | null, T | UnwrapRef<T> | null>>>;
+        }): any;
+        delete?(_: {
+            item: NonNullable<DistributeRef<[T | null] extends [Ref<any, any>] ? IfAny<Ref<any, any> & T, Ref<Ref<any, any> & T, Ref<any, any> & T>, Ref<any, any> & T> : Ref<UnwrapRef<T> | null, T | UnwrapRef<T> | null>>>;
+        }): any;
+    };
+    emit: ((evt: "created", item: T) => void) & ((evt: "updated", item: T) => void) & ((evt: "update:modelValue", items: T[]) => void) & ((evt: "deleted", item: T) => void);
+}>) => VNode & {
+    __ctx?: Awaited<typeof __VLS_setup>;
 };
-beforeCreate: {
-type: PropType<(() => ListItem) | undefined>;
-required: false;
-default: undefined;
-};
-primaryButtonRight: {
-type: BooleanConstructor;
-default: boolean;
-};
-beforeSubmit: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): void;
-};
-beforeValidation: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): void;
-};
-onCancel: {
-type: PropType<() => void>;
-required: false;
-default(): undefined;
-};
-addNewModalHeader: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-modifyModalHeader: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-deleteModalHeader: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-}>, {}, FCrudDatasetData, {
-confirmButtonText(): string;
-cancelButtonText(): string;
-confirmDeleteButtons(): FModalButtonDescriptor[];
-hasAddSlot(): boolean;
-hasDeleteSlot(): boolean;
-hasModifySlot(): boolean;
-formModalHeader(): string;
-}, {
-createItem(): void;
-deleteItem(item: ListItem): void;
-onDeleteConfirm(): void;
-onDeleteClose(e: {
-reason: string;
-}): void;
-onModalClose(): void;
-onFormModalSubmit(): void;
-updateItem(item: ListItem): void;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "created" | "updated" | "update:modelValue" | "deleted")[], "change" | "created" | "updated" | "update:modelValue" | "deleted", PublicProps, Readonly<ExtractPropTypes<    {
-modelValue: {
-type: PropType<ListArray<ListItem>>;
-required: false;
-default: () => never[];
-};
-beforeCreate: {
-type: PropType<(() => ListItem) | undefined>;
-required: false;
-default: undefined;
-};
-primaryButtonRight: {
-type: BooleanConstructor;
-default: boolean;
-};
-beforeSubmit: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): void;
-};
-beforeValidation: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): void;
-};
-onCancel: {
-type: PropType<() => void>;
-required: false;
-default(): undefined;
-};
-addNewModalHeader: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-modifyModalHeader: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-deleteModalHeader: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-}>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onCreated?: ((...args: any[]) => any) | undefined;
-onUpdated?: ((...args: any[]) => any) | undefined;
-onDeleted?: ((...args: any[]) => any) | undefined;
-}>, {
-beforeSubmit: FValidationFormCallback;
-beforeCreate: (() => ListItem) | undefined;
-modelValue: ListArray<UnknownItem>;
-beforeValidation: FValidationFormCallback;
-onCancel: () => void;
-primaryButtonRight: boolean;
-addNewModalHeader: string;
-modifyModalHeader: string;
-deleteModalHeader: string;
-}, {}, {
-FFormModal: DefineComponent<ExtractPropTypes<    {
-fullscreen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-size: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-dataTest: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-value: {
-type: ObjectConstructor;
-default: () => {};
-};
-useErrorList: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-formId: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-ariaCloseText: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-beforeSubmit: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): void;
-};
-beforeValidation: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): void;
-};
-buttons: {
-type: PropType<FModalButtonDescriptor[]>;
-required: false;
-default: () => FModalButtonDescriptor[];
-};
-}>, {}, {}, {
-preparedButtons(): FModalButton[];
-hasDeprecatedSlots(): boolean;
-}, {
-onClose(): void;
-onSubmit(): Promise<void>;
-onCancel(): void;
-}, ComponentOptions, ComponentOptionsMixin, ("cancel" | "close" | "submit")[], "cancel" | "close" | "submit", PublicProps, Readonly<ExtractPropTypes<    {
-fullscreen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-size: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-dataTest: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-value: {
-type: ObjectConstructor;
-default: () => {};
-};
-useErrorList: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-formId: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-ariaCloseText: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-beforeSubmit: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): void;
-};
-beforeValidation: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): void;
-};
-buttons: {
-type: PropType<FModalButtonDescriptor[]>;
-required: false;
-default: () => FModalButtonDescriptor[];
-};
-}>> & Readonly<{
-onSubmit?: ((...args: any[]) => any) | undefined;
-onClose?: ((...args: any[]) => any) | undefined;
-onCancel?: ((...args: any[]) => any) | undefined;
-}>, {
-value: Record<string, any>;
-size: string;
-isOpen: boolean;
-fullscreen: boolean;
-beforeSubmit: FValidationFormCallback;
-ariaCloseText: string;
-buttons: FModalButtonDescriptor[];
-beforeValidation: FValidationFormCallback;
-useErrorList: boolean;
-dataTest: string;
-formId: string;
-}, {}, {
-FModal: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-ariaCloseText: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-fullscreen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-type: {
-type: PropType<"" | "information" | "warning" | "error">;
-default: string;
-validator(value: string): boolean;
-};
-size: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-focus: {
-type: PropType<"on" | "off" | "open">;
-default: string;
-validator(value: string): boolean;
-};
-}>, {}, FModalData, {
-modalClass(): string[];
-containerClasses(): string[];
-hasHeaderSlot(): boolean;
-}, {
-onClose(): void;
-openModal(): void;
-resolveFocusElement(): Element;
-restoreState(): void;
-onFocusFirst(): void;
-onFocusLast(): void;
-}, ComponentOptions, ComponentOptionsMixin, "close"[], "close", PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-ariaCloseText: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-fullscreen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-type: {
-type: PropType<"" | "information" | "warning" | "error">;
-default: string;
-validator(value: string): boolean;
-};
-size: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-focus: {
-type: PropType<"on" | "off" | "open">;
-default: string;
-validator(value: string): boolean;
-};
-}>> & Readonly<{
-onClose?: ((...args: any[]) => any) | undefined;
-}>, {
-focus: "on" | "off" | "open";
-type: "" | "warning" | "error" | "information";
-size: string;
-isOpen: boolean;
-fullscreen: boolean;
-id: string;
-ariaCloseText: string;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-FValidationForm: DefineComponent<ExtractPropTypes<    {
-beforeSubmit: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): () => undefined;
-};
-beforeValidation: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): () => undefined;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-useErrorList: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-errorListBullets: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-errorListBeforeNavigate: {
-type: PropType<BeforeNavigate>;
-required: false;
-default(): BeforeNavigate;
-};
-}>, {}, {
-validity: GroupValidityEvent;
-submitted: boolean;
-}, {
-groupKey(): string;
-errors(): ErrorItem[];
-displayErrors(): boolean;
-}, {
-hasFormErrors(): Promise<boolean>;
-onSubmit(event: Event): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, "submit"[], "submit", PublicProps, Readonly<ExtractPropTypes<    {
-beforeSubmit: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): () => undefined;
-};
-beforeValidation: {
-type: PropType<FValidationFormCallback>;
-required: false;
-default(): () => undefined;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-useErrorList: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-errorListBullets: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-errorListBeforeNavigate: {
-type: PropType<BeforeNavigate>;
-required: false;
-default(): BeforeNavigate;
-};
-}>> & Readonly<{
-onSubmit?: ((...args: any[]) => any) | undefined;
-}>, {
-beforeSubmit: FValidationFormCallback;
-id: string;
-beforeValidation: FValidationFormCallback;
-useErrorList: boolean;
-errorListBullets: boolean;
-errorListBeforeNavigate: BeforeNavigate;
-}, {}, {
-FValidationGroup: DefineComponent<ExtractPropTypes<    {
-modelValue: {
-type: PropType<GroupValidityEvent>;
-required: false;
-default: () => GroupValidityEvent;
-};
-stopPropagation: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-}>, {}, {
-components: Record<string, ComponentValidityEvent>;
-}, {}, {
-onComponentUnmount(event: CustomEvent<ComponentUnmountEvent>): void;
-onComponentValidity(event: CustomEvent<ComponentValidityEvent>): Promise<void>;
-triggerGroupValidityEvent(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("group-validity" | "update:modelValue")[], "group-validity" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
-modelValue: {
-type: PropType<GroupValidityEvent>;
-required: false;
-default: () => GroupValidityEvent;
-};
-stopPropagation: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-}>> & Readonly<{
-"onGroup-validity"?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-}>, {
-modelValue: GroupValidityEvent;
-stopPropagation: boolean;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-FErrorList: DefineComponent<ExtractPropTypes<    {
-items: {
-type: PropType<ErrorItem[]>;
-required: true;
-};
-bullets: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-beforeNavigate: {
-type: PropType<BeforeNavigate>;
-required: false;
-default(): BeforeNavigate;
-};
-}>, {}, {}, {
-hasTitleSlot(): boolean;
-}, {
-liClasses(errorItem: ErrorItem): string[];
-onClickItem(item: ErrorItem): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-items: {
-type: PropType<ErrorItem[]>;
-required: true;
-};
-bullets: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-beforeNavigate: {
-type: PropType<BeforeNavigate>;
-required: false;
-default(): BeforeNavigate;
-};
-}>> & Readonly<{}>, {
-bullets: boolean;
-beforeNavigate: BeforeNavigate;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlex: DefineComponent<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-gap: string;
-collapse: boolean;
-wrap: boolean;
-float: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlexItem: DefineComponent<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-grow: boolean;
-shrink: boolean;
-align: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-FConfirmModal: DefineComponent<ExtractPropTypes<    {
-fullscreen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-content: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-heading: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-size: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-ariaCloseText: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-buttons: {
-type: PropType<FModalButtonDescriptor[]>;
-required: false;
-default: () => FModalButtonDescriptor[];
-};
-focus: {
-type: PropType<"on" | "off" | "open">;
-default: string;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-preparedButtons(): FModalButton[];
-}, {
-onClose(): void;
-onClick(button: FModalButton): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, string[], string, PublicProps, Readonly<ExtractPropTypes<    {
-fullscreen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-content: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-heading: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-size: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-ariaCloseText: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-buttons: {
-type: PropType<FModalButtonDescriptor[]>;
-required: false;
-default: () => FModalButtonDescriptor[];
-};
-focus: {
-type: PropType<"on" | "off" | "open">;
-default: string;
-validator(value: string): boolean;
-};
-}>> & Readonly<{
-[x: `on${Capitalize<string>}`]: ((...args: any[]) => any) | undefined;
-}>, {
-focus: "on" | "off" | "open";
-size: string;
-content: string;
-isOpen: boolean;
-fullscreen: boolean;
-ariaCloseText: string;
-heading: string;
-buttons: FModalButtonDescriptor[];
-}, {}, {
-FModal: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-ariaCloseText: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-fullscreen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-type: {
-type: PropType<"" | "information" | "warning" | "error">;
-default: string;
-validator(value: string): boolean;
-};
-size: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-focus: {
-type: PropType<"on" | "off" | "open">;
-default: string;
-validator(value: string): boolean;
-};
-}>, {}, FModalData, {
-modalClass(): string[];
-containerClasses(): string[];
-hasHeaderSlot(): boolean;
-}, {
-onClose(): void;
-openModal(): void;
-resolveFocusElement(): Element;
-restoreState(): void;
-onFocusFirst(): void;
-onFocusLast(): void;
-}, ComponentOptions, ComponentOptionsMixin, "close"[], "close", PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-ariaCloseText: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-fullscreen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-type: {
-type: PropType<"" | "information" | "warning" | "error">;
-default: string;
-validator(value: string): boolean;
-};
-size: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-focus: {
-type: PropType<"on" | "off" | "open">;
-default: string;
-validator(value: string): boolean;
-};
-}>> & Readonly<{
-onClose?: ((...args: any[]) => any) | undefined;
-}>, {
-focus: "on" | "off" | "open";
-type: "" | "warning" | "error" | "information";
-size: string;
-isOpen: boolean;
-fullscreen: boolean;
-id: string;
-ariaCloseText: string;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, () => FCrudDatasetInterface & ActivateItemInterface, true, {}, any>;
-
-// @public (undocumented)
-export interface FCrudDatasetData {
-    // (undocumented)
-    callbackAfterItemAdd(item: ListItem): void;
-    // (undocumented)
-    callbackBeforeItemDelete(item: ListItem): void;
-    // (undocumented)
-    isConfirmModalOpen: boolean;
-    // (undocumented)
-    isFormModalOpen: boolean;
-    // (undocumented)
-    item: null | ListItem;
-    // (undocumented)
-    Operation: typeof Operation;
-    // (undocumented)
-    operation: Operation;
-    // (undocumented)
-    originalItemToUpdate: null | ListItem;
-    // (undocumented)
-    result: ListArray;
-}
 
 // @public (undocumented)
 export interface FCrudDatasetInterface {
@@ -4227,7 +2957,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -4260,6 +2990,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -4308,7 +3043,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -4320,7 +3055,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -4354,16 +3089,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -4378,7 +3118,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -4521,6 +3261,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -4611,8 +3352,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -4621,8 +3362,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -4647,120 +3388,39 @@ formatter: FormatFunction<number>;
 parser: ParseFunction<number>;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_PrettifyLocal_2" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export const FDataTable: DefineComponent<ExtractPropTypes<    {
-rows: {
-type: PropType<ListArray>;
-required: true;
+export const FDataTable: <T extends object>(__VLS_props: NonNullable<Awaited<typeof __VLS_setup>>["props"], __VLS_ctx?: __VLS_PrettifyLocal_2<Pick<NonNullable<Awaited<typeof __VLS_setup>>, "attrs" | "emit" | "slots">>, __VLS_expose?: NonNullable<Awaited<typeof __VLS_setup>>["expose"], __VLS_setup?: Promise<{
+    props: __VLS_PrettifyLocal_2<Pick<Partial<{
+        scroll: TableScroll;
+        keyAttribute: string;
+        striped: boolean;
+    }> & Omit<{
+        readonly scroll: TableScroll;
+        readonly rows: T[];
+        readonly striped: boolean;
+        readonly keyAttribute?: string | undefined;
+    } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "scroll" | "keyAttribute" | "striped">, "rows" | ("scroll" | "keyAttribute" | "striped")> & {} & Partial<{}>> & PublicProps;
+    expose(exposed: ShallowUnwrapRef<    {}>): void;
+    attrs: any;
+    slots: {
+        caption?(_: {}): any;
+        default?(_: {
+            row: {};
+        }): any;
+        default?(_: {
+            row: T;
+        }): any;
+        default?(_: {
+            row: T;
+        }): any;
+        empty?(_: {}): any;
+    };
+    emit: {};
+}>) => VNode & {
+    __ctx?: Awaited<typeof __VLS_setup>;
 };
-keyAttribute: {
-type: StringConstructor;
-required: true;
-};
-striped: {
-type: BooleanConstructor;
-default: boolean;
-};
-scroll: {
-type: PropType<TableScroll>;
-default: TableScroll;
-validator(value: string): boolean;
-};
-}>, FSortFilterDatasetInterface, {
-columns: FTableColumnData[];
-}, {
-hasCaption(): boolean;
-tableClasses(): string[];
-isEmpty(): boolean;
-visibleColumns(): FTableColumnData[];
-wrapperClasses(): string[];
-tabindex(): number | undefined;
-}, {
-rowKey(item: ListItem): string;
-columnClasses(column: FTableColumnData): string[];
-iconClasses(column: FTableColumnData): string[];
-iconName(column: FTableColumnData): string;
-onClickColumnHeader(column: FTableColumnData): void;
-callbackOnSort(columnName: string, ascending: boolean): void;
-callbackSortableColumns(columnNames: string[]): void;
-escapeNewlines(value: string): string;
-}, ComponentOptions, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-rows: {
-type: PropType<ListArray>;
-required: true;
-};
-keyAttribute: {
-type: StringConstructor;
-required: true;
-};
-striped: {
-type: BooleanConstructor;
-default: boolean;
-};
-scroll: {
-type: PropType<TableScroll>;
-default: TableScroll;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-scroll: TableScroll;
-striped: boolean;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, () => Omit<FTableInterface, "renderColumns">, true, {}, any>;
 
 // @public (undocumented)
 export const FDatepickerField: DefineComponent<ExtractPropTypes<    {
@@ -4830,7 +3490,7 @@ isDateEnabled(day: FDate): boolean;
 isDaySelected(date: FDate): boolean;
 highlightDay(date: FDate): boolean;
 updateTextFieldValue(newValue: string): Promise<void>;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change")[], "update:modelValue" | "change", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: StringConstructor;
 required: false;
@@ -4870,12 +3530,12 @@ onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 }>, {
 modelValue: string;
-alwaysInline: boolean;
 disabled: boolean;
 labelWidth: string;
 inputWidth: string;
 initialMonth: FDate | undefined;
 highlightToday: boolean;
+alwaysInline: boolean;
 }, {}, {
 FCalendar: DefineComponent<ExtractPropTypes<    {
 modelValue: {
@@ -4898,7 +3558,7 @@ required: true;
 }>, {}, {}, {}, {
 onClickDay(date: FDate): void;
 onChangeMonth(date: FDate): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "click" | "update:modelValue")[], "change" | "click" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "click")[], "update:modelValue" | "click", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDate>;
 required: true;
@@ -4917,7 +3577,6 @@ type: PropType<FDate>;
 required: true;
 };
 }>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
 onClick?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 }>, {
@@ -4951,7 +3610,7 @@ onClickPreviousButton(): void;
 onClickNextButton(): void;
 getDateText(value: FDate): string;
 isFocused(ref: string): boolean;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change")[], "update:modelValue" | "change", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDate>;
 required: true;
@@ -5046,7 +3705,7 @@ onClickDay(date: FDate): void;
 onKeydownDay(date: FDate, event: KeyboardEvent): Promise<void>;
 isDayFocused(date: FDate): boolean;
 getTabindex(date: FDate): 0 | -1;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "click" | "update:modelValue")[], "change" | "click" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change" | "click")[], "update:modelValue" | "change" | "click", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDate>;
 required: true;
@@ -5088,6 +3747,7 @@ resizeObserver: ResizeObserver | undefined;
 internalHideWeekNumbers: boolean;
 showShortWeekdays: boolean;
 }, {
+ariaLabel(): string;
 totalCols(): number;
 weeks(): Array<{
 week: number;
@@ -5129,11 +3789,6 @@ type: PropType<"always" | "never" | "auto">;
 required: false;
 validator(value: string): boolean;
 default: string;
-};
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
 };
 container: {
 type: PropType<HTMLElement | null | undefined>;
@@ -5193,11 +3848,6 @@ required: false;
 validator(value: string): boolean;
 default: string;
 };
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
 container: {
 type: PropType<HTMLElement | null | undefined>;
 required: false;
@@ -5229,8 +3879,7 @@ onOpen?: ((...args: any[]) => any) | undefined;
 }>, {
 anchor: HTMLElement | null | undefined;
 viewport: HTMLElement;
-inline: "always" | "never" | "auto";
-alwaysInline: boolean;
+inline: "auto" | "always" | "never";
 container: HTMLElement | null | undefined;
 keyboardTrap: boolean;
 focusElement: () => HTMLElement | null;
@@ -5248,7 +3897,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -5281,6 +3930,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -5329,7 +3983,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -5341,7 +3995,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -5375,16 +4029,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -5399,7 +4058,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -5542,6 +4201,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -5632,8 +4292,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -5642,8 +4302,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -5768,6 +4428,30 @@ highlight: boolean;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_PrettifyLocal_3" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const FDetailsPanel: <T>(__VLS_props: NonNullable<Awaited<typeof __VLS_setup>>["props"], __VLS_ctx?: __VLS_PrettifyLocal_3<Pick<NonNullable<Awaited<typeof __VLS_setup>>, "attrs" | "emit" | "slots">>, __VLS_expose?: NonNullable<Awaited<typeof __VLS_setup>>["expose"], __VLS_setup?: Promise<{
+    props: __VLS_PrettifyLocal_3<Pick<Partial<{}> & Omit<{} & VNodeProps & AllowedComponentProps & ComponentCustomProps, never>, never> & {
+        name: string;
+        exclusive?: string;
+    } & Partial<{}>> & PublicProps;
+    expose(exposed: ShallowUnwrapRef<    {}>): void;
+    attrs: any;
+    slots: {
+        default?(_: {
+            item: T;
+            close: (reason?: string) => void;
+            header: "header";
+            footer: "footer";
+            content: "content";
+        }): any;
+    };
+    emit: {};
+}>) => VNode & {
+    __ctx?: Awaited<typeof __VLS_setup>;
+};
+
 // @public (undocumented)
 export const FDialogueTree: DefineComponent<ExtractPropTypes<    {
 modelValue: {
@@ -5784,7 +4468,7 @@ options(): FDialogueTreeOption[];
 }, {
 onClickedOption(option: FDialogueTreeOption, index: number): Promise<void>;
 emitChange(lastStep: boolean): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, "update:modelValue"[], "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDialogueTreeUserProgress>;
 required: true;
@@ -5794,7 +4478,6 @@ type: PropType<FDialogueTreeQuestion>;
 required: true;
 };
 }>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 }>, {}, {}, {
 FIcon: DefineComponent<ExtractPropTypes<    {
@@ -5906,7 +4589,7 @@ required: false;
 default: () => string;
 };
 modelValue: {
-type: StringConstructor;
+type: (StringConstructor | null)[];
 required: false;
 default: undefined;
 };
@@ -5937,14 +4620,14 @@ onValidity({ detail }: CustomEvent<ValidityEvent>): void;
 onPendingValidity(): void;
 configureValidators(): void;
 configureExtendedValidation(elements: HTMLInputElement[]): void;
-}, ComponentOptions, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
 default: () => string;
 };
 modelValue: {
-type: StringConstructor;
+type: (StringConstructor | null)[];
 required: false;
 default: undefined;
 };
@@ -5965,10 +4648,9 @@ default: string;
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 id: string;
-modelValue: string;
+modelValue: string | null;
 maxLength: number;
 extendedValidation: boolean;
 pasteErrorText: string;
@@ -5985,7 +4667,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -6018,6 +4700,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -6066,7 +4753,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -6078,7 +4765,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -6112,16 +4799,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -6136,7 +4828,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -6279,6 +4971,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -6369,8 +5062,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -6379,8 +5072,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -6998,7 +5691,7 @@ validator(value: string): boolean;
 }>, void, {
 validity: ValidityEvent;
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 validityElement: HTMLElement | null;
 dispatchObject: ComponentValidityEvent;
 detail: ValidityEvent;
@@ -7343,434 +6036,6 @@ rotate: string;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 
-// @public @deprecated (undocumented)
-export const FForm: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-displayError: {
-type: BooleanConstructor;
-default: boolean;
-};
-errorScroll: {
-type: PropType<"center" | "top">;
-default: string;
-validator(value: string): boolean;
-};
-}>, {}, FFormData, {
-attrs(): Record<string, unknown>;
-numberOfTimesSubmitted(): number;
-isSubmitted(): boolean;
-hasError(): boolean;
-componentsWithErrors(): Array<FormErrorList | FormStep>;
-needsErrorScroll(): boolean;
-}, {
-focusDomElement(): Promise<void>;
-focusFallbackElement(): Promise<void>;
-onSubmit(event: Event): Promise<boolean>;
-onComponentValidity(event: CustomEvent<ComponentValidityEvent>): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-displayError: {
-type: BooleanConstructor;
-default: boolean;
-};
-errorScroll: {
-type: PropType<"center" | "top">;
-default: string;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-id: string;
-displayError: boolean;
-errorScroll: "center" | "top";
-}, {}, {
-FMessageBox: DefineComponent<ExtractPropTypes<    {
-type: {
-type: StringConstructor;
-required: true;
-validator(value: string): boolean;
-};
-banner: {
-type: BooleanConstructor;
-required: false;
-};
-provideScreenReaderContext: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-layout: {
-type: PropType<"standard" | "short">;
-required: false;
-default: string;
-validator(value: string): boolean;
-};
-}>, {}, {
-headingClass: string[];
-}, {
-messageBoxType(): string;
-bannerType(): string;
-classType(): string;
-classIcon(): string;
-stackTypeClass(): string;
-symbol(): string;
-sign(): string;
-}, {
-screenReaderContext(): string;
-}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-type: {
-type: StringConstructor;
-required: true;
-validator(value: string): boolean;
-};
-banner: {
-type: BooleanConstructor;
-required: false;
-};
-provideScreenReaderContext: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-layout: {
-type: PropType<"standard" | "short">;
-required: false;
-default: string;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-banner: boolean;
-provideScreenReaderContext: boolean;
-layout: "standard" | "short";
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlex: DefineComponent<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-gap: string;
-collapse: boolean;
-wrap: boolean;
-float: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlexItem: DefineComponent<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-grow: boolean;
-shrink: boolean;
-align: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-FErrorList: DefineComponent<ExtractPropTypes<    {
-items: {
-type: PropType<ErrorItem[]>;
-required: true;
-};
-bullets: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-beforeNavigate: {
-type: PropType<BeforeNavigate>;
-required: false;
-default(): BeforeNavigate;
-};
-}>, {}, {}, {
-hasTitleSlot(): boolean;
-}, {
-liClasses(errorItem: ErrorItem): string[];
-onClickItem(item: ErrorItem): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-items: {
-type: PropType<ErrorItem[]>;
-required: true;
-};
-bullets: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-beforeNavigate: {
-type: PropType<BeforeNavigate>;
-required: false;
-default(): BeforeNavigate;
-};
-}>> & Readonly<{}>, {
-bullets: boolean;
-beforeNavigate: BeforeNavigate;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlex: DefineComponent<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-gap: string;
-collapse: boolean;
-wrap: boolean;
-float: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlexItem: DefineComponent<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-grow: boolean;
-shrink: boolean;
-align: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, () => FFormProvider, true, {}, any>;
-
-// @public (undocumented)
-export interface FFormData {
-    // (undocumented)
-    components: Record<string, Reference<FormErrorList | FormStep>>;
-    // (undocumented)
-    errorMessageSlotClass: string[];
-}
-
 // @public (undocumented)
 export const FFormModal: DefineComponent<ExtractPropTypes<    {
 fullscreen: {
@@ -7829,12 +6094,11 @@ default: () => FModalButtonDescriptor[];
 };
 }>, {}, {}, {
 preparedButtons(): FModalButton[];
-hasDeprecatedSlots(): boolean;
 }, {
 onClose(): void;
 onSubmit(): Promise<void>;
 onCancel(): void;
-}, ComponentOptions, ComponentOptionsMixin, ("cancel" | "close" | "submit")[], "cancel" | "close" | "submit", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("close" | "submit" | "cancel")[], "close" | "submit" | "cancel", PublicProps, Readonly<ExtractPropTypes<    {
 fullscreen: {
 type: BooleanConstructor;
 required: false;
@@ -7898,9 +6162,9 @@ value: Record<string, any>;
 size: string;
 isOpen: boolean;
 fullscreen: boolean;
-beforeSubmit: FValidationFormCallback;
 ariaCloseText: string;
 buttons: FModalButtonDescriptor[];
+beforeSubmit: FValidationFormCallback;
 beforeValidation: FValidationFormCallback;
 useErrorList: boolean;
 dataTest: string;
@@ -7992,13 +6256,13 @@ validator(value: string): boolean;
 }>> & Readonly<{
 onClose?: ((...args: any[]) => any) | undefined;
 }>, {
-focus: "on" | "off" | "open";
 type: "" | "warning" | "error" | "information";
 size: string;
 isOpen: boolean;
 fullscreen: boolean;
 id: string;
 ariaCloseText: string;
+focus: "on" | "off" | "open";
 }, {}, {
 FIcon: DefineComponent<ExtractPropTypes<    {
 name: {
@@ -8130,8 +6394,8 @@ default(): BeforeNavigate;
 }>> & Readonly<{
 onSubmit?: ((...args: any[]) => any) | undefined;
 }>, {
-beforeSubmit: FValidationFormCallback;
 id: string;
+beforeSubmit: FValidationFormCallback;
 beforeValidation: FValidationFormCallback;
 useErrorList: boolean;
 errorListBullets: boolean;
@@ -8350,441 +6614,6 @@ align: string;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 
-// @public
-export interface FFormProvider {
-    // (undocumented)
-    [getRef](id: string): Reference<FormErrorList | FormStep>;
-    // (undocumented)
-    [setIsOpen](id: string, isOpen: boolean): void;
-    // (undocumented)
-    [setRef](id: string, data: FormErrorList | FormStep): void;
-}
-
-// @public @deprecated (undocumented)
-export const FFormStep: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: true;
-default: () => string;
-};
-hasArrow: {
-type: BooleanConstructor;
-default: boolean;
-};
-isLastStep: {
-type: BooleanConstructor;
-default: boolean;
-};
-disableErrorLinks: {
-type: BooleanConstructor;
-default: boolean;
-};
-}>, {
-setRef: (id: string, data: FormStep | FormStep) => void;
-getRef: (id: string) => Reference<FormStep | FormStep>;
-setIsOpen: (id: string, isOpen: boolean) => void;
-}, {
-self: Reference<FormStep>;
-hasBeenValid: boolean;
-isOpenedClosed: boolean;
-headerSlotClass: string[];
-stepErrorId: string;
-groupValidity: GroupValidityEvent;
-}, {
-attrs(): Record<string, string | Record<string, unknown>>;
-defaultErrorMessage(): string;
-injected(): any;
-isSubmitted(): boolean;
-componentsWithError(): ErrorItem[];
-hasError(): boolean;
-displayErrorList(): boolean;
-validationGroupKey(): string;
-}, {
-updateSelfRefTitle(): void;
-loadSelf(): void;
-focusDomElement(): Promise<void>;
-beforeNavigateToError(): Promise<void>;
-toggleIsOpen(): void;
-onComponentValidity(event: CustomEvent<ComponentValidityEvent>): void;
-}, ComponentOptions, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: true;
-default: () => string;
-};
-hasArrow: {
-type: BooleanConstructor;
-default: boolean;
-};
-isLastStep: {
-type: BooleanConstructor;
-default: boolean;
-};
-disableErrorLinks: {
-type: BooleanConstructor;
-default: boolean;
-};
-}>> & Readonly<{}>, {
-id: string;
-hasArrow: boolean;
-isLastStep: boolean;
-disableErrorLinks: boolean;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-FValidationGroup: DefineComponent<ExtractPropTypes<    {
-modelValue: {
-type: PropType<GroupValidityEvent>;
-required: false;
-default: () => GroupValidityEvent;
-};
-stopPropagation: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-}>, {}, {
-components: Record<string, ComponentValidityEvent>;
-}, {}, {
-onComponentUnmount(event: CustomEvent<ComponentUnmountEvent>): void;
-onComponentValidity(event: CustomEvent<ComponentValidityEvent>): Promise<void>;
-triggerGroupValidityEvent(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("group-validity" | "update:modelValue")[], "group-validity" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
-modelValue: {
-type: PropType<GroupValidityEvent>;
-required: false;
-default: () => GroupValidityEvent;
-};
-stopPropagation: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-}>> & Readonly<{
-"onGroup-validity"?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-}>, {
-modelValue: GroupValidityEvent;
-stopPropagation: boolean;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-FErrorList: DefineComponent<ExtractPropTypes<    {
-items: {
-type: PropType<ErrorItem[]>;
-required: true;
-};
-bullets: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-beforeNavigate: {
-type: PropType<BeforeNavigate>;
-required: false;
-default(): BeforeNavigate;
-};
-}>, {}, {}, {
-hasTitleSlot(): boolean;
-}, {
-liClasses(errorItem: ErrorItem): string[];
-onClickItem(item: ErrorItem): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-items: {
-type: PropType<ErrorItem[]>;
-required: true;
-};
-bullets: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-beforeNavigate: {
-type: PropType<BeforeNavigate>;
-required: false;
-default(): BeforeNavigate;
-};
-}>> & Readonly<{}>, {
-bullets: boolean;
-beforeNavigate: BeforeNavigate;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlex: DefineComponent<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-gap: string;
-collapse: boolean;
-wrap: boolean;
-float: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlexItem: DefineComponent<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-grow: boolean;
-shrink: boolean;
-align: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-
-// @public @deprecated (undocumented)
-export const FFormStepButton: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-isOpen: BooleanConstructor;
-isAnyFieldTouched: BooleanConstructor;
-additionalScreenreaderText: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-}>, {}, {}, {}, {}, ComponentOptions, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-isOpen: BooleanConstructor;
-isAnyFieldTouched: BooleanConstructor;
-additionalScreenreaderText: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-}>> & Readonly<{}>, {
-isOpen: boolean;
-id: string;
-isAnyFieldTouched: boolean;
-additionalScreenreaderText: string;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-
 // @public (undocumented)
 export const FIcon: DefineComponent<ExtractPropTypes<    {
 name: {
@@ -8850,293 +6679,99 @@ export function findHTMLElementFromVueRef(ref: unknown): HTMLElement | undefined
 // @public
 export function findParentByName(vm: ComponentPublicInstance | undefined | null, name: string): ComponentPublicInstance | undefined;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_PrettifyLocal_4" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export const FInteractiveTable: DefineComponent<ExtractPropTypes<    {
-rows: {
-type: PropType<ListArray>;
-required: true;
+export const FInteractiveTable: <T extends object, K extends keyof T>(__VLS_props: NonNullable<Awaited<typeof __VLS_setup>>["props"], __VLS_ctx?: __VLS_PrettifyLocal_4<Pick<NonNullable<Awaited<typeof __VLS_setup>>, "attrs" | "emit" | "slots">>, __VLS_expose?: NonNullable<Awaited<typeof __VLS_setup>>["expose"], __VLS_setup?: Promise<{
+    props: __VLS_PrettifyLocal_4<Pick<Partial<{
+        modelValue: T[] | undefined;
+        scroll: TableScroll;
+        keyAttribute: string;
+        striped: boolean;
+        hover: boolean;
+        expandableAttribute: string;
+        expandableDescribedby: string;
+        selectable: boolean;
+        showActive: boolean;
+        active: [{
+            type: PropType<T | undefined>;
+            required: false;
+            default: () => undefined;
+        }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : {
+            type: PropType<T | undefined>;
+            required: false;
+            default: () => undefined;
+        };
+    }> & Omit<{
+        readonly scroll: TableScroll;
+        readonly rows: T[];
+        readonly striped: boolean;
+        readonly hover: boolean;
+        readonly expandableAttribute: string;
+        readonly expandableDescribedby: string;
+        readonly selectable: boolean;
+        readonly showActive: boolean;
+        readonly modelValue?: T[] | undefined;
+        readonly keyAttribute?: string | undefined;
+        readonly active?: ([{
+            type: PropType<T | undefined>;
+            required: false;
+            default: () => undefined;
+        }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : {
+            type: PropType<T | undefined>;
+            required: false;
+            default: () => undefined;
+        }) | undefined;
+        readonly onSelect?: ((row: T) => any) | undefined;
+        readonly onCollapse?: ((row: T) => any) | undefined;
+        readonly "onUpdate:modelValue"?: ((rows: T[]) => any) | undefined;
+        readonly onChange?: ((row: T) => any) | undefined;
+        readonly onClick?: ((row: T) => any) | undefined;
+        readonly onExpand?: ((row: T) => any) | undefined;
+        readonly onUnselect?: ((row: T) => any) | undefined;
+        readonly "onUpdate:active"?: ((row: T) => any) | undefined;
+    } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "modelValue" | "scroll" | "keyAttribute" | "striped" | "hover" | "expandableAttribute" | "expandableDescribedby" | "selectable" | "showActive" | "active">, "onChange" | "onClick" | "onSelect" | "onUpdate:modelValue" | "rows" | "onCollapse" | "onExpand" | "onUnselect" | "onUpdate:active" | ("modelValue" | "scroll" | "keyAttribute" | "striped" | "hover" | "expandableAttribute" | "expandableDescribedby" | "selectable" | "showActive" | "active")> & {} & Partial<{}>> & PublicProps;
+    expose(exposed: ShallowUnwrapRef<    {}>): void;
+    attrs: any;
+    slots: {
+        'row-description'?(_: {}): any;
+        caption?(_: {}): any;
+        default?(_: {
+            row: {};
+        }): any;
+        default?(_: {
+            row: T;
+        }): any;
+        default?(_: {
+            row: T;
+        }): any;
+        default?(_: {
+            row: T;
+        }): any;
+        default?(_: {
+            row: T;
+        }): any;
+        'checkbox-description'?(_: {
+            row: T;
+        }): any;
+        expandable?(_: {
+            expandableRow: T;
+            parentRow: T;
+        }): any;
+        empty?(_: {}): any;
+    };
+    emit: ((evt: "select", row: T) => void) & ((evt: "collapse", row: T) => void) & ((evt: "update:modelValue", rows: T[]) => void) & ((evt: "change", row: T) => void) & ((evt: "click", row: T) => void) & ((evt: "expand", row: T) => void) & ((evt: "unselect", row: T) => void) & ((evt: "update:active", row: T) => void);
+}>) => VNode & {
+    __ctx?: Awaited<typeof __VLS_setup>;
 };
-hover: {
-type: BooleanConstructor;
-default: boolean;
-};
-keyAttribute: {
-type: StringConstructor;
-required: true;
-};
-expandableAttribute: {
-type: StringConstructor;
-default: string;
-};
-expandableDescribedby: {
-type: StringConstructor;
-default: string;
-};
-selectable: {
-type: BooleanConstructor;
-default: boolean;
-};
-striped: {
-type: BooleanConstructor;
-default: boolean;
-};
-scroll: {
-type: PropType<TableScroll>;
-default: TableScroll;
-validator: (value: string) => boolean;
-};
-modelValue: {
-type: PropType<ListArray | undefined>;
-required: false;
-default: undefined;
-};
-}>, FSortFilterDatasetInterface & ActivateItemInterface & ExpandableTable, FInteractiveTableData, {
-hasCaption(): boolean;
-hasCheckboxDescription(): boolean;
-isEmpty(): boolean;
-visibleColumns(): FTableColumnData[];
-tableClasses(): string[];
-tableRole(): string;
-wrapperClasses(): string[];
-nbOfColumns(): number;
-}, {
-isActive(row: ListItem): boolean;
-isSelected(row: ListItem): boolean;
-onKeydownExpandable(event: KeyboardEvent, index: number): void;
-onKeydown(event: KeyboardEvent, index: number): void;
-onClick(event: MouseEvent, row: ListItem): void;
-activate(row: ListItem, tr: HTMLElement | null): void;
-rowDescription(row: ListItem): string | undefined;
-onSelect(row: ListItem): void;
-updateVModelWithSelectedRows(): void;
-rowClasses(row: ListItem, index: number): string[];
-rowKey(row: ListItem): string;
-columnClasses(column: FTableColumnData): string[];
-iconClasses(column: FTableColumnData): string[];
-iconName(column: FTableColumnData): string;
-onClickColumnHeader(column: FTableColumnData): void;
-callbackOnSort(columnName: string, ascending: boolean): void;
-callbackSortableColumns(columnNames: string[]): void;
-callbackAfterItemAdd(item: ListItem): void;
-callbackBeforeItemDelete(item: ListItem): void;
-escapeNewlines(value: string): string;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "click" | "select" | "collapse" | "update:modelValue" | "expand" | "update" | "unselect")[], "change" | "click" | "select" | "collapse" | "update:modelValue" | "expand" | "update" | "unselect", PublicProps, Readonly<ExtractPropTypes<    {
-rows: {
-type: PropType<ListArray>;
-required: true;
-};
-hover: {
-type: BooleanConstructor;
-default: boolean;
-};
-keyAttribute: {
-type: StringConstructor;
-required: true;
-};
-expandableAttribute: {
-type: StringConstructor;
-default: string;
-};
-expandableDescribedby: {
-type: StringConstructor;
-default: string;
-};
-selectable: {
-type: BooleanConstructor;
-default: boolean;
-};
-striped: {
-type: BooleanConstructor;
-default: boolean;
-};
-scroll: {
-type: PropType<TableScroll>;
-default: TableScroll;
-validator: (value: string) => boolean;
-};
-modelValue: {
-type: PropType<ListArray | undefined>;
-required: false;
-default: undefined;
-};
-}>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
-onClick?: ((...args: any[]) => any) | undefined;
-onSelect?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
-onUnselect?: ((...args: any[]) => any) | undefined;
-onCollapse?: ((...args: any[]) => any) | undefined;
-onExpand?: ((...args: any[]) => any) | undefined;
-}>, {
-scroll: TableScroll;
-modelValue: ListArray | undefined;
-striped: boolean;
-selectable: boolean;
-hover: boolean;
-expandableAttribute: string;
-expandableDescribedby: string;
-}, {}, {
-FCheckboxField: DefineComponent<ExtractPropTypes<    {
-disabled: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-};
-value: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: true;
-};
-}>, {
-showDetails: "always" | "never" | "when-selected";
-getFieldsetLabelText: () => string | undefined;
-}, {
-expanded: boolean;
-height: number;
-initialStyle: {
-overflow: string;
-transition: string;
-};
-hiddenStyle: {
-height: string;
-position: string;
-visibility: string;
-};
-visibleStyle: {
-width: string;
-position: string;
-visibility: string;
-height: string;
-};
-openedStyle: {
-height: string;
-};
-}, {
-attrs(): Record<string, unknown>;
-disabledClass(): string;
-injected(): any;
-}, {
-updateExpandedFlag(): void;
-emitVModelEvent(event: Event): void;
-onKeydown(event: Event): void;
-onValidity({ detail }: CustomEvent<ValidityEvent>): void;
-enter(element: Element): void;
-afterEnter(element: Element): void;
-leave(element: Element): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
-disabled: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-};
-value: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: true;
-};
-}>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-}>, {
-id: string;
-disabled: boolean;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, () => Omit<FTableInterface, "renderColumns">, true, {}, any>;
-
-// @public (undocumented)
-export interface FInteractiveTableData {
-    // (undocumented)
-    activeRow: ListItem | undefined;
-    // (undocumented)
-    columns: FTableColumnData[];
-    // (undocumented)
-    selectedRows: ListArray;
-    // (undocumented)
-    tr: HTMLElement[];
-}
 
 // @public (undocumented)
 export interface FKUIConfig {
     // (undocumented)
     buttonOrder: FKUIConfigButtonOrder;
-    // @deprecated (undocumented)
-    modalTarget: string | Element | null;
     // (undocumented)
     get popupContainer(): HTMLElement;
     set popupContainer(value: string | Element);
-    // @deprecated (undocumented)
-    popupTarget: string | Element | null;
     // (undocumented)
     production: boolean;
     // (undocumented)
@@ -9166,7 +6801,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -9451,197 +7086,67 @@ export interface FLayoutRightPanelInteface {
 // @public (undocumented)
 export const FLayoutRightPanelService: FLayoutRightPanelInteface;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_PrettifyLocal_5" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export const FList: DefineComponent<ExtractPropTypes<    {
-items: {
-type: PropType<ListArray>;
-required: true;
+export const FList: <T extends object>(__VLS_props: NonNullable<Awaited<typeof __VLS_setup>>["props"], __VLS_ctx?: __VLS_PrettifyLocal_5<Pick<NonNullable<Awaited<typeof __VLS_setup>>, "attrs" | "emit" | "slots">>, __VLS_expose?: NonNullable<Awaited<typeof __VLS_setup>>["expose"], __VLS_setup?: Promise<{
+    props: __VLS_PrettifyLocal_5<Pick<Partial<{
+        elementId: string;
+        modelValue: T[] | undefined;
+        checkbox: boolean;
+        keyAttribute: string;
+        selectable: boolean;
+        active: [{
+            type: PropType<T | undefined>;
+            required: false;
+            default: () => undefined;
+        }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : {
+            type: PropType<T | undefined>;
+            required: false;
+            default: () => undefined;
+        };
+    }> & Omit<{
+        readonly elementId: string;
+        readonly items: T[];
+        readonly checkbox: boolean;
+        readonly selectable: boolean;
+        readonly modelValue?: T[] | undefined;
+        readonly keyAttribute?: string | undefined;
+        readonly active?: ([{
+            type: PropType<T | undefined>;
+            required: false;
+            default: () => undefined;
+        }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : {
+            type: PropType<T | undefined>;
+            required: false;
+            default: () => undefined;
+        }) | undefined;
+        readonly onSelect?: ((item: T) => any) | undefined;
+        readonly "onUpdate:modelValue"?: ((item: T[]) => any) | undefined;
+        readonly onChange?: ((item: T) => any) | undefined;
+        readonly onClick?: ((item: T) => any) | undefined;
+        readonly onUnselect?: ((item: T) => any) | undefined;
+        readonly "onUpdate:active"?: ((item: T) => any) | undefined;
+    } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "elementId" | "modelValue" | "checkbox" | "keyAttribute" | "selectable" | "active">, "onChange" | "onClick" | "onSelect" | "items" | "onUpdate:modelValue" | "onUnselect" | "onUpdate:active" | ("elementId" | "modelValue" | "checkbox" | "keyAttribute" | "selectable" | "active")> & {} & Partial<{}>> & PublicProps;
+    expose(exposed: ShallowUnwrapRef<    {}>): void;
+    attrs: any;
+    slots: {
+        default?(_: {
+            item: T;
+        }): any;
+        default?(_: {
+            item: T;
+        }): any;
+        empty?(_: {}): any;
+        empty?(_: {}): any;
+        screenreader?(_: {
+            item: T;
+        }): any;
+    };
+    emit: ((evt: "select", item: T) => void) & ((evt: "update:modelValue", item: T[]) => void) & ((evt: "change", item: T) => void) & ((evt: "click", item: T) => void) & ((evt: "unselect", item: T) => void) & ((evt: "update:active", item: T) => void);
+}>) => VNode & {
+    __ctx?: Awaited<typeof __VLS_setup>;
 };
-keyAttribute: {
-type: StringConstructor;
-required: true;
-};
-selectable: {
-type: BooleanConstructor;
-default: boolean;
-};
-checkbox: {
-type: BooleanConstructor;
-default: boolean;
-};
-modelValue: {
-type: PropType<ListArray | undefined>;
-required: false;
-default: () => undefined;
-};
-active: {
-type: PropType<ListItem | undefined>;
-required: false;
-default: () => undefined;
-};
-elementId: {
-type: StringConstructor;
-default: () => string;
-};
-}>, ActivateItemInterface, FListData, {
-isEmpty(): boolean;
-ariaActiveDescendant(): string | undefined;
-}, {
-getLiElements(): Element[];
-itemKey(item: ListItem): string;
-isSelected(item: ListItem): boolean;
-itemClasses(item: ListItem): Record<string, boolean>;
-getAriaSelected(item: ListItem): string;
-onSelect(item: ListItem): void;
-setActiveItem(item: ListItem): void;
-onItemClick(event: Event, index: number, item: ListItem): void;
-updateVModelWithSelectedItems(): void;
-updateSelectedItemsFromVModel(): void;
-updateActiveItemFromVModel(): void;
-onItemKeyDown(event: KeyboardEvent, item: ListItem): void;
-getAriaLabelledbyId(item: ListItem): string;
-getItemId(item: ListItem): string;
-onItemFocus(event: FocusEvent): void;
-onItemBlur(event: FocusEvent): void;
-callbackAfterItemAdd(item: ListItem): void;
-callbackBeforeItemDelete(item: ListItem): void;
-isActive(item: ListItem): boolean;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "click" | "select" | "update:modelValue" | "update" | "unselect" | "update:active")[], "change" | "click" | "select" | "update:modelValue" | "update" | "unselect" | "update:active", PublicProps, Readonly<ExtractPropTypes<    {
-items: {
-type: PropType<ListArray>;
-required: true;
-};
-keyAttribute: {
-type: StringConstructor;
-required: true;
-};
-selectable: {
-type: BooleanConstructor;
-default: boolean;
-};
-checkbox: {
-type: BooleanConstructor;
-default: boolean;
-};
-modelValue: {
-type: PropType<ListArray | undefined>;
-required: false;
-default: () => undefined;
-};
-active: {
-type: PropType<ListItem | undefined>;
-required: false;
-default: () => undefined;
-};
-elementId: {
-type: StringConstructor;
-default: () => string;
-};
-}>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
-onClick?: ((...args: any[]) => any) | undefined;
-onSelect?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
-onUnselect?: ((...args: any[]) => any) | undefined;
-"onUpdate:active"?: ((...args: any[]) => any) | undefined;
-}>, {
-elementId: string;
-modelValue: ListArray | undefined;
-checkbox: boolean;
-selectable: boolean;
-active: UnknownItem | undefined;
-}, {}, {
-FCheckboxField: DefineComponent<ExtractPropTypes<    {
-disabled: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-};
-value: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: true;
-};
-}>, {
-showDetails: "always" | "never" | "when-selected";
-getFieldsetLabelText: () => string | undefined;
-}, {
-expanded: boolean;
-height: number;
-initialStyle: {
-overflow: string;
-transition: string;
-};
-hiddenStyle: {
-height: string;
-position: string;
-visibility: string;
-};
-visibleStyle: {
-width: string;
-position: string;
-visibility: string;
-height: string;
-};
-openedStyle: {
-height: string;
-};
-}, {
-attrs(): Record<string, unknown>;
-disabledClass(): string;
-injected(): any;
-}, {
-updateExpandedFlag(): void;
-emitVModelEvent(event: Event): void;
-onKeydown(event: Event): void;
-onValidity({ detail }: CustomEvent<ValidityEvent>): void;
-enter(element: Element): void;
-afterEnter(element: Element): void;
-leave(element: Element): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
-disabled: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-};
-value: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
-required: true;
-};
-}>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-}>, {
-id: string;
-disabled: boolean;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-
-// @public (undocumented)
-export interface FListData {
-    // (undocumented)
-    activeItem: ListItem | undefined;
-    // (undocumented)
-    selectedItems: ListArray;
-}
 
 // @public (undocumented)
 export const FLoader: DefineComponent<ExtractPropTypes<    {
@@ -9715,6 +7220,27 @@ language: string;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 
 // @public (undocumented)
+export const FLogo: DefineComponent<ExtractPropTypes<    {
+size: {
+type: StringConstructor;
+default: string;
+required: false;
+validator(value: string): boolean;
+};
+}>, {}, {}, {
+ariaLabel(): string;
+}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
+size: {
+type: StringConstructor;
+default: string;
+required: false;
+validator(value: string): boolean;
+};
+}>> & Readonly<{}>, {
+size: string;
+}, {}, {}, {}, string, ComponentProvideOptions, true, {}, HTMLSpanElement>;
+
+// @public (undocumented)
 export const FMessageBox: DefineComponent<ExtractPropTypes<    {
 type: {
 type: StringConstructor;
@@ -9770,9 +7296,9 @@ default: string;
 validator(value: string): boolean;
 };
 }>> & Readonly<{}>, {
+layout: "standard" | "short";
 banner: boolean;
 provideScreenReaderContext: boolean;
-layout: "standard" | "short";
 }, {}, {
 FIcon: DefineComponent<ExtractPropTypes<    {
 name: {
@@ -9911,6 +7437,13 @@ align: string;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots_4" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_component_4" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_TemplateResult_4" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const FMinimizablePanel: __VLS_WithTemplateSlots_4<typeof __VLS_component_4, __VLS_TemplateResult_4["slots"]>;
+
 // @public
 export const FModal: DefineComponent<ExtractPropTypes<    {
 id: {
@@ -9998,13 +7531,13 @@ validator(value: string): boolean;
 }>> & Readonly<{
 onClose?: ((...args: any[]) => any) | undefined;
 }>, {
-focus: "on" | "off" | "open";
 type: "" | "warning" | "error" | "information";
 size: string;
 isOpen: boolean;
 fullscreen: boolean;
 id: string;
 ariaCloseText: string;
+focus: "on" | "off" | "open";
 }, {}, {
 FIcon: DefineComponent<ExtractPropTypes<    {
 name: {
@@ -10332,7 +7865,7 @@ activateItem(index: number): Promise<void>;
 setFocusedItemIndex(index: number): void;
 onKeyUp(event: KeyboardEvent): void;
 onKeyDown(event: KeyboardEvent): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("close" | "select" | "update:modelValue" | "update:focusedItem")[], "close" | "select" | "update:modelValue" | "update:focusedItem", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("select" | "close" | "update:modelValue" | "update:focusedItem")[], "select" | "close" | "update:modelValue" | "update:focusedItem", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: StringConstructor;
 required: false;
@@ -10399,11 +7932,6 @@ required: false;
 validator(value: string): boolean;
 default: string;
 };
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
 container: {
 type: PropType<HTMLElement | null | undefined>;
 required: false;
@@ -10462,11 +7990,6 @@ required: false;
 validator(value: string): boolean;
 default: string;
 };
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
 container: {
 type: PropType<HTMLElement | null | undefined>;
 required: false;
@@ -10498,8 +8021,7 @@ onOpen?: ((...args: any[]) => any) | undefined;
 }>, {
 anchor: HTMLElement | null | undefined;
 viewport: HTMLElement;
-inline: "always" | "never" | "auto";
-alwaysInline: boolean;
+inline: "auto" | "always" | "never";
 container: HTMLElement | null | undefined;
 keyboardTrap: boolean;
 focusElement: () => HTMLElement | null;
@@ -10565,7 +8087,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -10598,6 +8120,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -10646,7 +8173,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -10658,7 +8185,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -10692,16 +8219,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -10716,7 +8248,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -10859,6 +8391,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -10949,8 +8482,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -10959,8 +8492,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -10986,9 +8519,9 @@ required: false;
 default: typeof parseNumber;
 };
 }>> & Readonly<{}>, {
+decimals: number;
 formatter: FormatFunction<number>;
 parser: ParseFunction<number>;
-decimals: number;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 
 // @public
@@ -11175,7 +8708,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -11208,6 +8741,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -11256,7 +8794,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -11268,7 +8806,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -11302,16 +8840,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -11326,7 +8869,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -11469,6 +9012,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -11559,8 +9103,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -11569,8 +9113,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -11592,6 +9136,9 @@ formatter: FormatFunction<string>;
 // @public (undocumented)
 export type FormatFunction<TModel> = (modelValue: TModel) => string | undefined;
 
+// @public
+export const FormatPlugin: Plugin_2;
+
 // @public (undocumented)
 export interface FormErrorList extends ErrorItem {
     // (undocumented)
@@ -11610,7 +9157,7 @@ export interface FormErrorList extends ErrorItem {
 export class FormErrorList implements FormErrorList {
     constructor(fields: FormErrorList);
     // (undocumented)
-    focusElementId?: string;
+    focusElementId?: string | undefined;
     // (undocumented)
     id: string;
     // (undocumented)
@@ -11629,36 +9176,8 @@ export type FormModalMaybeOptions = Partial<FormModalModalOptions>;
 
 // @public (undocumented)
 export interface FormModalModalOptions {
-    beforeSubmit?: FValidationFormCallback;
     props: Record<string, unknown | undefined>;
     size: "large" | "fullscreen";
-}
-
-// @public (undocumented)
-export class FormStep implements FormErrorList, FormStepFields {
-    constructor(fields: FormStepFields);
-    // (undocumented)
-    focusElementId?: string | undefined;
-    // (undocumented)
-    id: string;
-    // (undocumented)
-    isAnyFieldTouched: boolean;
-    // (undocumented)
-    isOpen: boolean;
-    // (undocumented)
-    isValid: boolean;
-    // (undocumented)
-    numberOfTimesSubmitted: number;
-    // (undocumented)
-    title: string;
-}
-
-// @public (undocumented)
-export interface FormStepFields {
-    // (undocumented)
-    isAnyFieldTouched: boolean;
-    // (undocumented)
-    isOpen: boolean;
 }
 
 // @public (undocumented)
@@ -11695,7 +9214,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -11769,19 +9288,8 @@ rotate: string;
 
 // @public (undocumented)
 export const FPageHeader: DefineComponent<ExtractPropTypes<    {
-logoSize: {
-type: StringConstructor;
-default: string;
-required: false;
-validator(value: string): boolean;
-};
 skipLink: {
-type: PropType<string | boolean>;
-required: false;
-default: string;
-};
-skipLinkHref: {
-type: StringConstructor;
+type: PropType<string>;
 required: false;
 default: string;
 };
@@ -11789,42 +9297,13 @@ headerTag: {
 default: string;
 required: false;
 validator(value: string): boolean;
-};
-routerLinkPath: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-routerLinkName: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-routerLinkLabel: {
-type: StringConstructor;
-required: false;
-default: string;
 };
 }>, {}, {}, {
-logoClass(): string;
-hasRouterLink(): boolean;
-routerLinkTo(): RouteLocationPathRaw | RouteLocationNamedRaw | null;
 skipLinkAnchor(): string | null;
-altLogoText(): string;
-}, {}, ComponentOptions, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-logoSize: {
-type: StringConstructor;
-default: string;
-required: false;
-validator(value: string): boolean;
-};
+hasLogo(): boolean;
+}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
 skipLink: {
-type: PropType<string | boolean>;
-required: false;
-default: string;
-};
-skipLinkHref: {
-type: StringConstructor;
+type: PropType<string>;
 required: false;
 default: string;
 };
@@ -11832,30 +9311,10 @@ headerTag: {
 default: string;
 required: false;
 validator(value: string): boolean;
-};
-routerLinkPath: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-routerLinkName: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-routerLinkLabel: {
-type: StringConstructor;
-required: false;
-default: string;
 };
 }>> & Readonly<{}>, {
 headerTag: string;
-logoSize: string;
-skipLink: string | boolean;
-skipLinkHref: string;
-routerLinkPath: string;
-routerLinkName: string;
-routerLinkLabel: string;
+skipLink: string;
 }, {}, {
 ISkipLink: DefineComponent<ExtractPropTypes<    {
 href: {
@@ -11873,6 +9332,13 @@ default: string;
 href: string;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
+
+// Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots_3" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_component_3" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_TemplateResult_3" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const FPageLayout: __VLS_WithTemplateSlots_3<typeof __VLS_component_3, __VLS_TemplateResult_3["slots"]>;
 
 // @public (undocumented)
 export const FPercentTextField: DefineComponent<ExtractPropTypes<    {
@@ -11917,7 +9383,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -11950,6 +9416,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -11998,7 +9469,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -12010,7 +9481,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -12044,16 +9515,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -12068,7 +9544,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -12211,6 +9687,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -12301,8 +9778,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -12311,8 +9788,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -12338,9 +9815,9 @@ required: false;
 default: typeof parsePercent;
 };
 }>> & Readonly<{}>, {
+decimals: number;
 formatter: FormatFunction<number>;
 parser: ParseFunction<number>;
-decimals: number;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 
 // @public (undocumented)
@@ -12383,7 +9860,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -12416,6 +9893,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -12464,7 +9946,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -12476,7 +9958,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -12510,16 +9992,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -12534,7 +10021,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -12677,6 +10164,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -12767,8 +10255,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -12777,8 +10265,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -12811,7 +10299,7 @@ required: false;
 default: () => string;
 };
 modelValue: {
-type: StringConstructor;
+type: (StringConstructor | null)[];
 required: false;
 default: undefined;
 };
@@ -12835,14 +10323,14 @@ onValidity({ detail }: CustomEvent<ValidityEvent>): void;
 onPendingValidity(): void;
 configureValidators(): void;
 configureExtendedValidation(elements: HTMLInputElement[]): void;
-}, ComponentOptions, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
 default: () => string;
 };
 modelValue: {
-type: StringConstructor;
+type: (StringConstructor | null)[];
 required: false;
 default: undefined;
 };
@@ -12858,10 +10346,9 @@ default: boolean;
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 id: string;
-modelValue: string;
+modelValue: string | null;
 maxLength: number;
 extendedValidation: boolean;
 }, {}, {
@@ -12877,7 +10364,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -12910,6 +10397,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -12958,7 +10450,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -12970,7 +10462,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -13004,16 +10496,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -13028,7 +10525,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -13171,6 +10668,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -13261,8 +10759,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -13271,8 +10769,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -13317,7 +10815,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -13350,6 +10848,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -13398,7 +10901,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -13410,7 +10913,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -13444,16 +10947,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -13468,7 +10976,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -13611,6 +11119,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -13701,8 +11210,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -13711,8 +11220,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -13766,7 +11275,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -13799,6 +11308,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -13847,7 +11361,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -13859,7 +11373,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -13893,16 +11407,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -13917,7 +11436,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -14060,6 +11579,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -14150,8 +11670,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -14160,8 +11680,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -14192,19 +11712,11 @@ type: StringConstructor;
 required: false;
 default: string;
 };
-ariaLabel: {
+"aria-label": {
 type: StringConstructor;
 required: true;
 };
-}>, {}, {}, {
-progressValueNow(): number;
-isFinished(): boolean;
-isInProgress(): boolean;
-isPending(): boolean;
-cssWidth(): string;
-progressBarClass(): string;
-progressText(): string;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
+}>, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
 value: {
 type: NumberConstructor;
 required: true;
@@ -14215,222 +11727,99 @@ type: StringConstructor;
 required: false;
 default: string;
 };
-ariaLabel: {
+"aria-label": {
 type: StringConstructor;
 required: true;
 };
 }>> & Readonly<{}>, {
 valueText: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
+}, {}, {}, {}, string, ComponentProvideOptions, true, {}, HTMLDivElement>;
 
-// @public @deprecated (undocumented)
-export const FRadioGroup: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-name: {
-type: StringConstructor;
-required: true;
-};
-isHorizontal: {
-type: BooleanConstructor;
-required: false;
-};
-}>, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-name: {
-type: StringConstructor;
-required: true;
-};
-isHorizontal: {
-type: BooleanConstructor;
-required: false;
-};
-}>> & Readonly<{}>, {
-id: string;
-isHorizontal: boolean;
-}, {}, {
-FFieldset: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-name: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-labelClass: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-contentClass: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-horizontal: {
-type: BooleanConstructor;
-required: false;
-};
-chip: {
+// @public (undocumented)
+export const FRadioField: DefineComponent<ExtractPropTypes<    {
+disabled: {
 type: BooleanConstructor;
 required: false;
 default: boolean;
 };
-border: {
-type: BooleanConstructor;
+id: {
+type: StringConstructor;
+required: false;
+default: () => string;
+};
+modelValue: {
+type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
 required: false;
 };
-showDetails: {
-type: PropType<"never" | "when-selected" | "always">;
-default: string;
-validator(value: string): boolean;
+value: {
+type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
+required: true;
 };
-}>, void, {
-validity: ValidityEvent;
-descriptionClass: string[];
-discreteDescriptionClass: string[];
-validityElement: HTMLElement | null;
-dispatchObject: ComponentValidityEvent;
-detail: ValidityEvent;
-hasDocumentListener: boolean;
-legendKey: number;
-oldMessage: string;
-children: HTMLInputElement[];
-hasCheckbox: boolean;
-hasRadiobutton: boolean;
+}>, {
+sharedName: string | undefined;
+showDetails: "always" | "never" | "when-selected";
+getFieldsetLabelText: () => string | undefined;
 }, {
-hasError(): boolean;
-hasErrorMessageSlot(): boolean;
-hasTooltipSlot(): boolean;
-hasDescriptionSlot(): boolean;
-legendClass(): string[];
-groupLabelClass(): string[];
-groupContentClass(): string[];
-classes(): Record<string, boolean>;
-checkedChildren(): HTMLInputElement[];
-debouncedUpdateChildren(): () => void;
-checkboxCheckedScreenReaderText(): string;
-numberOfCheckboxesScreenReaderText(): string;
-numberOfCheckedCheckboxesScreenText(): string;
+height: number;
+initialStyle: {
+overflow: string;
+transition: string;
+};
+hiddenStyle: {
+height: string;
+position: string;
+visibility: string;
+};
+visibleStyle: {
+width: string;
+position: string;
+visibility: string;
+height: string;
+};
+openedStyle: {
+height: string;
+};
+}, {
+attrs(): Record<string, unknown>;
+disabledClass(): string;
 }, {
 onValidity({ detail }: CustomEvent<ValidityEvent>): Promise<void>;
-forceLegendUpdate(): void;
-updateCheckboxChildren(): Promise<void>;
-}, ComponentOptions, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
+enter(element: Element): void;
+afterEnter(element: Element): void;
+leave(element: Element): void;
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change")[], "update:modelValue" | "change", PublicProps, Readonly<ExtractPropTypes<    {
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 id: {
 type: StringConstructor;
 required: false;
 default: () => string;
 };
-name: {
-type: StringConstructor;
-required: false;
-default: undefined;
-};
-labelClass: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-contentClass: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-horizontal: {
-type: BooleanConstructor;
+modelValue: {
+type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
 required: false;
 };
-chip: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
+value: {
+type: (StringConstructor | BooleanConstructor | ObjectConstructor | DateConstructor | ArrayConstructor | NumberConstructor)[];
+required: true;
 };
-border: {
-type: BooleanConstructor;
-required: false;
-};
-showDetails: {
-type: PropType<"never" | "when-selected" | "always">;
-default: string;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-horizontal: boolean;
-name: string;
+}>> & Readonly<{
+onChange?: ((...args: any[]) => any) | undefined;
+"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
+}>, {
 id: string;
-labelClass: string;
-contentClass: string;
-showDetails: "always" | "never" | "when-selected";
-chip: boolean;
-border: boolean;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
+disabled: boolean;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
+
+// Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots_5" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_component_5" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_TemplateResult_5" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const FResizePane: __VLS_WithTemplateSlots_5<typeof __VLS_component_5, __VLS_TemplateResult_5["slots"]>;
 
 // @public (undocumented)
 export const FSearchTextField: DefineComponent<ExtractPropTypes<    {
@@ -14440,7 +11829,7 @@ required: false;
 default: () => string;
 };
 modelValue: {
-type: StringConstructor;
+type: (StringConstructor | null)[];
 required: false;
 default: string;
 };
@@ -14463,14 +11852,14 @@ onInput(event: Event): void;
 onChange(event: Event): void;
 onBlur(event: Event): void;
 onUpdate(event: Event): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur" | "update")[], "update:modelValue" | "change" | "blur" | "update", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
 default: () => string;
 };
 modelValue: {
-type: StringConstructor;
+type: (StringConstructor | null)[];
 required: false;
 default: string;
 };
@@ -14490,7 +11879,7 @@ onChange?: ((...args: any[]) => any) | undefined;
 onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 id: string;
-modelValue: string;
+modelValue: string | null;
 maxLength: number;
 clearableScreenReaderText: string;
 }, {}, {
@@ -14506,7 +11895,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -14539,6 +11928,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -14587,7 +11981,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -14599,7 +11993,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -14633,16 +12027,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -14657,7 +12056,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -14800,6 +12199,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -14890,8 +12290,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -14900,8 +12300,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -15007,12 +12407,12 @@ labelClass(): string;
 labelWrapperClass(): string | undefined;
 selectWrapperClass(): string | undefined;
 vModel: {
-get(): string | number | boolean | Record<string, any> | unknown[] | undefined;
+get(): string | number | boolean | unknown[] | Record<string, any> | undefined;
 set(value: unknown): void;
 };
 }, {
 onValidity({ detail }: CustomEvent<ValidityEvent>): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change")[], "update:modelValue" | "change", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -15043,7 +12443,7 @@ onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 }>, {
 id: string;
-modelValue: string | number | boolean | Record<string, any> | unknown[];
+modelValue: string | number | boolean | unknown[] | Record<string, any>;
 inline: boolean;
 labelWidth: string;
 selectWidth: string;
@@ -15110,7 +12510,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -15182,871 +12582,42 @@ rotate: string;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_PrettifyLocal_6" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export const FSortFilterDataset: DefineComponent<ExtractPropTypes<    {
-data: {
-type: PropType<ListArray<ListItem>>;
-required: true;
-default: () => never[];
+export const FSortFilterDataset: <T>(__VLS_props: NonNullable<Awaited<typeof __VLS_setup>>["props"], __VLS_ctx?: __VLS_PrettifyLocal_6<Pick<NonNullable<Awaited<typeof __VLS_setup>>, "attrs" | "emit" | "slots">>, __VLS_expose?: NonNullable<Awaited<typeof __VLS_setup>>["expose"], __VLS_setup?: Promise<{
+    props: __VLS_PrettifyLocal_6<Pick<Partial<{
+        data: T[];
+        defaultSortAttribute: string;
+        showSort: boolean;
+        showFilter: boolean;
+        placeholderFilter: string;
+        defaultSortAscending: boolean;
+    }> & Omit<{
+        readonly data: T[];
+        readonly sortableAttributes: Record<string, string>;
+        readonly defaultSortAttribute: string;
+        readonly showSort: boolean;
+        readonly showFilter: boolean;
+        readonly placeholderFilter: string;
+        readonly defaultSortAscending: boolean;
+        readonly onDatasetSorted?: ((items: T[]) => any) | undefined;
+        readonly onUsedSortAttributes?: ((sortAttribute: SortOrder) => any) | undefined;
+    } & VNodeProps & AllowedComponentProps & ComponentCustomProps, "data" | "defaultSortAttribute" | "showSort" | "showFilter" | "placeholderFilter" | "defaultSortAscending">, "sortableAttributes" | "onDatasetSorted" | "onUsedSortAttributes" | ("data" | "defaultSortAttribute" | "showSort" | "showFilter" | "placeholderFilter" | "defaultSortAscending")> & {} & Partial<{}>> & PublicProps;
+    expose(exposed: ShallowUnwrapRef<    {}>): void;
+    attrs: any;
+    slots: {
+        header?(_: {
+            slotClass: string;
+        }): any;
+        default?(_: {
+            sortFilterResult: T[];
+        }): any;
+    };
+    emit: ((evt: "datasetSorted", items: T[]) => void) & ((evt: "usedSortAttributes", sortAttribute: SortOrder) => void);
+}>) => VNode & {
+    __ctx?: Awaited<typeof __VLS_setup>;
 };
-sortableAttributes: {
-type: PropType<Record<string, string>>;
-required: true;
-};
-defaultSortAttribute: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-showSort: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-showFilter: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-placeholderFilter: {
-type: StringConstructor;
-required: false;
-default: any;
-};
-defaultSortAscending: {
-type: BooleanConstructor;
-required: false;
-default: () => boolean;
-};
-}>, {}, {
-searchString: string;
-sortAttribute: SortOrder;
-sortFilterResult: ListArray<ListItem>;
-tableCallbackOnSort: FSortFilterDatasetSortCallback;
-tableCallbackSortableColumns: FSortFilterDatasetMountCallback;
-}, {
-showClearButton(): boolean;
-sortOrders(): SortOrder[];
-filterAttributes(): string[];
-}, {
-sortFilterData(): void;
-onChangeSortAttribute(): void;
-onSearchInput(event: InputEvent): void;
-onClickClearSearch(): void;
-debouncedFilterResultset(): void;
-filterResultset(): void;
-}, ComponentOptions, ComponentOptionsMixin, ("datasetSorted" | "usedSortAttributes")[], "datasetSorted" | "usedSortAttributes", PublicProps, Readonly<ExtractPropTypes<    {
-data: {
-type: PropType<ListArray<ListItem>>;
-required: true;
-default: () => never[];
-};
-sortableAttributes: {
-type: PropType<Record<string, string>>;
-required: true;
-};
-defaultSortAttribute: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-showSort: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-showFilter: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-placeholderFilter: {
-type: StringConstructor;
-required: false;
-default: any;
-};
-defaultSortAscending: {
-type: BooleanConstructor;
-required: false;
-default: () => boolean;
-};
-}>> & Readonly<{
-onDatasetSorted?: ((...args: any[]) => any) | undefined;
-onUsedSortAttributes?: ((...args: any[]) => any) | undefined;
-}>, {
-data: ListArray<UnknownItem>;
-defaultSortAttribute: string;
-showSort: boolean;
-showFilter: boolean;
-placeholderFilter: string;
-defaultSortAscending: boolean;
-}, {}, {
-FSelectField: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-inline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-default: undefined;
-};
-labelWidth: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-selectWidth: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-}>, {
-textFieldTableMode: boolean;
-}, {
-validityMode: string;
-validationMessage: string;
-}, {
-attrs(): Record<string, unknown>;
-hasError(): boolean;
-rootClass(): Record<string, boolean>;
-labelClass(): string;
-labelWrapperClass(): string | undefined;
-selectWrapperClass(): string | undefined;
-vModel: {
-get(): string | number | boolean | Record<string, any> | unknown[] | undefined;
-set(value: unknown): void;
-};
-}, {
-onValidity({ detail }: CustomEvent<ValidityEvent>): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-inline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-modelValue: {
-type: (StringConstructor | BooleanConstructor | ObjectConstructor | ArrayConstructor | NumberConstructor)[];
-required: false;
-default: undefined;
-};
-labelWidth: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-selectWidth: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-}>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-}>, {
-id: string;
-modelValue: string | number | boolean | Record<string, any> | unknown[];
-inline: boolean;
-labelWidth: string;
-selectWidth: string;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-FLabel: DefineComponent<ExtractPropTypes<    {
-for: {
-type: PropType<string | undefined>;
-required: false;
-default: undefined;
-};
-}>, void, {
-descriptionClass: string[];
-discreteDescriptionClass: string[];
-}, {
-forProperty(): string | undefined;
-hasDefaultSlot(): boolean;
-hasErrorMessageSlot(): boolean;
-hasDescriptionSlot(): boolean;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-for: {
-type: PropType<string | undefined>;
-required: false;
-default: undefined;
-};
-}>> & Readonly<{}>, {
-for: string | undefined;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-FTextField: DefineComponent<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-inline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-modelValue: {
-type: (StringConstructor | NumberConstructor)[];
-required: false;
-default: string;
-};
-type: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-formatter: {
-type: PropType<FormatFunction<any>>;
-required: false;
-default: undefined;
-};
-parser: {
-type: PropType<ParseFunction<any>>;
-required: false;
-default: undefined;
-};
-labelWidth: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-inputWidth: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-options: {
-type: PropType<string[] | undefined>;
-required: false;
-default: () => undefined;
-};
-}>, {
-textFieldTableMode: boolean;
-viewValue: Ref<string, string>;
-onOptionSelected: (value: string) => void;
-dropdownId: string;
-dropdownIsOpen: Readonly<Ref<boolean, boolean>>;
-dropdownOptions: Readonly<Ref<string[], string[]>>;
-activeOptionId: string;
-activeOption: Readonly<Ref<string | null, string | null>>;
-toggleDropdown: () => void;
-selectOption: (value: string) => void;
-closeDropdown: () => void;
-}, {
-showErrorPopup: boolean;
-lastModelValue: unknown;
-validationMessage: string;
-validityMode: string;
-isAfterInitialRender: boolean;
-defaultText: string;
-descriptionText: string;
-descriptionScreenReaderText: string;
-discreteDescriptionText: string;
-discreteDescriptionScreenReaderText: string;
-}, {
-showPopupError(): boolean;
-labelClass(): string;
-isValid(): boolean;
-hasError(): boolean;
-rootClass(): Record<string, boolean>;
-labelWrapperClass(): string | undefined;
-inputWrapperClass(): string | undefined;
-isModelUpdatedProgrammatically(): boolean;
-}, {
-onDropdownSelect(value: string): void;
-onDropdownClose(): void;
-getErrorPopupAnchor(): HTMLElement;
-closePopupError(): void;
-onChange(): Promise<void>;
-onFocus(): void;
-onBlur(): Promise<void>;
-onValidity({ detail }: CustomEvent<ValidityEvent>): Promise<void>;
-onPendingValidity(): void;
-onValidationConfigUpdate(): Promise<void>;
-resolveNewModelValue(viewValue: string): unknown;
-syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
-triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
-setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
-id: {
-type: StringConstructor;
-required: false;
-default: () => string;
-};
-inline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-modelValue: {
-type: (StringConstructor | NumberConstructor)[];
-required: false;
-default: string;
-};
-type: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-formatter: {
-type: PropType<FormatFunction<any>>;
-required: false;
-default: undefined;
-};
-parser: {
-type: PropType<ParseFunction<any>>;
-required: false;
-default: undefined;
-};
-labelWidth: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-inputWidth: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-options: {
-type: PropType<string[] | undefined>;
-required: false;
-default: () => undefined;
-};
-}>> & Readonly<{
-onBlur?: ((...args: any[]) => any) | undefined;
-onChange?: ((...args: any[]) => any) | undefined;
-"onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
-}>, {
-type: string;
-id: string;
-modelValue: string | number;
-inline: boolean;
-options: string[] | undefined;
-labelWidth: string;
-formatter: FormatFunction<any>;
-parser: ParseFunction<any>;
-inputWidth: string;
-}, {}, {
-FLabel: DefineComponent<ExtractPropTypes<    {
-for: {
-type: PropType<string | undefined>;
-required: false;
-default: undefined;
-};
-}>, void, {
-descriptionClass: string[];
-discreteDescriptionClass: string[];
-}, {
-forProperty(): string | undefined;
-hasDefaultSlot(): boolean;
-hasErrorMessageSlot(): boolean;
-hasDescriptionSlot(): boolean;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-for: {
-type: PropType<string | undefined>;
-required: false;
-default: undefined;
-};
-}>> & Readonly<{}>, {
-for: string | undefined;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IPopupError: DefineComponent<ExtractPropTypes<    {
-isOpen: {
-type: BooleanConstructor;
-required: true;
-};
-errorMessage: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-anchor: {
-type: PropType<HTMLElement | null | undefined>;
-required: false;
-default: undefined;
-};
-}>, {}, IPopupErrorData, {
-popupClasses(): string[];
-arrowClass(): string;
-errorStyle(): string;
-}, {
-onResize(): void;
-onKeyEsc(event: KeyboardEvent): void;
-onClose(): void;
-setArrowOffset(): void;
-toggleIsOpen(isOpen: boolean): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, "close"[], "close", PublicProps, Readonly<ExtractPropTypes<    {
-isOpen: {
-type: BooleanConstructor;
-required: true;
-};
-errorMessage: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-anchor: {
-type: PropType<HTMLElement | null | undefined>;
-required: false;
-default: undefined;
-};
-}>> & Readonly<{
-onClose?: ((...args: any[]) => any) | undefined;
-}>, {
-anchor: HTMLElement | null | undefined;
-errorMessage: string;
-}, {}, {
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-IComboboxDropdown: DefineComponent<    {
-id: string;
-isOpen: boolean;
-options: string[];
-activeOption: string | null;
-activeOptionId: string;
-inputNode: HTMLInputElement;
-}, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
-select: (option: string) => any;
-}, string, PublicProps, Readonly<{
-id: string;
-isOpen: boolean;
-options: string[];
-activeOption: string | null;
-activeOptionId: string;
-inputNode: HTMLInputElement;
-}> & Readonly<{
-onClose?: (() => any) | undefined;
-onSelect?: ((option: string) => any) | undefined;
-}>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
-listbox: HTMLUListElement;
-}, HTMLDivElement>;
-IComboboxToggleButton: DefineComponent<    {}, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-toggle: () => any;
-}, string, PublicProps, Readonly<{}> & Readonly<{
-onToggle?: (() => any) | undefined;
-}>, {}, {}, {}, {}, string, ComponentProvideOptions, true, {}, HTMLButtonElement>;
-}, {}, string, ComponentProvideOptions, true, {}, any>;
-FIcon: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>, {}, {}, {
-spriteKey(): string;
-spriteId(): string;
-modifiers(): string[];
-ariaHidden(): "true" | undefined;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-library: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-flip: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-rotate: {
-type: PropType<string>;
-default: null;
-required: false;
-validator(value: string): boolean;
-};
-}>> & Readonly<{}>, {
-library: string;
-flip: string;
-rotate: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlex: DefineComponent<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-gap: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-collapse: {
-type: BooleanConstructor;
-default: boolean;
-};
-wrap: {
-type: BooleanConstructor;
-default: boolean;
-};
-float: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-gap: string;
-collapse: boolean;
-wrap: boolean;
-float: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-IFlexItem: DefineComponent<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>, {}, {}, {
-classList(): string[];
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-grow: {
-type: BooleanConstructor;
-default: boolean;
-};
-shrink: {
-type: BooleanConstructor;
-default: boolean;
-};
-align: {
-type: StringConstructor;
-default: string;
-validator(val: string): boolean;
-};
-}>> & Readonly<{}>, {
-grow: boolean;
-shrink: boolean;
-align: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
-}, {}, string, () => FSortFilterDatasetInterface, true, {}, any>;
 
 // @public
 export function FSortFilterDatasetInjected(): FSortFilterDatasetInterface;
@@ -16074,7 +12645,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -16146,97 +12717,12 @@ rotate: string;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots_6" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_component_6" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_TemplateResult_6" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export const FTableColumn: DefineComponent<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-visible: {
-type: BooleanConstructor;
-default: boolean;
-};
-rowHeader: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-title: {
-type: StringConstructor;
-required: true;
-};
-description: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-shrink: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-expand: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-type: {
-type: PropType<"text" | "date" | "numeric" | "action">;
-required: false;
-default: FTableColumnType;
-validator(value: string): value is FTableColumnType;
-};
-}>, FTableInterface, {}, {
-classes(): string[];
-scope(): "row" | null;
-tagName(): "td" | "th";
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-name: {
-type: StringConstructor;
-required: true;
-};
-visible: {
-type: BooleanConstructor;
-default: boolean;
-};
-rowHeader: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-title: {
-type: StringConstructor;
-required: true;
-};
-description: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-shrink: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-expand: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-type: {
-type: PropType<"text" | "date" | "numeric" | "action">;
-required: false;
-default: FTableColumnType;
-validator(value: string): value is FTableColumnType;
-};
-}>> & Readonly<{}>, {
-type: "text" | "date" | "action" | "numeric";
-description: string;
-shrink: boolean;
-expand: boolean;
-visible: boolean;
-rowHeader: boolean;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
+export const FTableColumn: __VLS_WithTemplateSlots_6<typeof __VLS_component_6, __VLS_TemplateResult_6["slots"]>;
 
 // @public (undocumented)
 export interface FTableColumnData {
@@ -16245,7 +12731,7 @@ export interface FTableColumnData {
     // (undocumented)
     id: string;
     // (undocumented)
-    name: string;
+    name?: string;
     // (undocumented)
     size: FTableColumnSize;
     // (undocumented)
@@ -16403,7 +12889,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -16488,7 +12974,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -16521,6 +13007,11 @@ options: {
 type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
+};
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
 };
 }>, {
 textFieldTableMode: boolean;
@@ -16569,7 +13060,7 @@ resolveNewModelValue(viewValue: string): unknown;
 syncViewValueAfterModelUpdate(newModelValue: unknown): void | never;
 triggerComponentValidityEvent(validityEvent: ValidityEvent): void;
 setViewValueToFormattedValueOrFallbackToValue(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("blur" | "change" | "update:modelValue" | "update")[], "blur" | "change" | "update:modelValue" | "update", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "change" | "blur")[], "update:modelValue" | "change" | "blur", PublicProps, Readonly<ExtractPropTypes<    {
 id: {
 type: StringConstructor;
 required: false;
@@ -16581,7 +13072,7 @@ required: false;
 default: boolean;
 };
 modelValue: {
-type: (StringConstructor | NumberConstructor)[];
+type: (StringConstructor | NumberConstructor | null)[];
 required: false;
 default: string;
 };
@@ -16615,16 +13106,21 @@ type: PropType<string[] | undefined>;
 required: false;
 default: () => undefined;
 };
+disabled: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
 }>> & Readonly<{
 onBlur?: ((...args: any[]) => any) | undefined;
 onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
-onUpdate?: ((...args: any[]) => any) | undefined;
 }>, {
 type: string;
 id: string;
-modelValue: string | number;
+modelValue: string | number | null;
 inline: boolean;
+disabled: boolean;
 options: string[] | undefined;
 labelWidth: string;
 formatter: FormatFunction<any>;
@@ -16639,7 +13135,7 @@ default: undefined;
 };
 }>, void, {
 descriptionClass: string[];
-discreteDescriptionClass: string[];
+formatDescriptionClass: string[];
 }, {
 forProperty(): string | undefined;
 hasDefaultSlot(): boolean;
@@ -16782,6 +13278,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -16872,8 +13369,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 select: (option: string) => any;
+close: () => any;
 }, string, PublicProps, Readonly<{
 id: string;
 isOpen: boolean;
@@ -16882,8 +13379,8 @@ activeOption: string | null;
 activeOptionId: string;
 inputNode: HTMLInputElement;
 }> & Readonly<{
-onClose?: (() => any) | undefined;
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -16918,9 +13415,10 @@ required: false;
 default: string;
 };
 headerTag: {
-default: string;
+type: StringConstructor;
+default: undefined;
 required: false;
-validator(value: string): boolean;
+validator(value: string | undefined): boolean;
 };
 }>, {
 animate: (state: "expand" | "collapse") => void;
@@ -16932,7 +13430,7 @@ isOpen: boolean;
 hasHeader(): boolean;
 }, {
 onClickToggle(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("toggle" | "update:modelValue")[], "toggle" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("update:modelValue" | "toggle")[], "update:modelValue" | "toggle", PublicProps, Readonly<ExtractPropTypes<    {
 attachTo: {
 type: {
 new (): HTMLElement;
@@ -16955,9 +13453,10 @@ required: false;
 default: string;
 };
 headerTag: {
-default: string;
+type: StringConstructor;
+default: undefined;
 required: false;
-validator(value: string): boolean;
+validator(value: string | undefined): boolean;
 };
 }>> & Readonly<{
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
@@ -17142,7 +13641,10 @@ export { FValidationFormAction }
 export { FValidationFormAction as FWizardStepAction }
 
 // @public (undocumented)
-export type FValidationFormCallback = () => void | FValidationFormAction | Promise<FValidationFormAction> | Promise<void>;
+export type FValidationFormCallback = () => FValidationFormResult;
+
+// @public (undocumented)
+export type FValidationFormResult = void | FValidationFormAction | Promise<FValidationFormAction> | Promise<void>;
 
 // @public (undocumented)
 export const FValidationGroup: DefineComponent<ExtractPropTypes<    {
@@ -17210,7 +13712,7 @@ openStep(step: FWizardStepDefinition): void;
 openNext(step: FWizardStepDefinition): Promise<void>;
 doOpen(open: StepNumber | -1): Promise<void>;
 cancel(isFinalStep: boolean): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("cancel" | "change" | "update:modelValue" | "completed")[], "cancel" | "change" | "update:modelValue" | "completed", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("cancel" | "update:modelValue" | "completed")[], "cancel" | "update:modelValue" | "completed", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: StringConstructor;
 default: null;
@@ -17226,7 +13728,6 @@ required: false;
 default: boolean;
 };
 }>> & Readonly<{
-onChange?: ((...args: any[]) => any) | undefined;
 "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 onCancel?: ((...args: any[]) => any) | undefined;
 onCompleted?: ((...args: any[]) => any) | undefined;
@@ -17266,12 +13767,12 @@ type: StringConstructor;
 required: true;
 };
 beforeNext: {
-type: PropType<FValidationFormCallback>;
+type: PropType<FWizardValidationCallback>;
 required: false;
 default(): void;
 };
 beforeValidation: {
-type: PropType<FValidationFormCallback>;
+type: PropType<FWizardValidationCallback>;
 required: false;
 default(): void;
 };
@@ -17302,18 +13803,20 @@ onSubmit(): Promise<void>;
 onCancel(): void;
 beforeAnimation(open: boolean): Promise<void>;
 afterAnimation(open: boolean): Promise<void>;
+beforeNextWrapper(): FValidationFormResult;
+beforeValidationWrapper(): FValidationFormResult;
 }, ComponentOptions, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
 title: {
 type: StringConstructor;
 required: true;
 };
 beforeNext: {
-type: PropType<FValidationFormCallback>;
+type: PropType<FWizardValidationCallback>;
 required: false;
 default(): void;
 };
 beforeValidation: {
-type: PropType<FValidationFormCallback>;
+type: PropType<FWizardValidationCallback>;
 required: false;
 default(): void;
 };
@@ -17323,9 +13826,9 @@ required: false;
 default: boolean;
 };
 }>> & Readonly<{}>, {
-beforeValidation: FValidationFormCallback;
+beforeValidation: FWizardValidationCallback;
 useErrorList: boolean;
-beforeNext: FValidationFormCallback;
+beforeNext: FWizardValidationCallback;
 }, {}, {
 IAnimateExpand: DefineComponent<ExtractPropTypes<    {
 animate: {
@@ -17562,8 +14065,8 @@ default(): BeforeNavigate;
 }>> & Readonly<{
 onSubmit?: ((...args: any[]) => any) | undefined;
 }>, {
-beforeSubmit: FValidationFormCallback;
 id: string;
+beforeSubmit: FValidationFormCallback;
 beforeValidation: FValidationFormCallback;
 useErrorList: boolean;
 errorListBullets: boolean;
@@ -17849,6 +14352,19 @@ export interface FWizardStepDefinition {
     stepNumber: number;
 }
 
+// @public (undocumented)
+export type FWizardValidationCallback = (wizardData?: FWizardValidationData) => FValidationFormResult;
+
+// @public (undocumented)
+export interface FWizardValidationData {
+    // (undocumented)
+    key: FWizardKey;
+    // (undocumented)
+    stepNumber: number;
+    // (undocumented)
+    totalSteps: number;
+}
+
 // @internal
 export function getAbsolutePosition(src: HTMLElement): Rect;
 
@@ -17881,14 +14397,8 @@ export function getInputElement(vm: {
 // @public
 export function getParentByName(vm: ComponentPublicInstance | undefined | null, name: string): ComponentPublicInstance | never;
 
-// @public (undocumented)
-export const getRef: unique symbol;
-
 // @public
 export function getSortedHTMLElementsFromVueRef(ref: unknown): HTMLElement[];
-
-// @public @deprecated
-export function getTextFromScopedSlot(slot: Slot): string;
 
 // @public (undocumented)
 export interface GroupValidityEvent {
@@ -18016,7 +14526,7 @@ onClickDay(date: FDate): void;
 onKeydownDay(date: FDate, event: KeyboardEvent): Promise<void>;
 isDayFocused(date: FDate): boolean;
 getTabindex(date: FDate): 0 | -1;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "click" | "update:modelValue")[], "change" | "click" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change" | "click")[], "update:modelValue" | "change" | "click", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDate>;
 required: true;
@@ -18058,6 +14568,7 @@ resizeObserver: ResizeObserver | undefined;
 internalHideWeekNumbers: boolean;
 showShortWeekdays: boolean;
 }, {
+ariaLabel(): string;
 totalCols(): number;
 weeks(): Array<{
 week: number;
@@ -18102,6 +14613,7 @@ resizeObserver: ResizeObserver | undefined;
 internalHideWeekNumbers: boolean;
 showShortWeekdays: boolean;
 }, {
+ariaLabel(): string;
 totalCols(): number;
 weeks(): Array<{
 week: number;
@@ -18156,7 +14668,7 @@ onClickPreviousButton(): void;
 onClickNextButton(): void;
 getDateText(value: FDate): string;
 isFocused(ref: string): boolean;
-}, ComponentOptions, ComponentOptionsMixin, ("change" | "update:modelValue")[], "change" | "update:modelValue", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptions, ComponentOptionsMixin, ("update:modelValue" | "change")[], "update:modelValue" | "change", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: PropType<FDate>;
 required: true;
@@ -18229,15 +14741,15 @@ rotate: string;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 }, {}, string, ComponentProvideOptions, true, {}, any>;
 
-// Warning: (ae-forgotten-export) The symbol "__VLS_Props" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_Props_4" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const IComboboxDropdown: DefineComponent<__VLS_Props, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
+export const IComboboxDropdown: DefineComponent<__VLS_Props_4, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
 select: (option: string) => any;
-}, string, PublicProps, Readonly<__VLS_Props> & Readonly<{
-onClose?: (() => any) | undefined;
+close: () => any;
+}, string, PublicProps, Readonly<__VLS_Props_4> & Readonly<{
 onSelect?: ((option: string) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {}, {}, {}, {}, string, ComponentProvideOptions, false, {
 listbox: HTMLUListElement;
 }, HTMLDivElement>;
@@ -18335,7 +14847,7 @@ align: string;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 
 // @public (undocumented)
-export function includeItem<T extends object, K extends keyof T>(item: ListItem<T> | undefined, itemList: ListArray<T> | undefined, compareAttribute: K): boolean;
+export function includeItem<T extends object, K extends keyof T>(item: T | undefined, itemList: T[] | undefined, compareAttribute: K): boolean;
 
 // @public (undocumented)
 export const IPopup: DefineComponent<ExtractPropTypes<    {
@@ -18353,11 +14865,6 @@ type: PropType<"always" | "never" | "auto">;
 required: false;
 validator(value: string): boolean;
 default: string;
-};
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
 };
 container: {
 type: PropType<HTMLElement | null | undefined>;
@@ -18417,11 +14924,6 @@ required: false;
 validator(value: string): boolean;
 default: string;
 };
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
 container: {
 type: PropType<HTMLElement | null | undefined>;
 required: false;
@@ -18453,8 +14955,7 @@ onOpen?: ((...args: any[]) => any) | undefined;
 }>, {
 anchor: HTMLElement | null | undefined;
 viewport: HTMLElement;
-inline: "always" | "never" | "auto";
-alwaysInline: boolean;
+inline: "auto" | "always" | "never";
 container: HTMLElement | null | undefined;
 keyboardTrap: boolean;
 focusElement: () => HTMLElement | null;
@@ -18491,6 +14992,7 @@ default: undefined;
 popupClasses(): string[];
 arrowClass(): string;
 errorStyle(): string;
+teleportTarget(): string | Element;
 }, {
 onResize(): void;
 onKeyEsc(event: KeyboardEvent): void;
@@ -18586,12 +15088,12 @@ export interface IPopupErrorData {
     teleportDisabled: boolean;
 }
 
-// Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots_3" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "__VLS_component_3" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "__VLS_TemplateResult_3" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots_7" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_component_7" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_TemplateResult_7" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const IPopupListbox: __VLS_WithTemplateSlots_3<typeof __VLS_component_3, __VLS_TemplateResult_3["slots"]>;
+export const IPopupListbox: __VLS_WithTemplateSlots_7<typeof __VLS_component_7, __VLS_TemplateResult_7["slots"]>;
 
 // @public (undocumented)
 export const IPopupMenu: DefineComponent<ExtractPropTypes<    {
@@ -18649,7 +15151,7 @@ activateItem(index: number): Promise<void>;
 setFocusedItemIndex(index: number): void;
 onKeyUp(event: KeyboardEvent): void;
 onKeyDown(event: KeyboardEvent): Promise<void>;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("close" | "select" | "update:modelValue" | "update:focusedItem")[], "close" | "select" | "update:modelValue" | "update:focusedItem", PublicProps, Readonly<ExtractPropTypes<    {
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("select" | "close" | "update:modelValue" | "update:focusedItem")[], "select" | "close" | "update:modelValue" | "update:focusedItem", PublicProps, Readonly<ExtractPropTypes<    {
 modelValue: {
 type: StringConstructor;
 required: false;
@@ -18716,11 +15218,6 @@ required: false;
 validator(value: string): boolean;
 default: string;
 };
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
 container: {
 type: PropType<HTMLElement | null | undefined>;
 required: false;
@@ -18779,11 +15276,6 @@ required: false;
 validator(value: string): boolean;
 default: string;
 };
-alwaysInline: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
 container: {
 type: PropType<HTMLElement | null | undefined>;
 required: false;
@@ -18815,8 +15307,7 @@ onOpen?: ((...args: any[]) => any) | undefined;
 }>, {
 anchor: HTMLElement | null | undefined;
 viewport: HTMLElement;
-inline: "always" | "never" | "auto";
-alwaysInline: boolean;
+inline: "auto" | "always" | "never";
 container: HTMLElement | null | undefined;
 keyboardTrap: boolean;
 focusElement: () => HTMLElement | null;
@@ -18837,9 +15328,6 @@ export function isContextMenuTextItem(value: ContextMenuItem & {
 // @public
 export function isDialogueTreeEndQuestion(value: Partial<FDialogueTreeEndQuestion>): value is FDialogueTreeEndQuestion;
 
-// @public
-export function isFormStepReference(reference: Reference<FormErrorList | FormStep>): reference is Reference<FormStep>;
-
 // @public (undocumented)
 export const ISkipLink: DefineComponent<ExtractPropTypes<    {
 href: {
@@ -18858,7 +15346,28 @@ href: string;
 }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 
 // @public (undocumented)
-export function itemEquals<T extends object, K extends keyof T>(item1: ListItem<T> | undefined, item2: ListItem<T> | undefined, compareAttribute: K): boolean;
+export function itemEquals<T extends object, K extends keyof T>(item1: T | undefined, item2: T | undefined, compareAttribute: K): boolean;
+
+// @public (undocumented)
+export type LayoutAreaAttachPanel = "none" | "left" | "right" | "top" | "bottom";
+
+// @public (undocumented)
+export interface LayoutAreaDefinition {
+    attachPanel: LayoutAreaAttachPanel;
+    direction: LayoutAreaDirection;
+    scroll?: boolean;
+}
+
+// @public (undocumented)
+export type LayoutAreaDirection = "column" | "row";
+
+// @public
+export interface LayoutDefinition {
+    // (undocumented)
+    areas: Record<string, LayoutAreaDefinition>;
+    // (undocumented)
+    name: string;
+}
 
 // @public
 export type ListArray<T extends object = UnknownItem> = Array<ListItem<T>>;
@@ -19019,6 +15528,9 @@ export function refIsVue(value: unknown): value is ComponentPublicInstance;
 // @public
 export function refIsVueArray(value: unknown): value is ComponentPublicInstance[];
 
+// @public
+export function registerLayout<T extends LayoutDefinition>(definition: T): void;
+
 // @public (undocumented)
 export interface RenderSlotOptions {
     stripClasses: string[];
@@ -19028,16 +15540,7 @@ export interface RenderSlotOptions {
 export function renderSlotText(render: Slot | undefined, props?: Record<string, unknown>, options?: Partial<RenderSlotOptions>): string | undefined;
 
 // @public (undocumented)
-export const setIsOpen: unique symbol;
-
-// @public (undocumented)
-export const setRef: unique symbol;
-
-// @public (undocumented)
 export function setRunningContext(app: App): void;
-
-// @public
-export function sortComponentsWithErrorsOnDOMOrder(componentList: ComponentReferences): ComponentValueTypes[];
 
 // @public
 export interface SortOrder {
@@ -19087,7 +15590,7 @@ export interface TextFieldSetupProps {
     // (undocumented)
     labelWidth: string;
     // (undocumented)
-    modelValue: string | number;
+    modelValue: string | number | null;
     // (undocumented)
     options?: string[];
     // (undocumented)
@@ -19120,7 +15623,17 @@ export const UNHANDLED_ERROR_EVENT: "unhandled-error";
 export type UnknownItem = Record<string, unknown>;
 
 // @public (undocumented)
-export function useCombobox(inputRef: Readonly<ShallowRef<HTMLInputElement | null>>, options: string[] | undefined, onOptionSelected?: (value: string) => void): {
+export interface UseAreaData {
+    readonly area: Readonly<Ref<string | null>>;
+    readonly attachPanel: Readonly<Ref<LayoutAreaAttachPanel | null>>;
+    readonly direction: Readonly<Ref<LayoutAreaDirection | null>>;
+}
+
+// @public
+export function useAreaData(element: Readonly<ShallowRef<HTMLElement | null | undefined>>): UseAreaData;
+
+// @public (undocumented)
+export function useCombobox(inputRef: Readonly<ShallowRef<HTMLInputElement | null>>, options: Ref<string[] | undefined>, onOptionSelected?: (value: string) => void): {
     dropdownId: string;
     dropdownIsOpen: Readonly<Ref<boolean>>;
     dropdownOptions: Readonly<Ref<string[]>>;
@@ -19130,6 +15643,19 @@ export function useCombobox(inputRef: Readonly<ShallowRef<HTMLInputElement | nul
     selectOption: (value: string) => void;
     closeDropdown: () => void;
 };
+
+// @public (undocumented)
+export interface UseDetailsPanel<T = unknown> {
+    // (undocumented)
+    close(): void;
+    // (undocumented)
+    open(item: T, options?: {
+        onClose?: DetailsPanelCloseCallback<T>;
+    }): void;
+}
+
+// @public
+export function useDetailsPanel<T = unknown>(name: string): UseDetailsPanel<T>;
 
 // @public
 export interface UseModal {
@@ -19141,10 +15667,26 @@ export interface UseModal {
 // @public (undocumented)
 export function useModal(): UseModal;
 
+// @public
+export interface UseResize {
+    readonly size: Readonly<Ref<number>>;
+}
+
+// @public
+export function useResize(options?: UseResizeOptions): UseResize;
+
+// @public
+export interface UseResizeOptions {
+    readonly enabled?: Readonly<Ref<boolean>>;
+    readonly offset?: Readonly<Ref<number>>;
+    readonly overlay?: Readonly<Ref<boolean>>;
+    readonly visible?: Readonly<Ref<boolean>>;
+}
+
 // @public (undocumented)
 export interface UseSlotUtils {
     // (undocumented)
-    hasSlot(name: string): boolean;
+    hasSlot: WithoutInstance<typeof hasSlot>;
 }
 
 // @public (undocumented)
@@ -19178,6 +15720,9 @@ export interface VueLike {
     // (undocumented)
     focusTarget?: VueLike | Element | Array<VueLike | Element> | null;
 }
+
+// @public (undocumented)
+export type WithoutInstance<F> = F extends (vm: any, ...rest: infer R) => infer T ? (...args: R) => T : never;
 
 // (No @packageDocumentation comment for this package)
 

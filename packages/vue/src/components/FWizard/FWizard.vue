@@ -1,10 +1,3 @@
-<template>
-    <div class="wizard">
-        <!-- @slot One or more <f-wizard-step> elements -->
-        <slot></slot>
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import { FWizardApi, FWizardKey, FWizardStepDefinition, StepNumber, addStep, removeStep } from "./FWizardApi";
@@ -58,7 +51,7 @@ export default defineComponent({
             default: false,
         },
     },
-    emits: ["cancel", "change", "completed", "update:modelValue"],
+    emits: ["cancel", "completed", "update:modelValue"],
     data() {
         return {
             steps: [] as FWizardStepDefinition[],
@@ -155,17 +148,8 @@ export default defineComponent({
                  * @type {FWizardKey}
                  */
                 this.$emit("update:modelValue", step.key);
-
-                /**
-                 * Vue2 v-model event.
-                 * @deprecated
-                 * @event change
-                 * @type {FWizardKey}
-                 */
-                this.$emit("change", step.key);
             } else {
                 this.$emit("update:modelValue", null);
-                this.$emit("change", null);
             }
         },
         cancel(isFinalStep: boolean): void {
@@ -180,3 +164,10 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div class="wizard">
+        <!-- @slot One or more <f-wizard-step> elements -->
+        <slot></slot>
+    </div>
+</template>

@@ -1,10 +1,57 @@
+<script lang="ts">
+import { defineComponent } from "vue";
+import {
+    FCrudButton,
+    FCrudDataset,
+    FList,
+    FSortFilterDataset,
+    FStaticField,
+    FTextField,
+    FTextareaField,
+} from "@fkui/vue";
+import { type FruitData, fruits } from "./fruit-data";
+
+export default defineComponent({
+    components: {
+        FCrudButton,
+        FCrudDataset,
+        FList,
+        FSortFilterDataset,
+        FStaticField,
+        FTextField,
+        FTextareaField,
+    },
+    data() {
+        return {
+            fruits,
+        };
+    },
+    methods: {
+        // Förpopulera ett objekt med värden
+        beforeCreate(): FruitData {
+            return {
+                id: String(this.getMaxId() + 1),
+                name: "",
+                origin: "",
+                description: "",
+            };
+        },
+        getMaxId() {
+            return this.fruits.reduce((max, item) => {
+                return Math.max(max, parseInt(item.id, 10));
+            }, 0);
+        },
+    },
+});
+</script>
+
 <template>
     <f-crud-dataset v-model="fruits" :before-create="beforeCreate">
         <template #default>
             <f-sort-filter-dataset
                 :data="fruits"
                 :sortable-attributes="{
-                    namn: 'Namn',
+                    name: 'Namn',
                     origin: 'Land',
                 }"
             >
@@ -73,52 +120,3 @@
         </template>
     </f-crud-dataset>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-import {
-    type UnknownItem,
-    FCrudButton,
-    FCrudDataset,
-    FList,
-    FSortFilterDataset,
-    FStaticField,
-    FTextField,
-    FTextareaField,
-} from "@fkui/vue";
-import { type FruitData, fruits } from "./fruit-data";
-
-export default defineComponent({
-    components: {
-        FCrudButton,
-        FCrudDataset,
-        FList,
-        FSortFilterDataset,
-        FStaticField,
-        FTextField,
-        FTextareaField,
-    },
-    data() {
-        return {
-            fruits,
-        };
-    },
-    methods: {
-        // Förpopulera ett objekt med värden
-        beforeCreate(): UnknownItem {
-            const fruit: FruitData = {
-                id: String(this.getMaxId() + 1),
-                name: "",
-                origin: "",
-                description: "",
-            };
-            return fruit as unknown as UnknownItem;
-        },
-        getMaxId() {
-            return this.fruits.reduce((max, item) => {
-                return Math.max(max, parseInt(item.id, 10));
-            }, 0);
-        },
-    },
-});
-</script>

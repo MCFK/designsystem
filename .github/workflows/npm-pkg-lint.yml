@@ -1,6 +1,6 @@
 name: npm-pkg-lint
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
     npm-pkg-lint:
@@ -26,6 +26,6 @@ jobs:
                       set -e
                       cd $pkg
                       npm pack
-                      npm exec npm-pkg-lint
+                      npm exec npm-pkg-lint -- --allow-dependency fk-icons
                       echo "::endgroup::"
                   ); done

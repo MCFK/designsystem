@@ -1,33 +1,3 @@
-<template>
-    <live-example :components :template :livedata>
-        <f-checkbox-field v-model="isStriped" :value="true"> Zebrarandig </f-checkbox-field>
-        <f-checkbox-field v-model="hasRowHeader" :value="true"> Radrubriker </f-checkbox-field>
-        <f-checkbox-field v-model="hasRowDescription" :value="true">
-            Kolumnbeskrivnig
-        </f-checkbox-field>
-        <f-checkbox-field v-model="hasHiddenCaption" :value="true"> Dold caption </f-checkbox-field>
-        <f-checkbox-field v-model="isEmpty" :value="true"> Tom tabell </f-checkbox-field>
-        <f-select-field v-model="scroll">
-            <template #label> Skroll </template>
-            <template #default>
-                <option value="none">Inaktiv</option>
-                <option value="horizontal">Horisontal</option>
-                <option value="vertical">Vertikal</option>
-                <option value="both">Båda</option>
-            </template>
-        </f-select-field>
-        <f-fieldset v-if="isEmpty" name="radio-empty-text">
-            <template #label> Meddelande för tom tabell </template>
-            <f-radio-field v-model="hasCustomEmptyText" :value="false">
-                Standardmeddelande
-            </f-radio-field>
-            <f-radio-field v-model="hasCustomEmptyText" :value="true">
-                Eget meddelande
-            </f-radio-field>
-        </f-fieldset>
-    </live-example>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import {
@@ -123,30 +93,24 @@ export default defineComponent({
                 <f-data-table ${this.items} ${this.striped} ${scroll} key-attribute="id">
                     <template #caption> ${this.caption} </template>
                     <template #default="{ row }">
-                        <f-table-column name="level" title="Nivå" ${this.rowHeader} type="text">
+                        <f-table-column title="Nivå" ${this.rowHeader} type="text">
                             {{ row.level }}
                         </f-table-column>
                         <f-table-column
-                            name="start"
                             title="Från och med"
                             ${this.rowDescription}
                             type="text"
                             expand
                         >
-                            <span class="nowrap">{{ row.start }}</span>
+                            <span v-format:date="row.start"></span>
                         </f-table-column>
-                        <f-table-column
-                            name="end"
-                            title="Till och med"
-                            ${this.rowDescription}
-                            type="text"
-                        >
-                            <span class="nowrap">{{ row.end }}</span>
+                        <f-table-column title="Till och med" ${this.rowDescription} type="text">
+                            <span v-format:date="row.end"></span>
                         </f-table-column>
-                        <f-table-column name="antal" title="Antal dagar" type="numeric">
+                        <f-table-column title="Antal dagar" type="numeric">
                             {{ row.antal }}
                         </f-table-column>
-                        <f-table-column name="anteckning" title="Anteckning" type="text">
+                        <f-table-column title="Anteckning" type="text">
                             {{ row.anteckning }}
                         </f-table-column>
                     </template>
@@ -158,8 +122,32 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.nowrap {
-    white-space: nowrap;
-}
-</style>
+<template>
+    <live-example :components :template :livedata>
+        <f-checkbox-field v-model="isStriped" :value="true"> Zebrarandig </f-checkbox-field>
+        <f-checkbox-field v-model="hasRowHeader" :value="true"> Radrubriker </f-checkbox-field>
+        <f-checkbox-field v-model="hasRowDescription" :value="true">
+            Kolumnbeskrivnig
+        </f-checkbox-field>
+        <f-checkbox-field v-model="hasHiddenCaption" :value="true"> Dold caption </f-checkbox-field>
+        <f-checkbox-field v-model="isEmpty" :value="true"> Tom tabell </f-checkbox-field>
+        <f-select-field v-model="scroll">
+            <template #label> Skroll </template>
+            <template #default>
+                <option value="none">Inaktiv</option>
+                <option value="horizontal">Horisontal</option>
+                <option value="vertical">Vertikal</option>
+                <option value="both">Båda</option>
+            </template>
+        </f-select-field>
+        <f-fieldset v-if="isEmpty" name="radio-empty-text">
+            <template #label> Meddelande för tom tabell </template>
+            <f-radio-field v-model="hasCustomEmptyText" :value="false">
+                Standardmeddelande
+            </f-radio-field>
+            <f-radio-field v-model="hasCustomEmptyText" :value="true">
+                Eget meddelande
+            </f-radio-field>
+        </f-fieldset>
+    </live-example>
+</template>

@@ -146,7 +146,7 @@ describe("events", () => {
         expect(foobar).toHaveBeenCalled();
     });
 
-    it("should support v-model by emitting change event with string", () => {
+    it("should support v-model by emitting update:modelValue event with string", () => {
         const wrapper = mount(
             createTestComponentWithOptions([
                 { text: "Banana", value: "banana" },
@@ -155,17 +155,19 @@ describe("events", () => {
             { props: { modelValue: "banana" } },
         );
         const select = wrapper.get("select");
-        const htmlSelect = select.element as HTMLSelectElement;
+        const htmlSelect = select.element;
 
         expect(htmlSelect.value).toBe("banana");
         select.setValue("apple");
         expect(htmlSelect.value).toBe("apple");
         expect(
-            wrapper.findComponent(FSelectField).emitted("change")![0][0],
+            wrapper
+                .findComponent(FSelectField)
+                .emitted("update:modelValue")![0][0],
         ).toMatchInlineSnapshot(`"apple"`);
     });
 
-    it("should support v-model by emitting change event with object", async () => {
+    it("should support v-model by emitting update:modelValue event with object", async () => {
         const wrapper = mount(
             createTestComponentWithOptions([
                 { text: "BananaObject", value: { id: 1, fruit: "banana" } },
@@ -179,6 +181,21 @@ describe("events", () => {
             .props("modelValue");
 
         expect(vModelValue).toEqual({ id: 1, fruit: "banana" });
+    });
+
+    it("should emit change event with when value changes", () => {
+        const wrapper = mount(
+            createTestComponentWithOptions([
+                { text: "Banana", value: "banana" },
+                { text: "Apple", value: "apple" },
+            ]),
+            { props: { modelValue: "banana" } },
+        );
+        const select = wrapper.get("select");
+        select.setValue("apple");
+        expect(
+            wrapper.findComponent(FSelectField).emitted("change")![0][0],
+        ).toMatchInlineSnapshot(`"apple"`);
     });
 });
 

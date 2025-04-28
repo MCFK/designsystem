@@ -1,43 +1,3 @@
-<template>
-    <div>
-        <f-text-field
-            :id="id"
-            :maxlength="maxLength"
-            :model-value="modelValue"
-            v-bind="$attrs"
-            type="search"
-            class="text-field--search"
-            @change="onChange"
-            @input="onInput"
-            @blur="onBlur"
-            @update="onUpdate"
-        >
-            <slot name="default">{{ defaultText }}</slot>
-            <template v-if="$slots.tooltip" #tooltip>
-                <slot name="tooltip"></slot>
-            </template>
-            <template #input-right>
-                <slot name="input-right"></slot>
-            </template>
-            <template #input-left>
-                <slot name="input-left"></slot>
-            </template>
-            <template #error-message="{ hasError, validationMessage }">
-                <slot name="error-message" v-bind="{ hasError, validationMessage }"></slot>
-            </template>
-            <template #description="{ descriptionClass, discreteDescriptionClass }">
-                <slot name="description" v-bind="{ descriptionClass, discreteDescriptionClass }"></slot>
-            </template>
-            <template v-if="canClear" #append-inner>
-                <button class="text-field__icon clear-button" type="button" @click.self="clear">
-                    <f-icon name="cross" class="clear-button__icon"></f-icon>
-                    <span class="sr-only">{{ clearableScreenReaderText }}</span>
-                </button>
-            </template>
-        </f-text-field>
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { alertScreenReader, ElementIdService, TranslationService } from "@fkui/logic";
@@ -54,7 +14,7 @@ export default defineComponent({
             default: () => ElementIdService.generateElementId(),
         },
         modelValue: {
-            type: String,
+            type: [String, null],
             required: false,
             default: "",
         },
@@ -79,7 +39,9 @@ export default defineComponent({
     },
     computed: {
         canClear(): boolean {
-            return this.modelValue !== "";
+            const isEmpty = this.modelValue === undefined || this.modelValue === null || this.modelValue === "";
+
+            return !isEmpty;
         },
     },
     methods: {
@@ -119,3 +81,48 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div>
+        <f-text-field
+            :id="id"
+            :maxlength="maxLength"
+            :model-value="modelValue"
+            v-bind="$attrs"
+            type="search"
+            class="text-field--search"
+            @change="onChange"
+            @input="onInput"
+            @blur="onBlur"
+            @update="onUpdate"
+        >
+            <slot name="default">{{ defaultText }}</slot>
+            <template v-if="$slots.tooltip" #tooltip>
+                <slot name="tooltip"></slot>
+            </template>
+            <template #input-right>
+                <slot name="input-right"></slot>
+            </template>
+            <template #input-left>
+                <slot name="input-left"></slot>
+            </template>
+            <template #error-message="{ hasError, validationMessage }">
+                <slot name="error-message" v-bind="{ hasError, validationMessage }"></slot>
+            </template>
+            <template #description="{ descriptionClass, formatDescriptionClass }">
+                <!--
+                     @slot Optional slot for description. See {@link FLabel} for details.
+                     @binding {string[]} description-class CSS classes for primary description content.
+                     @binding {string[]} format-description-class CSS classes for format description.
+                -->
+                <slot name="description" :description-class :format-description-class></slot>
+            </template>
+            <template v-if="canClear" #append-inner>
+                <button class="text-field__icon clear-button" type="button" @click.self="clear">
+                    <f-icon name="cross" class="clear-button__icon"></f-icon>
+                    <span class="sr-only">{{ clearableScreenReaderText }}</span>
+                </button>
+            </template>
+        </f-text-field>
+    </div>
+</template>

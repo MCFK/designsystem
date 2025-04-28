@@ -1,6 +1,6 @@
 ---
 title: Bricka
-status: Preliminär
+status: Produktionsklar
 layout: component
 component: FBadge
 ---
@@ -42,3 +42,7 @@ FBadgeLiveExample.vue
 :::api
 vue:FBadge
 :::
+
+## Relaterat
+
+- {@link FBadgePageObject FBadgePageObject}

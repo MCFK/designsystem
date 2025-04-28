@@ -1,5 +1,12 @@
+/* include typescript declarations for vite static asset handling (e.g. `?raw`) */
+/// <reference types="vite/client" />
+
 export * from "./components";
-export { useSlotUtils, type UseSlotUtils } from "./composables";
+export {
+    type UseSlotUtils,
+    type WithoutInstance,
+    useSlotUtils,
+} from "./composables";
 export {
     config,
     type FKUIConfig,
@@ -14,7 +21,6 @@ export {
     type ComponentUnmountEvent,
     type ComponentValidityEvent,
     type ErrorItem,
-    type FormStepFields,
     type GroupValidityEvent,
     type ListArray,
     type ListItem,
@@ -22,7 +28,6 @@ export {
     ErrorData,
     ErrorViewData,
     FormErrorList,
-    FormStep,
     MenuAction,
 } from "./types";
 export * from "./utils";

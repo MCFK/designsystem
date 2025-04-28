@@ -1,47 +1,35 @@
 import { type ComputedRef, type Ref, type Slots, ref, computed } from "vue";
-import { type ListArray, type ListItem } from "../../types";
-import { type FTableColumnData } from "../FTableColumn";
 import { itemEquals, includeItem } from "../../utils";
 
 /**
- * @public
+ * @internal
  */
-export interface ExpandableTable {
-    expandedRows: Ref<ListArray>;
+export interface ExpandableTable<T> {
     isExpandableTable: ComputedRef<boolean>;
     hasExpandableSlot: ComputedRef<boolean>;
-    toggleExpanded(row: ListItem): void;
-    isExpanded(row: ListItem): boolean;
-    rowAriaExpanded(row: ListItem): boolean | undefined;
-    expandableRowClasses(row: ListItem, index: number): string[];
-    expandableColumnClasses(column: FTableColumnData, index: number): string[];
-    getExpandableDescribedby(row: ListItem): string | undefined;
-    expandableRows(row: ListItem): ListArray | undefined;
-    hasExpandableContent(row: ListItem): boolean;
+    toggleExpanded(row: T): void;
+    isExpanded(row: T): boolean;
+    rowAriaExpanded(row: T): boolean | undefined;
+    expandableRowClasses(row: T, index: number): string[];
+    getExpandableDescribedby(row: T): string | undefined;
+    expandableRows(row: T): T[] | undefined;
+    hasExpandableContent(row: T): boolean;
 }
 
-type InteractiveTableEmit = (
-    event:
-        | "change"
-        | "update:modelValue"
-        | "click"
-        | "update"
-        | "unselect"
-        | "select"
-        | "expand"
-        | "collapse",
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- technical debt
-    ...args: any[]
-) => void;
+type Emit<T> = ((evt: "expand", row: T) => void) &
+    ((evt: "collapse", row: T) => void);
 
-export function useExpandableTable(
+/**
+ * @internal
+ */
+export function useExpandableTable<T extends object>(
     expandableAttribute: string,
-    keyAttribute: string,
+    keyAttribute: keyof T,
     describedby: string | undefined,
-    emit: InteractiveTableEmit,
+    emit: Emit<T>,
     slots: Slots,
-): ExpandableTable {
-    const expandedRows: Ref<ListArray> = ref([]);
+): ExpandableTable<T> {
+    const expandedRows: Ref<T[]> = ref([]);
 
     const isExpandableTable = computed(() => {
         return expandableAttribute.length > 0;
@@ -51,7 +39,7 @@ export function useExpandableTable(
         return Boolean(slots["expandable"]);
     });
 
-    function toggleExpanded(row: ListItem): void {
+    function toggleExpanded(row: T): void {
         if (isExpanded(row)) {
             expandedRows.value = expandedRows.value.filter(
                 (it) => !itemEquals(it, row, keyAttribute),
@@ -63,19 +51,19 @@ export function useExpandableTable(
         }
     }
 
-    function isExpanded(row: ListItem): boolean {
+    function isExpanded(row: T): boolean {
         return includeItem(row, expandedRows.value, keyAttribute);
     }
 
-    function rowAriaExpanded(row: ListItem): boolean | undefined {
-        if (!isExpandableTable || !row[expandableAttribute]) {
+    function rowAriaExpanded(row: T): boolean | undefined {
+        if (!isExpandableTable || !row[expandableAttribute as keyof T]) {
             return undefined;
         }
 
         return isExpanded(row);
     }
 
-    function expandableRowClasses(row: ListItem, index: number): string[] {
+    function expandableRowClasses(row: T, index: number): string[] {
         const rows = expandableRows(row);
 
         if (!rows) {
@@ -91,21 +79,7 @@ export function useExpandableTable(
         return ["table__expandable-row", ...border, ...expanded];
     }
 
-    function expandableColumnClasses(
-        column: FTableColumnData,
-        index: number,
-    ): string[] {
-        const indented = index === 0 ? ["table__column--indented"] : [];
-
-        return [
-            "table__column",
-            `table__column--${column.type}`,
-            column.size,
-            ...indented,
-        ];
-    }
-
-    function getExpandableDescribedby(row: ListItem): string | undefined {
+    function getExpandableDescribedby(row: T): string | undefined {
         if (!isExpandableTable) {
             return undefined;
         }
@@ -120,32 +94,33 @@ export function useExpandableTable(
         return describedby;
     }
 
-    function expandableRows(row: ListItem): ListArray | undefined {
-        const expandableRows = row[expandableAttribute];
+    function expandableRows(row: T): T[] | undefined {
+        const expandableRows = row[expandableAttribute as keyof T];
 
-        if (typeof expandableRows === "undefined") {
+        if (expandableRows === undefined || expandableRows === null) {
             return undefined;
         }
         if (!Array.isArray(expandableRows)) {
-            throw new Error(`Expandable rows must be a ListArray`);
+            throw new Error(`Expandable rows must be an array`);
+        }
+        if (expandableRows.length === 0) {
+            return undefined;
         }
 
         return expandableRows;
     }
 
-    function hasExpandableContent(row: ListItem): boolean {
+    function hasExpandableContent(row: T): boolean {
         return Boolean(expandableRows(row));
     }
 
     return {
-        expandedRows,
         isExpandableTable,
         hasExpandableSlot,
         toggleExpanded,
         isExpanded,
         rowAriaExpanded,
         expandableRowClasses,
-        expandableColumnClasses,
         getExpandableDescribedby,
         expandableRows,
         hasExpandableContent,

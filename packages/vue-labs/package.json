@@ -1,13 +1,13 @@
 {
   "name": "@fkui/vue-labs",
-  "version": "5.43.0",
+  "version": "6.6.0",
   "description": "Experimental and unstable FKUI components",
   "keywords": [
     "fkui",
     "designsystem",
     "vue"
   ],
-  "homepage": "https://forsakringskassan.github.io/designsystem/",
+  "homepage": "https://designsystem.forsakringskassan.se/",
   "bugs": "https://github.com/Forsakringskassan/designsystem/issues",
   "repository": {
     "type": "git",
@@ -22,28 +22,32 @@
       "require": "./dist/cjs/index.cjs.js",
       "import": "./dist/esm/index.esm.js"
     },
-    "./pageobject/*": "./pageobject/*",
-    "./style.css": "./dist/esm/vue-labs.css"
+    "./cypress": {
+      "types": "./dist/types/cypress.d.ts",
+      "require": "./dist/cjs/cypress.cjs.js",
+      "import": "./dist/esm/cypress.esm.js"
+    },
+    "./style.css": "./dummy.css"
   },
   "main": "./dist/cjs/index.cjs.js",
   "module": "./dist/esm/index.esm.js",
   "types": "./dist/types/index.d.ts",
   "files": [
     "dist",
+    "dummy.css",
     "htmlvalidate",
-    "pageobject/**/*.{js,js.map,d.ts}",
     "!**/examples/**",
     "!**/*.spec.{js,ts,d.ts,d.ts.map}",
     "!**/.eslintrc.json"
   ],
   "scripts": {
     "prebuild": "run-s clean",
-    "build": "run-s build:lib build:pageobject build:dts build:api",
+    "build": "run-s build:lib build:pageobjects build:dts build:api",
     "build:api": "fk-api-extractor --patch-augmentations api-extractor.*.json",
     "build:docs": "node generate-docs.mjs",
-    "build:dts": "vue-tsc --emitDeclarationOnly",
+    "build:dts": "vue-tsc -b",
     "build:lib": "fk-build-vue-lib",
-    "build:pageobject": "tsc --build pageobject/",
+    "build:pageobjects": "node build-pageobjects.mjs",
     "clean": "rimraf -g .jest-cache *.tsbuildinfo coverage dist public temp test-results",
     "prepack": "release-prepack --bundle --retain-scripts",
     "postpack": "release-postpack",
@@ -61,25 +65,26 @@
     ]
   },
   "devDependencies": {
-    "@fkui/css-variables": "5.43.0",
-    "@fkui/date": "5.43.0",
-    "@fkui/design": "5.43.0",
-    "@fkui/icon-lib-default": "5.43.0",
-    "@fkui/logic": "5.43.0",
-    "@fkui/test-utils": "5.43.0",
-    "@fkui/vue": "5.43.0",
-    "@forsakringskassan/docs-generator": "2.14.4",
-    "@forsakringskassan/vite-lib-config": "3.0.0",
+    "@fkui/date": "6.6.0",
+    "@fkui/design": "6.6.0",
+    "@fkui/icon-lib-default": "6.6.0",
+    "@fkui/logic": "6.6.0",
+    "@fkui/test-utils": "6.6.0",
+    "@fkui/theme-default": "6.6.0",
+    "@fkui/vue": "6.6.0",
+    "@forsakringskassan/docs-generator": "2.26.3",
+    "@forsakringskassan/vite-lib-config": "3.6.4",
     "@vue/test-utils": "2.4.6",
-    "vite": "6.0.3",
+    "esbuild": "0.25.3",
+    "vite": "6.3.3",
     "vue": "3.5.13",
     "vue-router": "4.5.0"
   },
   "peerDependencies": {
-    "@fkui/date": "^5.36.0",
-    "@fkui/design": "^5.36.0",
-    "@fkui/logic": "^5.36.0",
-    "@fkui/vue": "^5.36.0",
+    "@fkui/date": "^6.6.0",
+    "@fkui/design": "^6.6.0",
+    "@fkui/logic": "^6.6.0",
+    "@fkui/vue": "^6.6.0",
     "html-validate": ">= 7.9.0",
     "vue": "^3.5.0"
   },

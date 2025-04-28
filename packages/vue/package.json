@@ -1,13 +1,13 @@
 {
   "name": "@fkui/vue",
-  "version": "5.43.0",
+  "version": "6.6.0",
   "description": "Vue implementation of FKUI components",
   "keywords": [
     "fkui",
     "designsystem",
     "vue"
   ],
-  "homepage": "https://forsakringskassan.github.io/designsystem/",
+  "homepage": "https://designsystem.forsakringskassan.se/",
   "bugs": "https://github.com/Forsakringskassan/designsystem/issues",
   "repository": {
     "type": "git",
@@ -22,11 +22,12 @@
       "require": "./dist/cjs/index.cjs.js",
       "import": "./dist/esm/index.esm.js"
     },
-    "./pageobject": {
-      "types": "./dist/types/pageobject.d.ts",
-      "default": "./dist/cjs/pageobject.js"
+    "./cypress": {
+      "types": "./dist/types/cypress.d.ts",
+      "require": "./dist/cjs/cypress.cjs.js",
+      "import": "./dist/esm/cypress.esm.js"
     },
-    "./htmlvalidate": "./htmlvalidate/index.js",
+    "./htmlvalidate": "./htmlvalidate/index.cjs",
     "./htmlvalidate/cypress": "./htmlvalidate/cypress.js",
     "./package.json": "./package.json",
     "./tsconfig.json": "./tsconfig-consumer.json"
@@ -38,7 +39,6 @@
     "dist",
     "htmlvalidate",
     "tsconfig-consumer.json",
-    "pageobject.{js,d.ts}",
     "!**/*.spec.{js,ts,d.ts}",
     "!**/.eslintrc.json",
     "!htmlvalidate/tsconfig.json"
@@ -49,7 +49,7 @@
     "build:api": "fk-api-extractor --patch-augmentations api-extractor.*.json",
     "build:dts": "vue-tsc -b",
     "build:lib": "fk-build-vue-lib",
-    "build:pageobjects": "esbuild --bundle --platform=node --target=node12.0 --sourcemap --outfile=dist/cjs/pageobject.js ./src/pageobjects.ts",
+    "build:pageobjects": "node build-pageobjects.mjs",
     "clean": "rimraf -g .jest-cache *.tsbuildinfo coverage dist public temp test-results",
     "prepack": "release-prepack --bundle --retain-scripts",
     "postpack": "release-postpack",
@@ -70,30 +70,35 @@
     "preset": "@forsakringskassan/jest-config-vue",
     "setupFilesAfterEnv": [
       "./jest.setup.ts"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^(.+\\.css)\\?raw$": "$1"
+    }
   },
   "dependencies": {
+    "@vueuse/core": "12.8.2",
     "lodash": "4.17.21"
   },
   "devDependencies": {
-    "@fkui/css-variables": "5.43.0",
-    "@fkui/date": "5.43.0",
-    "@fkui/design": "5.43.0",
-    "@fkui/icon-lib-default": "5.43.0",
-    "@fkui/logic": "5.43.0",
-    "@fkui/test-utils": "5.43.0",
-    "@forsakringskassan/vite-lib-config": "3.0.0",
+    "@fkui/date": "6.6.0",
+    "@fkui/design": "6.6.0",
+    "@fkui/icon-lib-default": "6.6.0",
+    "@fkui/logic": "6.6.0",
+    "@fkui/test-utils": "6.6.0",
+    "@fkui/theme-default": "6.6.0",
+    "@forsakringskassan/vite-lib-config": "3.6.4",
     "@vue/test-utils": "2.4.6",
-    "cypress": "13.16.1",
+    "cypress": "14.3.2",
+    "esbuild": "0.25.3",
     "flush-promises": "1.0.2",
-    "vite": "6.0.3",
+    "vite": "6.3.3",
     "vue": "3.5.13",
     "vue-router": "4.5.0"
   },
   "peerDependencies": {
-    "@fkui/date": "^5.36.0",
-    "@fkui/design": "^5.36.0",
-    "@fkui/logic": "^5.36.0",
+    "@fkui/date": "^6.6.0",
+    "@fkui/design": "^6.6.0",
+    "@fkui/logic": "^6.6.0",
     "fk-icons": "^4.30.1",
     "html-validate": ">= 7.9.0",
     "vue": "^3.5.0"

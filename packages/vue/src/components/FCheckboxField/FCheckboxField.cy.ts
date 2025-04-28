@@ -5,7 +5,7 @@ import {
     densityWrapperHeight,
     densityWrapperWidth,
 } from "@fkui/test-utils/vue";
-import { FFieldsetPageObject } from "../../pageobject";
+import { FFieldsetPageObject } from "../../cypress";
 import { FTooltip } from "../FTooltip";
 import { FFieldset } from "../FFieldset";
 import FCheckboxField from "./FCheckboxField.vue";
@@ -147,7 +147,10 @@ describe("FCheckboxField", () => {
             <f-fieldset name="checkbox-name">
                 <template #label> Label text </template>
                 <template #tooltip>
-                    <f-tooltip screen-reader-text="Läs mer om Broschyrer">
+                    <f-tooltip
+                        screen-reader-text="Läs mer om Broschyrer"
+                        header-tag="h1"
+                    >
                         <template #header> Tooltip header text </template>
                         <template #body> Tooltip body text </template>
                     </f-tooltip>

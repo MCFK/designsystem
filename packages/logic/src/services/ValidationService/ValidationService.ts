@@ -34,19 +34,16 @@ import { getElementType } from "./getElementType";
 export function isValidatableHTMLElement(
     element: Element,
 ): element is ValidatableHTMLElement {
+    if (element.classList.contains("card")) {
+        return true;
+    }
+
     return (
         element instanceof HTMLInputElement ||
         element instanceof HTMLTextAreaElement ||
         element instanceof HTMLSelectElement ||
         element instanceof HTMLFieldSetElement
     );
-}
-
-/**
- * @internal
- */
-export function isFieldset(element: Element): element is HTMLFieldSetElement {
-    return element instanceof HTMLFieldSetElement;
 }
 
 function hasValidators(element: HTMLElement): boolean {
@@ -200,14 +197,6 @@ class ValidationServiceImpl implements ValidationServiceInterface {
         }
         this.setRequiredAttribute(element, validatorConfigs);
 
-        // Deprecated: SFKUI-4412 personnummerValidator is deprecated. Replace with personnummerFormat and personnummerLuhn
-        // Legacy compability tests cant be found here: @fkui/vue:src\components\FTextField\FTextField.cy.ts
-        if (validatorConfigs["personnummer"] !== undefined) {
-            const oldConfig = validatorConfigs["personnummer"];
-            validatorConfigs["personnummerFormat"] = oldConfig;
-            validatorConfigs["personnummerLuhn"] = oldConfig;
-            delete validatorConfigs.personnummer;
-        }
         const foundValidators = this.getValidators(validatorConfigs);
 
         // set data-validation attribute to indicate that validation is activated on the element
@@ -655,6 +644,9 @@ class ValidationServiceImpl implements ValidationServiceInterface {
                 },
             );
         }
+        if (element instanceof HTMLDivElement) {
+            return false;
+        }
         return Boolean(
             isRadiobuttonOrCheckbox(element)
                 ? (element as HTMLInputElement).checked
@@ -663,9 +655,11 @@ class ValidationServiceImpl implements ValidationServiceInterface {
     }
 
     private getValue(element: ValidatableHTMLElement): string {
-        return element instanceof HTMLFieldSetElement || !element.value
-            ? ""
-            : element.value.trim();
+        if ("value" in element) {
+            return element.value.trim();
+        } else {
+            return "";
+        }
     }
 
     private validateAll(
@@ -682,7 +676,7 @@ class ValidationServiceImpl implements ValidationServiceInterface {
         }
 
         /* if the element is disabled we always consider it to be valid */
-        if (element.disabled) {
+        if ("disabled" in element && element.disabled) {
             return {
                 isValid: true,
                 validationMessage: "",
@@ -797,7 +791,11 @@ class ValidationServiceImpl implements ValidationServiceInterface {
         });
 
         for (const affectedElement of affectedElements) {
-            affectedElement.setCustomValidity(validityEvent.validationMessage);
+            if ("setCustomValidity" in affectedElement) {
+                affectedElement.setCustomValidity(
+                    validityEvent.validationMessage,
+                );
+            }
             affectedElement.setAttribute("aria-invalid", validField.toString());
         }
 
@@ -813,4 +811,5 @@ class ValidationServiceImpl implements ValidationServiceInterface {
  * @public
  */
 export const ValidationService: ValidationServiceInterface =
+    /* @__PURE__ */
     new ValidationServiceImpl();

@@ -1,5 +1,6 @@
 import "html-validate/jest";
 import { mount } from "@vue/test-utils";
+import { defineComponent } from "vue";
 import { FTableColumn } from "../FTableColumn";
 import FInteractiveTable from "./FInteractiveTable.vue";
 
@@ -8,9 +9,7 @@ const UnexpandableComponent = {
     template: /* HTML */ `
         <f-interactive-table :rows="rows" key-attribute="id">
             <template #default="{ row }">
-                <f-table-column name="name" title="Name">
-                    {{ row.name }}
-                </f-table-column>
+                <f-table-column title="Name"> {{ row.name }} </f-table-column>
             </template>
         </f-interactive-table>
     `,
@@ -30,10 +29,8 @@ const UnslottedComponent = {
             expandable-attribute="expandable"
         >
             <template #default="{ row }">
-                <f-table-column name="name" title="Name">
-                    {{ row.name }}
-                </f-table-column>
-                <f-table-column name="amount" title="Amount">
+                <f-table-column title="Name"> {{ row.name }} </f-table-column>
+                <f-table-column title="Amount">
                     {{ row.amount }}
                 </f-table-column>
             </template>
@@ -62,10 +59,8 @@ const SlottedComponent = {
             expandable-attribute="expandable"
         >
             <template #default="{ row }">
-                <f-table-column name="name" title="Name">
-                    {{ row.name }}
-                </f-table-column>
-                <f-table-column name="amount" title="Amount">
+                <f-table-column title="Name"> {{ row.name }} </f-table-column>
+                <f-table-column title="Amount">
                     {{ row.amount }}
                 </f-table-column>
             </template>
@@ -93,7 +88,9 @@ describe("useExpandableTable", () => {
         expect.assertions(2);
         const wrapper = mount(UnslottedComponent);
         await wrapper.vm.$nextTick();
-        const table = wrapper.getComponent(FInteractiveTable);
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
         const rows = table.findAll("tbody tr");
 
         expect(rows[0].attributes()["aria-level"]).toBe("1");
@@ -104,7 +101,9 @@ describe("useExpandableTable", () => {
         expect.assertions(1);
         const wrapper = mount(UnexpandableComponent);
         await wrapper.vm.$nextTick();
-        const table = wrapper.getComponent(FInteractiveTable);
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
         const rows = table.findAll("tbody tr");
 
         expect(rows[0].attributes()["aria-level"]).toBeUndefined();
@@ -114,7 +113,9 @@ describe("useExpandableTable", () => {
         expect.assertions(3);
         const wrapper = mount(UnslottedComponent);
         await wrapper.vm.$nextTick();
-        const table = wrapper.getComponent(FInteractiveTable);
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
         const expandedRow = table.findAll("tbody tr")[1];
         const expandableColumns = expandedRow.findAll("td");
 
@@ -127,7 +128,9 @@ describe("useExpandableTable", () => {
         expect.assertions(3);
         const wrapper = mount(SlottedComponent);
         await wrapper.vm.$nextTick();
-        const table = wrapper.getComponent(FInteractiveTable);
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
         const expandedRow = table.findAll("tbody tr")[1];
         const expandableColumns = expandedRow.findAll("td");
 
@@ -140,7 +143,9 @@ describe("useExpandableTable", () => {
         expect.assertions(2);
         const wrapper = mount(UnslottedComponent);
         await wrapper.vm.$nextTick();
-        const table = wrapper.getComponent(FInteractiveTable);
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
         const rows = table.findAll("tbody tr");
 
         expect(rows[1].classes()).toContain("table__expandable-row--collapsed");
@@ -157,7 +162,9 @@ describe("useExpandableTable", () => {
         expect.assertions(2);
         const wrapper = mount(UnslottedComponent);
         await wrapper.vm.$nextTick();
-        const table = wrapper.getComponent(FInteractiveTable);
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
         const rows = table.findAll("tbody tr");
 
         expect(rows[1].classes()).toContain("table__expandable-row--collapsed");
@@ -165,5 +172,43 @@ describe("useExpandableTable", () => {
         expect(rows[1].classes()).not.toContain(
             "table__expandable-row--collapsed",
         );
+    });
+
+    it("should not render as expandable row if `expandableAttribute` of row is empty", async () => {
+        expect.assertions(2);
+        const wrapper = mount({
+            components: { FInteractiveTable, FTableColumn },
+            template: /* HTML */ `
+                <f-interactive-table
+                    :rows="rows"
+                    key-attribute="id"
+                    expandable-attribute="expandable"
+                >
+                    <template #default="{ row }">
+                        <f-table-column title="Name">
+                            {{ row.name }}
+                        </f-table-column>
+                    </template>
+                </f-interactive-table>
+            `,
+            data() {
+                return {
+                    rows: [
+                        { id: "1", name: "A", expandable: undefined },
+                        { id: "2", name: "B", expandable: null },
+                        { id: "3", name: "C", expandable: [] },
+                    ],
+                };
+            },
+        });
+        await wrapper.vm.$nextTick();
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
+        const expandableRows = table.findAll("table__expandable-row");
+        const expandIcons = table.findAll("table__expand-icon");
+
+        expect(expandableRows).toHaveLength(0);
+        expect(expandIcons).toHaveLength(0);
     });
 });

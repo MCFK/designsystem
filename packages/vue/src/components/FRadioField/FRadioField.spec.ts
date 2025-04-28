@@ -47,9 +47,7 @@ it.each`
             },
         });
 
-        expect((wrapper.get("input").element as HTMLInputElement).checked).toBe(
-            expected,
-        );
+        expect(wrapper.get("input").element.checked).toBe(expected);
     },
 );
 
@@ -89,7 +87,7 @@ describe("disabled", () => {
                     disabled,
                 },
             });
-            const input = wrapper.get("input").element as HTMLInputElement;
+            const input = wrapper.get("input").element;
             expect(input.disabled).toBe(expectedResult);
             expect(wrapper.classes("disabled")).toBe(expectedResult);
         },
@@ -97,14 +95,14 @@ describe("disabled", () => {
 });
 
 describe("events", () => {
-    it("should support v-model by emitting change event with value", async () => {
+    it("should support v-model by emitting update:modelValue event with value", async () => {
         const wrapper = createWrapper({
             props: { value: "Some value", modelValue: "Some value" },
         });
 
         const input = wrapper.get("input");
 
-        const htmlInput = input.element as HTMLInputElement;
+        const htmlInput = input.element;
 
         expect(htmlInput.checked).toBe(true);
         await wrapper.setProps({ modelValue: undefined });
@@ -112,9 +110,24 @@ describe("events", () => {
 
         await input.trigger("click");
 
-        expect(wrapper.emitted("change")![0][0]).toMatchInlineSnapshot(
-            `"Some value"`,
-        );
+        expect(
+            wrapper.emitted("update:modelValue")![0][0],
+        ).toMatchInlineSnapshot(`"Some value"`);
+    });
+
+    it("should emit change event when input value changes", async () => {
+        const wrapper = createWrapper({
+            props: { value: true, modelValue: false },
+        });
+
+        const input = wrapper.get("input");
+
+        await input.trigger("click");
+        expect(wrapper.emitted("change")![0]).toMatchInlineSnapshot(`
+            [
+              true,
+            ]
+        `);
     });
 
     it("should pass listeners", async () => {
@@ -135,7 +148,7 @@ describe("events", () => {
         });
 
         const input = wrapper.get("input");
-        const htmlInput = input.element as HTMLInputElement;
+        const htmlInput = input.element;
         htmlInput.focus = jest.fn();
 
         await input.trigger("click");

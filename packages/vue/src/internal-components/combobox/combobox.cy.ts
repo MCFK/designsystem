@@ -1,3 +1,4 @@
+import { defineComponent } from "vue";
 import FTextField from "../../components/FTextField/FTextField.vue";
 import FNumericTextField from "../../components/FTextField/extendedTextFields/FNumericTextField/FNumericTextField.vue";
 import { setupComboboxSelectors } from "./combobox-selectors";
@@ -340,5 +341,53 @@ describe("Extended textfields", () => {
         cy.get(input).click();
         cy.get(dropdown).should("be.visible");
         cy.get(activeOption).should("have.text", "4,1");
+    });
+});
+
+describe("Disabled component", () => {
+    it("should disable textfield and toggle button", () => {
+        cy.mount(FTextField, {
+            props: {
+                disabled: true,
+                options: ["foo"],
+            },
+            slots: { default: "etikett" },
+        });
+        cy.get(button).should("be.disabled");
+        cy.get(input).should("be.disabled");
+    });
+});
+
+describe("Reactive options", () => {
+    it("should update options", () => {
+        const TestComponent = defineComponent({
+            template: /* HTML */ `
+                <f-text-field :options maxlength="100">
+                    Reactive options
+                </f-text-field>
+                <button
+                    id="set-options"
+                    type="button"
+                    @click="options = ['foo', 'bar', 'baz']"
+                >
+                    Set options
+                </button>
+            `,
+            data() {
+                return {
+                    options: [] as string[],
+                };
+            },
+            components: {
+                FTextField,
+            },
+        });
+
+        cy.mount(TestComponent);
+        cy.get(input).click();
+        cy.get(dropdown).should("not.exist");
+        cy.get("#set-options").click();
+        cy.get(input).click();
+        cy.get(dropdown).should("exist");
     });
 });

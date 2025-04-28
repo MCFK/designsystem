@@ -1,26 +1,3 @@
-<template>
-    <div>
-        <f-text-field
-            :id="id"
-            type="tel"
-            :maxlength="maxLength"
-            v-bind="$attrs"
-            :model-value="modelValue"
-            @change="onChange"
-            @blur="onBlur"
-            @update="onUpdate"
-            @validity="onValidity"
-            @pending-validity="onPendingValidity"
-            ><slot name="default">{{ defaultText }}</slot></f-text-field
-        >
-        <f-text-field v-if="extendedValidation" v-model="secondPhone" type="tel" :maxlength="maxLength">
-            <slot name="extendedLabel">{{
-                $t("fkui.phone-text-field.label.repeat", "Upprepa telefonnumret")
-            }}</slot></f-text-field
-        >
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { type ValidatorConfigs, type ValidityEvent, ValidationService, ElementIdService } from "@fkui/logic";
@@ -46,11 +23,12 @@ export default defineComponent({
         },
         /**
          * The value for the input.
-         * If the prop is not set undefined will be used.
+         * If the prop is not used or set to undefined
+         * or null then the default value will be used.
          * @model
          */
         modelValue: {
-            type: String,
+            type: [String, null],
             required: false,
             default: undefined,
         },
@@ -60,7 +38,7 @@ export default defineComponent({
         },
         extendedValidation: { type: Boolean, default: false },
     },
-    emits: ["blur", "change", "update", "update:modelValue"],
+    emits: ["blur", "change", "update:modelValue"],
     data() {
         return {
             validityMode: "INITIAL" as string,
@@ -93,14 +71,6 @@ export default defineComponent({
              * @type {string}
              */
             this.$emit("update:modelValue", event);
-
-            /**
-             * Vue2 v-model event.
-             * @deprecated
-             * @event update
-             * @type {string}
-             */
-            this.$emit("update", event);
         },
         onValidity({ detail }: CustomEvent<ValidityEvent>): void {
             this.validityMode = detail.validityMode;
@@ -148,3 +118,26 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div>
+        <f-text-field
+            :id="id"
+            type="tel"
+            :maxlength="maxLength"
+            v-bind="$attrs"
+            :model-value="modelValue"
+            @change="onChange"
+            @blur="onBlur"
+            @update:model-value="onUpdate"
+            @validity="onValidity"
+            @pending-validity="onPendingValidity"
+            ><slot name="default">{{ defaultText }}</slot></f-text-field
+        >
+        <f-text-field v-if="extendedValidation" v-model="secondPhone" type="tel" :maxlength="maxLength">
+            <slot name="extendedLabel">{{
+                $t("fkui.phone-text-field.label.repeat", "Upprepa telefonnumret")
+            }}</slot></f-text-field
+        >
+    </div>
+</template>

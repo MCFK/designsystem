@@ -1,122 +1,3 @@
-<template>
-    <div class="wizard-step" :class="cssClass" :aria-current="isOpen ? 'step' : undefined">
-        <div ref="header" role="group" class="wizard-step__header" tabindex="-1">
-            <i-flex>
-                <i-flex-item align="bottom" shrink aria-hidden="true">
-                    <div class="wizard-step__header__line-up"></div>
-                    <div class="icon-stack">
-                        <f-icon name="circle" />
-                        <f-icon name="success" />
-                        <div data-test="step-number">{{ stepNumber }}</div>
-                    </div>
-                    <div class="wizard-step__header__line-down"></div>
-                </i-flex-item>
-
-                <i-flex-item align="bottom" grow>
-                    <template v-if="isOpen">
-                        <slot
-                            name="step-of"
-                            v-bind="{ headerClass: 'wizard-step__header__step-of', stepNumber, totalSteps }"
-                        >
-                            <span aria-hidden="true" class="wizard-step__header__step-of">{{
-                                defaultCurrentStepInformation
-                            }}</span>
-                        </slot>
-                    </template>
-
-                    <i-flex class="wizard-step__header__title-container">
-                        <i-flex-item align="center">
-                            <a
-                                v-if="showLink"
-                                aria-expanded="false"
-                                role="button"
-                                href="#"
-                                class="anchor wizard-step__header__title"
-                                @click.prevent="open"
-                                @keypress.space.prevent="open"
-                            >
-                                <span class="sr-only">{{ defaultCurrentStepInformation }}&nbsp;</span>
-                                {{ title }}
-                                <span class="sr-only"
-                                    >&nbsp;{{ $t("fkui.wizard-step.finished-step", "Avklarat steg") }}</span
-                                >
-                            </a>
-
-                            <component :is="inheritedProps.headerTag" v-else class="wizard-step__header__title">
-                                <span class="sr-only">{{ defaultCurrentStepInformation }}&nbsp;</span>
-                                {{ title }}
-                                <span v-if="isPending" class="sr-only">
-                                    &nbsp;{{ $t("fkui.wizard-step.pending", "Inaktivt") }}
-                                </span>
-                            </component>
-                        </i-flex-item>
-                    </i-flex>
-                    <div class="wizard-step__header__line-adjustment"></div>
-                </i-flex-item>
-            </i-flex>
-        </div>
-
-        <i-animate-expand
-            :key="animationId"
-            :opacity="false"
-            :expanded="isOpen"
-            :before-animation="beforeAnimation"
-            :after-animation="afterAnimation"
-            class="wizard-step__connector"
-        >
-            <f-validation-form
-                :id="formId"
-                :before-submit="beforeNext"
-                :before-validation="beforeValidation"
-                :use-error-list="useErrorList"
-                class="wizard-step-body"
-                @submit="onSubmit"
-            >
-                <template #error-message>
-                    <slot name="error-message">
-                        {{ $t("fkui.wizard-step.errorlist.title", "Oj, du har glömt att fylla i något. Gå till:") }}
-                    </slot>
-                </template>
-
-                <template #default>
-                    <slot name="default"></slot>
-
-                    <div class="button-group">
-                        <button
-                            data-test="submit-button"
-                            :data-disabled="ignoreClick ? 'true' : 'false'"
-                            type="submit"
-                            class="button button--primary button-group__item button--large"
-                        >
-                            <slot name="next-button-text">
-                                <template v-if="isFinalStep">
-                                    {{ $t("fkui.wizard-step.button.next.text-final", "Gå vidare och granska") }}
-                                </template>
-                                <template v-else>
-                                    {{ $t("fkui.wizard-step.button.next.text", "Fortsätt") }}
-                                    <span class="sr-only">
-                                        &nbsp;{{ $t("fkui.wizard-step.button.next.sr-text", "till nästa steg") }}
-                                    </span>
-                                </template>
-                            </slot>
-                        </button>
-                        <button
-                            data-test="cancel-button"
-                            type="button"
-                            class="button button--secondary button-group__item button--large"
-                            @click="onCancel"
-                        >
-                            <slot name="cancel-button-text">
-                                {{ $t("fkui.wizard-step.button.cancel.text", "Avbryt") }}
-                            </slot>
-                        </button>
-                    </div>
-                </template>
-            </f-validation-form>
-        </i-animate-expand>
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent, getCurrentInstance, type PropType } from "vue";
 import { DomUtils } from "@fkui/logic";
@@ -124,9 +5,9 @@ import { TranslationMixin } from "../../plugins";
 import { GroupValidityEvent } from "../../types";
 import { getHTMLElementFromVueRef } from "../../utils";
 import { IAnimateExpand, IFlex, IFlexItem } from "../../internal-components";
-import { FValidationForm, type FValidationFormCallback } from "../FValidationForm";
+import { FValidationForm, type FValidationFormResult } from "../FValidationForm";
 import { FIcon } from "../FIcon";
-import { FWizardApi, FWizardApiInjected, FWizardStepDefinition } from "./FWizardApi";
+import { FWizardApi, FWizardApiInjected, FWizardStepDefinition, type FWizardValidationCallback } from "./FWizardApi";
 
 const SCROLL_DURATION = 500;
 
@@ -143,6 +24,10 @@ export default defineComponent({
     mixins: [TranslationMixin],
     inheritAttrs: true,
     props: {
+        /**
+         * The title of the wizard step.
+         * This will be displayed as the step's header.
+         */
         title: {
             type: String,
             required: true,
@@ -157,7 +42,7 @@ export default defineComponent({
          * before allowing navigation to the next step.
          */
         beforeNext: {
-            type: Function as PropType<FValidationFormCallback>,
+            type: Function as PropType<FWizardValidationCallback>,
             required: false,
             default() {
                 /* do nothing */
@@ -172,7 +57,7 @@ export default defineComponent({
          * When cancelled, the consumer is responsible to indicate why this happened.
          */
         beforeValidation: {
-            type: Function as PropType<FValidationFormCallback>,
+            type: Function as PropType<FWizardValidationCallback>,
             required: false,
             default() {
                 /* do nothing */
@@ -312,6 +197,157 @@ export default defineComponent({
             }
             DomUtils.focus(headerElement);
         },
+        beforeNextWrapper(): FValidationFormResult {
+            return this.beforeNext({
+                key: this.step.key,
+                stepNumber: this.stepNumber,
+                totalSteps: this.totalSteps,
+            });
+        },
+        beforeValidationWrapper(): FValidationFormResult {
+            return this.beforeValidation({
+                key: this.step.key,
+                stepNumber: this.stepNumber,
+                totalSteps: this.totalSteps,
+            });
+        },
     },
 });
 </script>
+
+<template>
+    <div class="wizard-step" :class="cssClass" :aria-current="isOpen ? 'step' : undefined">
+        <div ref="header" role="group" class="wizard-step__header" tabindex="-1">
+            <i-flex>
+                <i-flex-item align="bottom" shrink aria-hidden="true">
+                    <div class="wizard-step__header__line-up"></div>
+                    <div class="icon-stack">
+                        <f-icon name="circle" />
+                        <f-icon name="success" />
+                        <div data-test="step-number">{{ stepNumber }}</div>
+                    </div>
+                    <div class="wizard-step__header__line-down"></div>
+                </i-flex-item>
+
+                <i-flex-item align="bottom" grow>
+                    <template v-if="isOpen">
+                        <!--
+                            @slot Use this slot to customize the content displayed for the "step of" information.
+                            @binding {string} headerClass Class to be applied to the step-of information.
+                            @binding {number} stepNumber Current step number.
+                            @binding {number} totalSteps The total number of steps in this wizard.
+                        -->
+                        <slot
+                            name="step-of"
+                            v-bind="{ headerClass: 'wizard-step__header__step-of', stepNumber, totalSteps }"
+                        >
+                            <span aria-hidden="true" class="wizard-step__header__step-of">{{
+                                defaultCurrentStepInformation
+                            }}</span>
+                        </slot>
+                    </template>
+
+                    <i-flex class="wizard-step__header__title-container">
+                        <i-flex-item align="center">
+                            <component :is="inheritedProps.headerTag" class="wizard-step__header__title">
+                                <a
+                                    v-if="showLink"
+                                    aria-expanded="false"
+                                    role="button"
+                                    href="#"
+                                    class="anchor"
+                                    @click.prevent="open"
+                                    @keypress.space.prevent="open"
+                                >
+                                    <span class="sr-only">{{ defaultCurrentStepInformation }}&nbsp;</span>
+                                    {{ title }}
+                                    <span class="sr-only">
+                                        &nbsp;{{ $t("fkui.wizard-step.finished-step", "Avklarat steg") }}
+                                    </span>
+                                </a>
+                                <template v-else>
+                                    <span class="sr-only">{{ defaultCurrentStepInformation }}&nbsp;</span>
+                                    {{ title }}
+                                    <span v-if="isPending" class="sr-only">
+                                        &nbsp;{{ $t("fkui.wizard-step.pending", "Inaktivt") }}
+                                    </span>
+                                </template>
+                            </component>
+                        </i-flex-item>
+                    </i-flex>
+                    <div class="wizard-step__header__line-adjustment"></div>
+                </i-flex-item>
+            </i-flex>
+        </div>
+
+        <i-animate-expand
+            :key="animationId"
+            :opacity="false"
+            :expanded="isOpen"
+            :before-animation="beforeAnimation"
+            :after-animation="afterAnimation"
+            class="wizard-step__connector"
+        >
+            <f-validation-form
+                :id="formId"
+                :before-submit="beforeNextWrapper"
+                :before-validation="beforeValidationWrapper"
+                :use-error-list="useErrorList"
+                class="wizard-step-body"
+                @submit="onSubmit"
+            >
+                <template #error-message>
+                    <!-- @slot Use this slot to customize the error message displayed when validation fails. -->
+                    <slot name="error-message">
+                        {{ $t("fkui.wizard-step.errorlist.title", "Oj, du har glömt att fylla i något. Gå till:") }}
+                    </slot>
+                </template>
+
+                <template #default>
+                    <slot name="default"></slot>
+
+                    <div class="button-group">
+                        <button
+                            data-test="submit-button"
+                            :data-disabled="ignoreClick ? 'true' : 'false'"
+                            type="submit"
+                            class="button button--primary button-group__item button--large"
+                        >
+                            <!--
+                                @slot Use this slot to customize the text of the "Next" button.
+                                @binding {number} stepNumber Current step number (starts at 1).
+                                @binding {number} totalSteps The total number of steps in this wizard.
+                            -->
+                            <slot name="next-button-text" v-bind="{ stepNumber, totalSteps }">
+                                <template v-if="isFinalStep">
+                                    {{ $t("fkui.wizard-step.button.next.text-final", "Gå vidare och granska") }}
+                                </template>
+                                <template v-else>
+                                    {{ $t("fkui.wizard-step.button.next.text", "Fortsätt") }}
+                                    <span class="sr-only">
+                                        &nbsp;{{ $t("fkui.wizard-step.button.next.sr-text", "till nästa steg") }}
+                                    </span>
+                                </template>
+                            </slot>
+                        </button>
+                        <button
+                            data-test="cancel-button"
+                            type="button"
+                            class="button button--secondary button-group__item button--large"
+                            @click="onCancel"
+                        >
+                            <!--
+                                @slot Use this slot to customize the text of the "Cancel" button.
+                                @binding {number} stepNumber Current step number (starts at 1).
+                                @binding {number} totalSteps The total number of steps in this wizard.
+                            -->
+                            <slot name="cancel-button-text" v-bind="{ stepNumber, totalSteps }">
+                                {{ $t("fkui.wizard-step.button.cancel.text", "Avbryt") }}
+                            </slot>
+                        </button>
+                    </div>
+                </template>
+            </f-validation-form>
+        </i-animate-expand>
+    </div>
+</template>

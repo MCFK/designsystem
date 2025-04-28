@@ -1,34 +1,3 @@
-<template>
-    <div class="row">
-        <div class="col col--md-6 density-default">
-            <f-data-table :rows="items" key-attribute="id">
-                <template #caption> Tabell med standard densitet </template>
-                <template #default="{ row }">
-                    <f-table-column name="date" title="Datum" type="text">
-                        {{ row.date }}
-                    </f-table-column>
-                    <f-table-column name="amount" title="Belopp" type="numeric">
-                        {{ row.amount }}
-                    </f-table-column>
-                </template>
-            </f-data-table>
-        </div>
-        <div class="col col--md-6 density-dense">
-            <f-data-table :rows="items" key-attribute="id">
-                <template #caption> Tabell med kompakt densitet </template>
-                <template #default="{ row }">
-                    <f-table-column name="date" title="Datum" type="text">
-                        {{ row.date }}
-                    </f-table-column>
-                    <f-table-column name="amount" title="Belopp" type="numeric">
-                        {{ row.amount }}
-                    </f-table-column>
-                </template>
-            </f-data-table>
-        </div>
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FDataTable, FTableColumn } from "@fkui/vue";
@@ -47,3 +16,34 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div class="row">
+        <div class="col col--md-6 density-default">
+            <f-data-table :rows="items" key-attribute="id">
+                <template #caption> Tabell med standard densitet </template>
+                <template #default="{ row }">
+                    <f-table-column title="Datum" type="text">
+                        {{ row.date }}
+                    </f-table-column>
+                    <f-table-column title="Belopp" type="numeric">
+                        {{ row.amount }}
+                    </f-table-column>
+                </template>
+            </f-data-table>
+        </div>
+        <div class="col col--md-6 density-dense">
+            <f-data-table :rows="items" key-attribute="id">
+                <template #caption> Tabell med kompakt densitet </template>
+                <template #default="{ row }">
+                    <f-table-column title="Datum" type="text">
+                        {{ row.date }}
+                    </f-table-column>
+                    <f-table-column title="Belopp" type="numeric">
+                        {{ row.amount }}
+                    </f-table-column>
+                </template>
+            </f-data-table>
+        </div>
+    </div>
+</template>

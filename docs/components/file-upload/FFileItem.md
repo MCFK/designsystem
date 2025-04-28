@@ -1,6 +1,6 @@
 ---
 title: Filpresentatör
-status: Preliminär
+status: Produktionsklar
 layout: component
 component: FFileItem
 ---
@@ -35,3 +35,7 @@ FFileItemIcons.vue
 :::api
 vue:FFileItem
 :::
+
+## Relaterat
+
+- {@link FFileItemPageObject FFileItemPageObject}

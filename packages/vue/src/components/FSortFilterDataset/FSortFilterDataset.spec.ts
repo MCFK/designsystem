@@ -26,9 +26,7 @@ const ATTRIBUTES = {
     b: "Column B",
 };
 
-function createWrapper({ slots = {} } = {}): VueWrapper<
-    InstanceType<typeof FSortFilterDataset>
-> {
+function createWrapper({ slots = {} } = {}): VueWrapper {
     return mount(FSortFilterDataset, {
         props: {
             data: DATA,
@@ -337,31 +335,28 @@ it("should emit event with used attributes when sorting using dropdown", async (
         {
             attribute: "",
             ascending: false,
+            ascendingName: "",
+            id: 0,
+            name: "",
         },
     ]);
 });
 
-it("should throw error when sorting objects", async () => {
-    const wrapper = createWrapper();
-    await wrapper.vm.$nextTick();
-
-    let gotException = undefined;
-    try {
-        // Sort by Column d that contains objects
-        wrapper.vm.$data.sortAttribute = {
-            id: 0,
-            name: "",
-            ascendingName: "",
-            attribute: "d",
-            ascending: false,
-        };
-        wrapper.vm.sortFilterData();
-    } catch (error) {
-        gotException = error;
-    }
-    expect(gotException).toMatchInlineSnapshot(`
-        [Error: Sorting is only supported for types number, string and boolean.
-                    Attribute 'd' comparsion of types 'object' and 'object' is not supported.]
+it("should throw error when sorting objects", () => {
+    const mountInvalidSort = (): void => {
+        mount(FSortFilterDataset, {
+            props: {
+                data: DATA,
+                sortableAttributes: {
+                    d: "Column with objects",
+                },
+                defaultSortAttribute: "d",
+            },
+        });
+    };
+    expect(mountInvalidSort).toThrowErrorMatchingInlineSnapshot(`
+        "Sorting is only supported for types number, string and boolean.
+                    Attribute 'd' comparsion of types 'object' and 'object' is not supported."
     `);
 });
 

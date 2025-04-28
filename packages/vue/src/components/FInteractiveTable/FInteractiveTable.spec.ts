@@ -64,7 +64,6 @@ describe("should have correct colspan", () => {
                         </template>
                         <template #default="{ row }">
                             <f-table-column
-                                name="name.en"
                                 title="Namn"
                                 description="(engelska)"
                                 :row-header="true"
@@ -73,7 +72,6 @@ describe("should have correct colspan", () => {
                                 {{ row.name.en }}
                             </f-table-column>
                             <f-table-column
-                                name="name.sv"
                                 title="Namn"
                                 description="(svenska)"
                                 type="text"
@@ -134,7 +132,6 @@ describe("should have correct colspan", () => {
                         </template>
                         <template #default="{ row }">
                             <f-table-column
-                                name="name.en"
                                 title="Namn"
                                 description="(engelska)"
                                 :row-header="true"
@@ -143,7 +140,6 @@ describe("should have correct colspan", () => {
                                 {{ row.name.en }}
                             </f-table-column>
                             <f-table-column
-                                name="name.sv"
                                 title="Namn"
                                 description="(svenska)"
                                 type="text"
@@ -203,7 +199,6 @@ describe("should hide or show column even when table is empty", () => {
                         </template>
                         <template #default="{ row }">
                             <f-table-column
-                                name="name.sv"
                                 title="Namn"
                                 description="(svenska)"
                                 type="text"
@@ -212,7 +207,6 @@ describe("should hide or show column even when table is empty", () => {
                             </f-table-column>
                             <f-table-column
                                 :visible="${visible ? "true" : "false"}"
-                                name="name.en"
                                 title="Namn"
                                 description="(engelska)"
                                 :row-header="true"
@@ -240,16 +234,63 @@ describe("should hide or show column even when table is empty", () => {
     );
 });
 
+it("should be able to toggle column visibility when table is empty", async () => {
+    expect.assertions(2);
+    const testComponent = defineComponent({
+        name: "TestComponent",
+        components: {
+            FInteractiveTable,
+            FTableColumn,
+        },
+        template: /* HTML */ `
+            <f-interactive-table :rows="rows" key-attribute="id">
+                <template #caption> Caption </template>
+                <template #default="{ row }">
+                    <f-table-column title="Col1">
+                        {{ row.data }}
+                    </f-table-column>
+                    <f-table-column :visible title="Col2">
+                        {{ row.data }}
+                    </f-table-column>
+                </template>
+            </f-interactive-table>
+            <button id="button" type="button" @click="visible=!visible">
+                Toggle column
+            </button>
+        `,
+        data() {
+            return {
+                rows: [],
+                visible: true,
+            };
+        },
+    });
+
+    const wrapper = mount(testComponent);
+    const button = wrapper.find("button");
+    await wrapper.vm.$nextTick();
+
+    const thsBefore = wrapper.findAll("table thead tr th");
+    expect(thsBefore).toHaveLength(2);
+
+    //Hide Col2
+    button.trigger("click");
+    await wrapper.vm.$nextTick();
+
+    const thsAfter = wrapper.findAll("table thead tr th");
+    expect(thsAfter).toHaveLength(1);
+});
+
 describe("should match snapshot", () => {
     const TestComponent = {
         components: { FInteractiveTable, FTableColumn },
         template: /* HTML */ `
             <f-interactive-table :rows="rows" key-attribute="a">
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A" type="text">
+                    <f-table-column title="A" type="text">
                         {{ row.a }}
                     </f-table-column>
-                    <f-table-column name="b" title="A" type="numeric">
+                    <f-table-column title="A" type="numeric">
                         {{ row.b }}
                     </f-table-column>
                 </template>
@@ -287,8 +328,8 @@ it("should add table colum headers to <thead> with correct classes", async () =>
         template: /* HTML */ `
             <f-interactive-table :rows="rows" key-attribute="id">
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A" shrink></f-table-column>
-                    <f-table-column name="b" title="B"></f-table-column>
+                    <f-table-column title="A" shrink></f-table-column>
+                    <f-table-column title="B"></f-table-column>
                 </template>
             </f-interactive-table>
         `,
@@ -316,8 +357,8 @@ it("should add table colum headers to <thead> with correct classes", async () =>
     );
 });
 
-it("should not add duplicate table colums", async () => {
-    expect.assertions(2);
+it("should throw error if `FTableColumn.name` is duplicated", async () => {
+    expect.assertions(1);
     const TestComponent = {
         components: { FInteractiveTable, FTableColumn },
         template: /* HTML */ `
@@ -334,11 +375,11 @@ it("should not add duplicate table colums", async () => {
             };
         },
     };
-    const wrapper = createWrapper(TestComponent);
-    await wrapper.vm.$nextTick();
-    const th = wrapper.findAll("thead th");
-    expect(th).toHaveLength(1); /* should only be added once */
-    expect(th[0].text()).toBe("A");
+    expect(() => {
+        mount(TestComponent);
+    }).toThrowErrorMatchingInlineSnapshot(
+        `"Expected FTableColumn to have a unique name but encountered duplicate of "a""`,
+    );
 });
 
 it("should set scope on table columns", async () => {
@@ -348,7 +389,7 @@ it("should set scope on table columns", async () => {
         template: /* HTML */ `
             <f-interactive-table :rows="rows" key-attribute="id">
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A"></f-table-column>
+                    <f-table-column title="A"></f-table-column>
                 </template>
             </f-interactive-table>
         `,
@@ -460,7 +501,7 @@ it("should not add table__row--striped class unless striped is set", async () =>
         template: /* HTML */ `
             <f-interactive-table :rows="rows" key-attribute="id">
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A"></f-table-column>
+                    <f-table-column title="A"></f-table-column>
                 </template>
             </f-interactive-table>
         `,
@@ -485,7 +526,7 @@ it("should add table__row--striped class to every other row when striped is set"
         template: /* HTML */ `
             <f-interactive-table :rows="rows" key-attribute="id" striped>
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A"></f-table-column>
+                    <f-table-column title="A"></f-table-column>
                 </template>
             </f-interactive-table>
         `,
@@ -539,6 +580,60 @@ it("should add table--hover class when hover is set", async () => {
     expect(table.classes()).toContain("table--hover");
 });
 
+describe("showActive flag", () => {
+    const TestComponent = {
+        components: { FInteractiveTable, FTableColumn },
+        template: /* HTML */ `
+            <f-interactive-table
+                :rows="rows"
+                :show-active="showActive"
+                key-attribute="id"
+                selectable
+            ></f-interactive-table>
+        `,
+        data() {
+            return {
+                rows: [{ id: 1 }, { id: 2 }],
+                showActive: false,
+            };
+        },
+    };
+
+    it("should add table__row--active class when showActive is true and row is clicked", async () => {
+        const wrapper = createWrapper(TestComponent);
+        wrapper.setProps({ showActive: true });
+        await wrapper.vm.$nextTick();
+
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
+        const row = table.findAll("tbody tr td")[0];
+        await row.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        const rows = wrapper.findAll("tbody tr");
+        expect(rows[0].classes()).toContain("table__row--active");
+        expect(rows[1].classes()).not.toContain("table__row--active");
+    });
+
+    it("should not have table__row--active class when showActive is false and row is clicked", async () => {
+        const wrapper = createWrapper(TestComponent);
+        wrapper.setProps({ showActive: false });
+        await wrapper.vm.$nextTick();
+
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
+        const row = table.findAll("tbody tr td")[0];
+        await row.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        const rows = wrapper.findAll("tbody tr");
+        expect(rows[0].classes()).not.toContain("table__row--active");
+        expect(rows[1].classes()).not.toContain("table__row--active");
+    });
+});
+
 it("should add an extra column when selectable is enabled", async () => {
     expect.assertions(6);
     const TestComponent = {
@@ -546,7 +641,7 @@ it("should add an extra column when selectable is enabled", async () => {
         template: /* HTML */ `
             <f-interactive-table :rows="rows" key-attribute="id" selectable>
                 <template #default="{ row }">
-                    <f-table-column name="a" title="A"></f-table-column>
+                    <f-table-column title="A"></f-table-column>
                 </template>
             </f-interactive-table>
         `,
@@ -583,6 +678,10 @@ it("should add an extra column when selectable is enabled", async () => {
 
 it("should mark initial rows as selected", async () => {
     expect.assertions(2);
+
+    const rows = [{ id: 1 }, { id: 2 }];
+    const selected = [rows[0]];
+
     const TestComponent = {
         components: { FInteractiveTable, FTableColumn },
         template: /* HTML */ `
@@ -595,8 +694,8 @@ it("should mark initial rows as selected", async () => {
         `,
         data() {
             return {
-                rows: [{ id: 1 }, { id: 2 }],
-                selected: [{ id: 1 }],
+                rows,
+                selected,
             };
         },
     };
@@ -606,9 +705,9 @@ it("should mark initial rows as selected", async () => {
         },
     });
     await wrapper.vm.$nextTick();
-    const rows = wrapper.findAll("tbody tr");
-    expect(rows[0].classes()).toContain("table__row--selected");
-    expect(rows[1].classes()).not.toContain("table__row--selected");
+    const allRows = wrapper.findAll("tbody tr");
+    expect(allRows[0].classes()).toContain("table__row--selected");
+    expect(allRows[1].classes()).not.toContain("table__row--selected");
 });
 
 it("should set row-description as aria-label", async () => {
@@ -680,6 +779,12 @@ it("should be transparent", async () => {
 });
 
 describe("events", () => {
+    interface TestComponentData {
+        rows: Array<Record<string, number>>;
+        selected: Array<Record<string, number>>;
+        active: Record<string, string> | undefined;
+    }
+
     const TestComponent = {
         components: { FInteractiveTable, FTableColumn },
         template: /* HTML */ `
@@ -687,6 +792,7 @@ describe("events", () => {
                 :rows="rows"
                 key-attribute="id"
                 v-model="selected"
+                v-model:active="active"
                 selectable
             ></f-interactive-table>
         `,
@@ -694,7 +800,8 @@ describe("events", () => {
             return {
                 rows: [{ id: 1 }, { id: 2 }],
                 selected: [{ id: 1 }],
-            };
+                active: undefined,
+            } as TestComponentData;
         },
     };
 
@@ -723,7 +830,9 @@ describe("events", () => {
 
     it("should emit click event when row is clicked", async () => {
         const wrapper = mount(TestComponent);
-        const table = wrapper.getComponent(FInteractiveTable);
+        const table = wrapper.getComponent(
+            FInteractiveTable as ReturnType<typeof defineComponent>,
+        );
         const row = table.findAll("tbody tr td")[0];
         await row.trigger("click");
         await table.vm.$nextTick();
@@ -734,7 +843,9 @@ describe("events", () => {
         "should activate row and emit click event when item getting space key (%s) down event",
         async (key: string) => {
             const wrapper = mount(TestComponent);
-            const table = wrapper.getComponent(FInteractiveTable);
+            const table = wrapper.getComponent(
+                FInteractiveTable as ReturnType<typeof defineComponent>,
+            );
             const row = table.findAll("tbody tr")[0];
             await row.trigger("keydown", { key });
             expect(table.emitted("click")).toHaveLength(1);
@@ -744,7 +855,9 @@ describe("events", () => {
     describe("active row", () => {
         it("should emit click event when clicking on active item", async () => {
             const wrapper = mount(TestComponent);
-            const table = wrapper.getComponent(FInteractiveTable);
+            const table = wrapper.getComponent(
+                FInteractiveTable as ReturnType<typeof defineComponent>,
+            );
             const column = table.findAll("tbody tr td")[0];
             await column.trigger("click");
             await column.trigger("click");
@@ -752,11 +865,27 @@ describe("events", () => {
             expect(table.emitted("click")).toHaveLength(2);
         });
 
+        it("should update active row when clicking on item", async () => {
+            const wrapper = mount(TestComponent);
+            const table = wrapper.getComponent(
+                FInteractiveTable as ReturnType<typeof defineComponent>,
+            );
+            const column = table.findAll("tbody tr td")[0];
+            await column.trigger("click");
+            await table.vm.$nextTick();
+            expect(table.emitted("update:active")).toHaveLength(2);
+            expect(
+                (wrapper.vm.$data as TestComponentData)["active"],
+            ).toStrictEqual({ id: 1 });
+        });
+
         it.each([" ", "Spacebar"])(
             "should emit click event when active item getting space key (%s) down event",
             async (key: string) => {
                 const wrapper = mount(TestComponent);
-                const table = wrapper.getComponent(FInteractiveTable);
+                const table = wrapper.getComponent(
+                    FInteractiveTable as ReturnType<typeof defineComponent>,
+                );
                 const row = table.findAll("tbody tr")[0];
                 await row.trigger("keydown", { key });
                 await row.trigger("keydown", { key });
@@ -774,7 +903,7 @@ it("should handle nestled row objects when no rows are present", async () => {
             <f-interactive-table :rows="[]" key-attribute="id">
                 <template #caption> My fancy caption </template>
                 <template #default="{ row }">
-                    <f-table-column name="test" title="My Awesome Column">
+                    <f-table-column title="My Awesome Column">
                         {{ row.some.deeply.nested.prop }}
                     </f-table-column>
                 </template>
@@ -839,15 +968,94 @@ it("should call provided sort method when clicking columnheader that is registra
     `);
 });
 
-describe("html-validate", () => {
-    it("should require non-empty key-attribute attribute", () => {
-        expect.assertions(2);
-        expect(
-            "<f-interactive-table></f-interactive-table>",
-        ).not.toHTMLValidate({
-            message:
-                '<f-interactive-table> is missing required "key-attribute" attribute',
+describe("Expandable rows", () => {
+    it("Should handle slot content in expanded rows", () => {
+        expect.assertions(3);
+        const TestComponent = defineComponent({
+            components: { FInteractiveTable, FTableColumn },
+            template: /* HTML */ `
+                <f-interactive-table
+                    :rows
+                    expandable-attribute="myExpandableRow"
+                    key-attribute="id"
+                >
+                    <template #caption> Expanderbara rader </template>
+                    <template #default="{ row }">
+                        <f-table-column title="Fruit">
+                            Juicy {{ row.name }}
+                        </f-table-column>
+                    </template>
+                </f-interactive-table>
+            `,
+            data() {
+                return {
+                    rows: [
+                        {
+                            id: 1,
+                            name: "apples",
+                            myExpandableRow: [
+                                { id: 11, name: "green apples" },
+                                { id: 12, name: "red apples" },
+                            ],
+                        },
+                    ],
+                };
+            },
         });
+        const wrapper = mount(TestComponent);
+        const tr = wrapper.findAll("tr");
+        tr[0].element.click();
+        expect(tr[1].text()).toBe("Juicy apples");
+        expect(tr[2].text()).toBe("Juicy green apples");
+        expect(tr[3].text()).toBe("Juicy red apples");
+    });
+});
+
+describe("`keyAttribute`", () => {
+    it("should not throw if valid and unique", async () => {
+        expect.assertions(1);
+
+        expect(() => {
+            mount(FInteractiveTable, {
+                props: {
+                    keyAttribute: "id",
+                    rows: [{ id: "a" }, { id: "b" }, { id: "c" }],
+                },
+            });
+        }).not.toThrow();
+    });
+
+    it("should throw error if not unique in items", async () => {
+        expect.assertions(1);
+
+        expect(() => {
+            mount(FInteractiveTable, {
+                props: {
+                    keyAttribute: "id",
+                    rows: [{ id: "a" }, { id: "b" }, { id: "b" }],
+                },
+            });
+        }).toThrowErrorMatchingInlineSnapshot(
+            `"Expected each item to have key [id] with unique value but encountered duplicate of "b" in item index 2."`,
+        );
+    });
+
+    it("should be optional", async () => {
+        expect.assertions(1);
+
+        expect(() => {
+            mount(FInteractiveTable, {
+                props: {
+                    rows: [{ id: "a" }, { id: "b" }, { id: "c" }],
+                },
+            });
+        }).not.toThrow();
+    });
+});
+
+describe("html-validate", () => {
+    it("should require `key-attribute` to be non-empty if used", () => {
+        expect.assertions(1);
         expect(
             '<f-interactive-table key-attribute=""></f-interactive-table>',
         ).not.toHTMLValidate({

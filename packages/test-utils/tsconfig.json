@@ -1,13 +1,9 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "@fkui/tsconfig/recommended",
     "compilerOptions": {
         "emitDeclarationOnly": true,
         "types": ["node", "jest"],
-        "declarationDir": "temp/types",
-        "outDir": "./dist",
-        "rootDir": "./src",
         "skipLibCheck": true
     },
-    "include": ["src/**/*.ts"],
-    "exclude": ["node_modules", "**/*.spec.ts"]
+    "include": ["src/**/*.ts"]
 }

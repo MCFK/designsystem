@@ -2,6 +2,7 @@
 @use "../../core/size";
 @use "../z-index";
 @use "../../core/mixins/breakpoints";
+@use "variables" as *;
 
 $MODAL_SELECTOR: ".modal" !default;
 $modal-sizes: (
@@ -11,19 +12,6 @@ $modal-sizes: (
     "fullwidth": var(--f-modal-size-fullwidth),
 ) !default;
 $modal-width: calc(100vw - 40px) !default; // 100% - 20px each side;
-
-// @at-root is used to set these classes globally due to styling scope issue where the component is used out of the styling scope
-@at-root {
-    #{$MODAL_SELECTOR} {
-        &__open {
-            // both of these properties is used to prevent scrolling in the background
-            overflow: hidden;
-            position: fixed;
-            left: 0;
-            right: 0;
-        }
-    }
-}
 
 #{$MODAL_SELECTOR} {
     &__backdrop {
@@ -55,7 +43,7 @@ $modal-width: calc(100vw - 40px) !default; // 100% - 20px each side;
     &__shelf {
         justify-content: flex-end;
         display: flex;
-        background-color: var(--f-background-modal-shelf);
+        background-color: $modal-shelf-color-background;
         border-top-left-radius: var(--f-border-radius-medium);
         border-top-right-radius: var(--f-border-radius-medium);
         margin-bottom: size.$margin-100;
@@ -71,7 +59,7 @@ $modal-width: calc(100vw - 40px) !default; // 100% - 20px each side;
             font-size: var(--f-modal-title-font-size);
             margin-bottom: 0;
             margin-top: 0;
-            color: var(--f-text-color-default);
+            color: $modal-text-color-default;
         }
     }
 
@@ -89,16 +77,6 @@ $modal-width: calc(100vw - 40px) !default; // 100% - 20px each side;
                 &--#{$key} {
                     max-width: $size;
                 }
-            }
-
-            // @deprecated alias, use --large (to be removed in fkui 4.x)
-            &-large {
-                max-width: map.get($modal-sizes, "large");
-            }
-
-            // @deprecated alias, use --fullwidth (to be removed in fkui 4.x)
-            &-fullscreen {
-                max-width: map.get($modal-sizes, "fullwidth");
             }
         }
 
@@ -126,7 +104,8 @@ $modal-width: calc(100vw - 40px) !default; // 100% - 20px each side;
     }
 
     &__dialog {
-        background: var(--f-background-content);
+        background: $modal-color-background;
+        outline: 2px solid transparent; // forced-colors
         border-radius: var(--f-border-radius-medium);
         display: flex;
         flex-direction: column-reverse;
@@ -174,17 +153,21 @@ $modal-width: calc(100vw - 40px) !default; // 100% - 20px each side;
         }
     }
 
-    &--information {
-        --f-background-modal-shelf: var(--f-border-color-info);
-        --f-text-color-close-button: var(--f-text-color-default-inverted);
+    &--information #{$MODAL_SELECTOR}__shelf {
+        background-color: $modal-shelf-info-color-background;
+        .close-button {
+            color: $modal-color-closebutton-text-inverted;
+        }
     }
 
-    &--warning {
-        --f-background-modal-shelf: var(--f-border-color-warning);
+    &--warning #{$MODAL_SELECTOR}__shelf {
+        background-color: $modal-shelf-warning-color-background;
     }
 
-    &--error {
-        --f-background-modal-shelf: var(--f-border-color-error);
-        --f-text-color-close-button: var(--f-text-color-default-inverted);
+    &--error #{$MODAL_SELECTOR}__shelf {
+        background-color: $modal-shelf-error-color-background;
+        .close-button {
+            color: $modal-color-closebutton-text-inverted;
+        }
     }
 }

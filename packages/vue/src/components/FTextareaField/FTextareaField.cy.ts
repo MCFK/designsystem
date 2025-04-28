@@ -4,7 +4,7 @@ import {
     densityWrapperHeight,
     densityWrapperWidth,
 } from "@fkui/test-utils/vue";
-import { FTextareaFieldPageObject } from "../../pageobject";
+import { FTextareaFieldPageObject } from "../../cypress";
 import { FTooltip } from "../FTooltip";
 import FTextareaField from "./FTextareaField.vue";
 
@@ -38,6 +38,7 @@ describe("FTextareaField", () => {
                 <template #tooltip>
                     <f-tooltip
                         screen-reader-text="Läs mer om berätta om dig själv"
+                        header-tag="h1"
                     >
                         <template #header>
                             Mer om berätta om dig själv
@@ -48,12 +49,12 @@ describe("FTextareaField", () => {
                     </f-tooltip>
                 </template>
                 <template
-                    #description="{ descriptionClass, discreteDescriptionClass }"
+                    #description="{ descriptionClass, formatDescriptionClass }"
                 >
                     <span :class="descriptionClass">
                         En inte allt för utförlig berättelse
                     </span>
-                    <span :class="discreteDescriptionClass">
+                    <span :class="formatDescriptionClass">
                         (max 100 tecken)
                     </span>
                 </template>
@@ -64,13 +65,13 @@ describe("FTextareaField", () => {
             '[data-test="berattelse-text-field"]',
         );
         berattelseTextareaField.label
-            .trimmedText()
-            .should("equal", "Berätta om dig själv");
+            .el()
+            .should("contain.text", "Berätta om dig själv");
         berattelseTextareaField.label
             .description()
             .should("contain.text", "En inte allt för utförlig berättelse");
         berattelseTextareaField.label
-            .discreteDescription()
+            .formatDescription()
             .should("contain.text", "(max 100 tecken)");
         berattelseTextareaField.label.errorMessage().should("not.exist");
         berattelseTextareaField.label.errorIcon().should("not.exist");

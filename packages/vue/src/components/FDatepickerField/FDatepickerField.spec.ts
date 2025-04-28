@@ -2,6 +2,7 @@ import "html-validate/jest";
 import { mount } from "@vue/test-utils";
 import flushPromises from "flush-promises";
 import { FDate } from "@fkui/date";
+import { ValidationPlugin } from "../../plugins";
 import FDatepickerField from "./FDatepickerField.vue";
 
 beforeEach(() => {
@@ -17,6 +18,9 @@ describe("transparency", () => {
         const wrapper = mount(FDatepickerField, {
             attrs: {
                 title: "foo",
+            },
+            global: {
+                plugins: [ValidationPlugin],
             },
         });
 
@@ -41,6 +45,9 @@ describe("textfield", () => {
             attrs: {
                 id: "foo",
             },
+            global: {
+                plugins: [ValidationPlugin],
+            },
         });
 
         expect(wrapper.get("input").attributes("id")).toBe("foo");
@@ -54,20 +61,27 @@ describe("textfield", () => {
         );
     });
 
-    it("`2.1` should emit v-model change event on change", async () => {
-        expect.assertions(4);
+    it("`2.1` should emit v-model event on change", async () => {
+        expect.assertions(2);
         const wrapper = mount(FDatepickerField);
 
         const input = wrapper.get("input");
         input.setValue("2022-02-02");
         await flushPromises();
 
-        /* v-model event */
         const updateEvent = wrapper.emitted("update:modelValue")!;
         expect(updateEvent).toHaveLength(1);
         expect(updateEvent[0]).toEqual(["2022-02-02"]);
+    });
 
-        /* legacy vue 2 event */
+    it("`2.1` should emit change event on change", async () => {
+        expect.assertions(2);
+        const wrapper = mount(FDatepickerField);
+
+        const input = wrapper.get("input");
+        input.setValue("2022-02-02");
+        await flushPromises();
+
         const changeEvent = wrapper.emitted("change")!;
         expect(changeEvent).toHaveLength(1);
         expect(changeEvent[0]).toEqual(["2022-02-02"]);
@@ -75,8 +89,8 @@ describe("textfield", () => {
 });
 
 describe("calendar", () => {
-    it("should emit v-model change event when selecting day", async () => {
-        expect.assertions(1);
+    it("should emit v-model and change event when selecting day", async () => {
+        expect.assertions(2);
 
         jest.spyOn(window, "scrollTo").mockReturnValue();
 
@@ -97,6 +111,7 @@ describe("calendar", () => {
         await todayButton.trigger("click");
         await flushPromises();
 
+        expect(wrapper.emitted("update:modelValue")![0][0]).toBe(now);
         expect(wrapper.emitted("change")![0][0]).toBe(now);
     });
 });

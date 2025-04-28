@@ -1,7 +1,7 @@
 ---
 title: Error Plugin
 layout: content-with-menu
-components:
+component:
     - ErrorPlugin
     - FErrorHandlingApp
 ---
@@ -66,17 +66,25 @@ ErrorPluginExample.vue
 Axios-fel mm hanteras om man har kodat på följande vis:
 
 ```ts
-async function bliFel() {
-    await axios.get("http://hej");
-    // alternativt return axios.get('http://hej');
+import axios from "axios";
+
+/* --- cut above --- */
+
+async function bliFel(): Promise<void> {
+    await axios.get("http://example.net");
+    // alternativt return axios.get('http://example.net');
 }
 ```
 
 Om man däremot har kodat felaktigt, enligt nedanstående exempel, kommer exceptions inte att fångas av denna plugin.
 
 ```ts
-function bliFel() {
-    axios.get("http://hej");
+import axios from "axios";
+
+/* --- cut above --- */
+
+function bliFel(): void {
+    axios.get("http://example.net");
 }
 ```
 
@@ -85,6 +93,13 @@ function bliFel() {
 Plugin tar ett optional objekt med inställningar:
 
 ```ts
+import { createApp, defineComponent } from "vue";
+import { ErrorPlugin } from "@fkui/vue";
+
+const app = createApp(defineComponent({}));
+
+/* --- cut above ---*/
+
 app.use(ErrorPlugin, {
     captureWarnings: true,
     logToConsole: true,
