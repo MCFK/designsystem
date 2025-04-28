@@ -1,5 +1,7 @@
 # Försäkringskassans designsystem
 
+Kalle Anka
+
 [In English](#fk-design-system)
 
 Designsystemet förenklar och effektiviserar arbete med att skapa sammanhållna och inkluderande digitala användargränssnitt.
